@@ -15,6 +15,10 @@ try:
         for key in ("title", "summary", "whyItMatters", "source", "category", "url"):
             if not story.get(key):
                 raise ValueError(f"story {index} missing {key}")
+        if story.get("category") == "投资市场":
+            for key in ("market", "sentiment", "horizon", "riskNote"):
+                if not story.get(key):
+                    raise ValueError(f"investment story {index} missing {key}")
     print(json.dumps({"valid": True, "stories": len(data["stories"])}, ensure_ascii=False))
 except Exception as exc:
     print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
