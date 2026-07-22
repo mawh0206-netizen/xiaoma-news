@@ -43,21 +43,21 @@ try {
     $ErrorActionPreference = "Stop"
     if (-not $pushed) { throw "GitHub push failed after $MaxPushAttempts attempts" }
 
-    $expected = (Get-Content -LiteralPath $newsPath -Raw -Encoding utf8 | ConvertFrom-Json).statusLabel
+    $expectedContent = ((Get-Content -LiteralPath $newsPath -Raw -Encoding utf8) -replace "`r`n", "`n").Trim()
     $deadline = (Get-Date).AddSeconds($DeployWaitSeconds)
     $verified = $false
     do {
         try {
-            $online = Invoke-RestMethod -Uri ("${siteDataUrl}?v=" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -TimeoutSec 20
-            if ($online.statusLabel -eq $expected) { $verified = $true; break }
+            $onlineContent = ((Invoke-WebRequest -UseBasicParsing -Uri ("${siteDataUrl}?v=" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -TimeoutSec 20).Content -replace "`r`n", "`n").Trim()
+            if ($onlineContent -eq $expectedContent) { $verified = $true; break }
         } catch {
             "[$(Get-Date -Format o)] deploy verification retry: $($_.Exception.Message)" | Add-Content -LiteralPath $logPath
         }
         Start-Sleep -Seconds 15
     } while ((Get-Date) -lt $deadline)
 
-    if (-not $verified) { throw "GitHub Pages did not expose expected status '$expected' within $DeployWaitSeconds seconds" }
-    "[$(Get-Date -Format o)] publish verified online: $expected" | Add-Content -LiteralPath $logPath
+    if (-not $verified) { throw "GitHub Pages did not expose the exact committed news.json within $DeployWaitSeconds seconds" }
+    "[$(Get-Date -Format o)] publish verified online against exact news.json content" | Add-Content -LiteralPath $logPath
 }
 catch {
     $detail = "Xiaoma News publish failed.`r`n`r`nTime: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')`r`nError: $($_.Exception.Message)`r`nLocal changes are preserved and the last successful website edition remains online."
