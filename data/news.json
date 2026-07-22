@@ -289,6 +289,176 @@
       "category": "企业商业",
       "url": "https://techcrunch.com/2026/07/21/apple-teams-up-with-klarna-to-launch-a-lease-to-own-program-for-iphones-ipads-and-macs/",
       "isTop": false
+    },
+    {
+      "title": "资本市场探索对科技创新提供“接力式”支持",
+      "summary": "第一财经专访专家，讨论不同发展阶段的科技企业如何获得连续的资本市场支持。",
+      "whyItMatters": "科技企业融资需要覆盖研发、产业化到规模增长的不同风险阶段，单一融资工具难以完成全周期支持。",
+      "source": "第一财经",
+      "publishedLabel": "今日",
+      "category": "财经",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5tRFVmeGJXVkVXV0RBeS1FN0loeG9UVEcwZ3ozb0d0YjdMcXRGaDZXWER5MTJ4cFJ5UUFfUlgyS3liMVlFWkJWUWlSOC1IU1ppb0sw?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "A股两日披露逾百份回购增持公告",
+      "summary": "第一财经关注上市公司密集回购与增持，市场主体正在释放稳定预期的信号。",
+      "whyItMatters": "回购增持需要结合估值、现金流和执行比例判断，公告数量本身不等于基本面反转。",
+      "source": "第一财经",
+      "publishedLabel": "昨日",
+      "category": "财经",
+      "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFByZ1JBTkppMmVVOXgyU1pxVDBRVE9RZzJzaEo0NzYzcVFkVU1pY0tFak85TTlDaVRGUTVhcl91Rmw0ampaaXl4QlZac3JkRUpJWjI0?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "AI产业链的万亿订单，未必等于可兑现利润",
+      "summary": "财联社提醒，超大订单叙事仍需接受产能、交付、成本与回款能力验证。",
+      "whyItMatters": "企业评估 AI 供应商时，应把订单质量、取消条款、应收账款和毛利率放在同等位置。",
+      "source": "财联社",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5oZmxyR1VYd014WTFmZGVtS0R6ekJfeXIyNzUwcFZQYUZEcHU2V2tCSWtBZFNJWFQxU3lGbEtfMDlKVko5RjROVw?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "存储芯片反弹，油价与黄金同步走强",
+      "summary": "财联社早报显示，科技股修复与避险资产上涨同时发生，市场仍在增长和风险之间摇摆。",
+      "whyItMatters": "资产同步上涨未必代表风险解除，企业应继续关注芯片价格、能源成本与融资环境的组合变化。",
+      "source": "财联社",
+      "publishedLabel": "今日早报",
+      "category": "财经",
+      "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5aRVN6d1hwMXNTMXhmWVpULUI2S2V1VU5xOGtTSHpQZ19sdnJMRlhRQUhPakVxc1Y3YWp5NXNLcFVpc1JIaU9kaw?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "深市公司上半年新旧动能增长凸显经营韧性",
+      "summary": "证券时报梳理深市上市公司经营表现，科技与传统产业升级共同构成增长线索。",
+      "whyItMatters": "判断产业景气需要穿透指数表现，比较收入质量、订单持续性与资本开支回报。",
+      "source": "证券时报",
+      "publishedLabel": "7月20日",
+      "category": "企业商业",
+      "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBRYTBycWlvamRwUzltUXkxaTR3elR0NzNzQ2RrdVVDQVlpcEJQZGFwS1dxMmtDWTlKQi1CbVBhTTZ4UGQ1Rnk2VzNtTXQ2T3F5YWZ4WmlLQ2U0Rkw1?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "WAIC观察：AI从聊天走向拥有“身体”并执行任务",
+      "summary": "36氪从世界人工智能大会现场观察到，具身智能和真实场景落地成为产业关注焦点。",
+      "whyItMatters": "具身智能的价值验证将更依赖设备可靠性、部署成本和实际工作时长，而不是演示效果。",
+      "source": "36氪",
+      "publishedLabel": "今日早报",
+      "category": "AI",
+      "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1vNmpjQTNsR0RydTJ5cU5odnBDdWtpLUNiNjlFb0lkcWpHLWxMUkY5V3c1cnktT1JsVWtZUE42a3BROXk1S0FCU0g5d3Nvalo4?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "AI行业正在经历价格重估",
+      "summary": "36氪关注资本市场对 AI 企业估值逻辑和商业化确定性的重新评估。",
+      "whyItMatters": "企业采用 AI 的谈判空间可能增加，但供应商持续经营、服务稳定性和退出机制更值得关注。",
+      "source": "36氪",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1Kb2haMG1VVGZsN01TNjd0dkhjRzh1endBaXBreDUwWlFPVDhFVC1JUTVlbWZoaTF4Vkxzc3BQRktLZHR0dlJQTXU4VXlGNEZP?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "富士康新能源汽车研发中心在郑州投入使用",
+      "summary": "盖世汽车报道，富士康继续推进在中国的新能源汽车研发与产业布局。",
+      "whyItMatters": "代工与平台化模式能否复制消费电子经验，取决于整车客户、制造良率和研发成果转化。",
+      "source": "盖世汽车",
+      "publishedLabel": "7月21日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNQXhiREpKSkJ5U1RVaDA2WkttMERxYW90MEZTUmxqTTYzUjJkZ3NWMUF4MGZvdUdnSDRlMG5xVllCdGpBY2lfOE8xeldiMTNTUEJSb1Rkbktab19mTkdsaFU1SkcxSV9DalNXS2JpbDZVa2N5WTJrb25mcTdpSE1tVzREa3JxaHdlblpxNDVQZUw0aDk1MlBINVI2R2lRTV9rTGZJMGtSVktNZGNK?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "工信部发布年度汽车标准化工作要点",
+      "summary": "盖世汽车关注汽车标准体系的年度安排，智能化和新能源相关规范将继续影响产品开发。",
+      "whyItMatters": "标准变化会前置影响研发、测试、认证和上市节奏，车企与供应商应尽早纳入产品路线图。",
+      "source": "盖世汽车",
+      "publishedLabel": "7月18日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOaUx5ZDRRVW5NZWJuRVdQdWsxd0JXOWUzVnZKTXhxYlZiTUVnRDY5dnljd3gtQU90ajkzV1V4SkVnd04wMEQ4WGMxSkZCUkIxMkppWGhFam1kNlVmVnFydUIxMEtobjEtRUp3dVVfUnVSRmpkazVTa0pLck5TSTJHMldsZ0RRLUNsZ1VrYlNVblNBeExTcWgtbGFraHFhTXZjNzVYZ09BdlVlS2s?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "华晨宝马全价值链碳排放减少超540万吨",
+      "summary": "中国汽车报网披露，华晨宝马在生产、供应链、物流、充电和电池回收环节推进可量化减排。",
+      "whyItMatters": "汽车产业 ESG 正从承诺转向可追溯数据，供应商的绿电使用和碳数据能力将影响准入。",
+      "source": "中国汽车报",
+      "publishedLabel": "近期",
+      "category": "汽车产业",
+      "url": "https://www.cnautonews.com/xinnengyuan/2026/05/27/detail_20260527390131.html",
+      "isTop": false
+    },
+    {
+      "title": "氢能汽车商业化需要转向“用得起、用得稳、用得久”",
+      "summary": "中国汽车报网关注氢能产业从示范项目走向成本、寿命和运营闭环验证。",
+      "whyItMatters": "氢能更适合先聚焦重载、港口和固定线路等场景，企业投资前应核算全生命周期成本。",
+      "source": "中国汽车报",
+      "publishedLabel": "近期",
+      "category": "汽车产业",
+      "url": "https://www.cnautonews.com/xinnengyuan/2026/06/08/detail_20260608390445.html",
+      "isTop": false
+    },
+    {
+      "title": "24家汽车金融公司资产规模增至9144亿元",
+      "summary": "证券时报援引行业报告称，2025年末汽车金融公司资产规模同比增长6.94%，新能源汽车贷款继续扩张。",
+      "whyItMatters": "规模回升需要同时观察净利润、不良率和新能源残值风险，不能只看贷款投放量。",
+      "source": "证券时报",
+      "publishedLabel": "近期",
+      "category": "汽车金融",
+      "url": "https://www.stcn.com/article/detail/3936499.html",
+      "isTop": false
+    },
+    {
+      "title": "23家汽车金融公司资产止跌，但行业利润承压",
+      "summary": "证券时报统计显示，可比汽车金融公司合计利润下降，行业龙头格局发生变化。",
+      "whyItMatters": "价格战会通过贴息和风险成本传导至汽车金融，规模增长不必然带来盈利改善。",
+      "source": "证券时报",
+      "publishedLabel": "近期",
+      "category": "汽车金融",
+      "url": "https://www.stcn.com/article/detail/3916869.html",
+      "isTop": false
+    },
+    {
+      "title": "七年期低息车贷带来销量刺激与长期风险争议",
+      "summary": "第一财经调查超长期车贷对购车门槛、换车周期和消费者负担的影响。",
+      "whyItMatters": "超长期贷款可能改善短期转化，却会放大负资产、提前换车和二手车残值风险。",
+      "source": "第一财经",
+      "publishedLabel": "专题观察",
+      "category": "汽车金融",
+      "url": "https://www.yicai.com/news/103035275.html",
+      "isTop": false
+    },
+    {
+      "title": "多家银行七年期车贷活动到期下架",
+      "summary": "财联社调查显示，部分七年低息购车方案下架主要与车企促销活动到期有关。",
+      "whyItMatters": "金融促销的可持续性取决于车企贴息成本、银行风险偏好和实际客户质量。",
+      "source": "财联社",
+      "publishedLabel": "专题观察",
+      "category": "汽车金融",
+      "url": "https://www.cls.cn/detail/2363646",
+      "isTop": false
+    },
+    {
+      "title": "6月汽车经销商库存系数为1.58",
+      "summary": "中国汽车流通协会数据显示，库存系数环比下降但同比仍上升，经销商资金占用压力仍需观察。",
+      "whyItMatters": "库存决定经销商融资需求和降价压力，也是判断终端真实景气度的重要先行指标。",
+      "source": "中国汽车流通协会",
+      "publishedLabel": "7月10日",
+      "category": "汽车金融",
+      "url": "https://npo00410y.npoall.com/news/itemid-281701.html",
+      "isTop": false
+    },
+    {
+      "title": "经销商库存融资明确车辆监管与违约处置规则",
+      "summary": "北汽汽车金融披露库存融资业务要素，资金限定用于采购车辆，并强化移库、销售和还款管理。",
+      "whyItMatters": "库存融资的核心是车辆真实性、权属控制和快速处置能力，数字化监管能直接降低操作风险。",
+      "source": "北汽汽车金融",
+      "publishedLabel": "近期",
+      "category": "汽车金融",
+      "url": "https://baicaf.com/index/statute/info.html?id=123",
+      "isTop": false
     }
   ]
 }
