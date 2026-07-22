@@ -108,7 +108,7 @@ def main() -> None:
     OUTPUT.write_text(document, encoding="utf-8")
     payload = {
         "title": f"{data['dateLabel']}｜小马看世界新闻晨报",
-        "author": "小马ILYYoung",
+        "author": "小马JLYYoung",
         "digest": data["dailyInsight"]["title"][:120],
         "content": article,
         "content_source_url": f"{SITE}/",
