@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,8 +17,19 @@ def esc(value: object) -> str:
     return html.escape(str(value or ""), quote=True)
 
 
+ARCHIVE_DATE = ""
+
+
+def date_key(label: str) -> str:
+    match = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", label)
+    if not match:
+        raise ValueError(f"cannot parse dateLabel: {label}")
+    year, month, day = map(int, match.groups())
+    return f"{year:04d}-{month:02d}-{day:02d}"
+
+
 def detail_url(index: int) -> str:
-    return f"{SITE}/detail.html?story={index}"
+    return f"{SITE}/detail.html?date={ARCHIVE_DATE}&story={index}"
 
 
 def story_block(story: dict, index: int, number: int) -> str:
@@ -57,7 +69,9 @@ def select(stories: list[dict], categories: set[str], limit: int) -> list[tuple[
 
 
 def main() -> None:
+    global ARCHIVE_DATE
     data = json.loads(DATA.read_text(encoding="utf-8"))
+    ARCHIVE_DATE = date_key(data["dateLabel"])
     stories = data["stories"]
     foreign_sources = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}
     auto_industry = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车产业"]
@@ -112,7 +126,7 @@ def main() -> None:
         "author": "小马儿Young",
         "digest": f"聚焦智能网联、车载AI、整车供应链与汽车金融。今日关注：{lead_title}"[:120],
         "content": article,
-        "content_source_url": f"{SITE}/",
+        "content_source_url": f"{SITE}/archive.html?date={ARCHIVE_DATE}",
         "need_open_comment": 0,
         "only_fans_can_comment": 0,
     }
