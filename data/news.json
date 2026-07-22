@@ -12,6 +12,8 @@
   "stories": [
     {
       "title": "美国再次空袭伊朗，特朗普威胁打击地下核设施",
+      "originalTitle": "US renews strikes on Iran as Trump threatens to attack underground nuclear site",
+      "originalSummary": "The United States has renewed military strikes on Iran, while President Trump has threatened action against an underground nuclear facility. The escalation could affect energy prices, shipping routes, insurance costs and global risk sentiment.",
       "summary": "BBC 报道，美国恢复对伊朗的军事打击，局势可能进一步影响能源、航运和全球风险偏好。",
       "whyItMatters": "企业应重新检查油价、海运保险、交付周期和外汇敞口，避免把冲突仅视为外交新闻。",
       "source": "BBC",
@@ -22,6 +24,8 @@
     },
     {
       "title": "美国称伊朗战争已耗资375亿美元，并寻求追加预算",
+      "originalTitle": "Iran war has cost US $37.5bn so far, Hegseth says, as Pentagon seeks billions more",
+      "originalSummary": "US defence officials say the conflict with Iran has already cost $37.5 billion, and the Pentagon is seeking additional funding. Rising military expenditure may influence government borrowing, defence-sector demand and expectations for long-term interest rates.",
       "summary": "美国国防部门披露的战争成本继续上升，财政支出和军工需求可能同时受到影响。",
       "whyItMatters": "持续扩大的军费会影响财政空间、债券供给和相关产业订单，但也会加大长期利率压力。",
       "source": "BBC",
@@ -32,6 +36,8 @@
     },
     {
       "title": "特朗普宣布对加拿大征收50%关税，加方评估全部应对选项",
+      "originalTitle": "Carney looking at 'all options' as Trump announces 50% tariffs on Canada",
+      "originalSummary": "Canada is considering a range of responses after President Trump announced a 50% tariff on Canadian goods. The dispute creates new cost and supply-chain risks for manufacturers operating across the highly integrated North American market.",
       "summary": "美加贸易摩擦升级，跨境制造、原材料和北美一体化供应链面临新的成本变量。",
       "whyItMatters": "在北美有业务的企业需要模拟关税传导路径，并提前评估转移产地或调整定价的可行性。",
       "source": "BBC",
@@ -42,6 +48,8 @@
     },
     {
       "title": "法国通过法律，禁止15岁以下儿童使用社交媒体",
+      "originalTitle": "France passes law banning under-15s from social media",
+      "originalSummary": "France has passed legislation barring children under 15 from using social media. The measure increases pressure on online platforms to strengthen age verification, privacy protection and safety-by-design features for younger users.",
       "summary": "法国加强未成年人网络保护，平台的年龄验证和产品设计责任进一步上升。",
       "whyItMatters": "面向消费者的平台需要把年龄验证、隐私合规和未成年人体验纳入产品底层，而非上线后的补丁。",
       "source": "BBC",
@@ -52,6 +60,8 @@
     },
     {
       "title": "Anthropic 与机器人公司 Physical Intelligence 的传闻引发行业关注",
+      "originalTitle": "The Anthropic-Physical Intelligence rumor roiling AI Twitter",
+      "originalSummary": "Market speculation about a possible connection between Anthropic and robotics company Physical Intelligence has attracted attention across the AI industry. The discussion highlights growing investor interest in embodied AI, although the report remains a rumor rather than a confirmed transaction.",
       "summary": "围绕大模型公司与通用机器人技术结合的市场传闻升温，具身智能再次成为资本焦点。",
       "whyItMatters": "模型能力向物理世界延伸会扩大数据、硬件和安全门槛，但传闻阶段不宜替代正式交易信息。",
       "source": "TechCrunch",
@@ -62,6 +72,8 @@
     },
     {
       "title": "OpenAI 称预发布模型在 Hugging Face 遭到泄露",
+      "originalTitle": "OpenAI says Hugging Face was breached by its pre-release models",
+      "originalSummary": "OpenAI says pre-release model materials were exposed through a breach involving Hugging Face. The incident highlights security risks across the AI supply chain, including model repositories, third-party platforms, access permissions and credential management.",
       "summary": "预发布模型相关安全事件暴露出 AI 供应链、托管平台和访问权限管理的新风险。",
       "whyItMatters": "企业引入外部模型和开源平台时，应把模型文件、密钥、权限与审计纳入软件供应链安全体系。",
       "source": "TechCrunch",
@@ -72,6 +84,8 @@
     },
     {
       "title": "Google 发布三款新 Gemini 模型，但未推出3.5 Pro",
+      "originalTitle": "Google releases three new Gemini models — but no 3.5 Pro",
+      "originalSummary": "Google has expanded the Gemini family with three new models, but it did not release the anticipated 3.5 Pro version. The launch reflects a broader shift toward model portfolios designed for different levels of cost, speed and capability.",
       "summary": "Google 扩充 Gemini 产品组合，模型供应继续向多规格、多成本档位发展。",
       "whyItMatters": "企业选型不应等待单一旗舰型号，应按任务质量、时延、稳定性和单位成本建立可替换架构。",
       "source": "TechCrunch",
@@ -82,6 +96,8 @@
     },
     {
       "title": "数据中心用电量预计到2035年增长至四倍",
+      "originalTitle": "Data centers expected to use 4x more electricity by 2035",
+      "originalSummary": "Electricity use by data centers is projected to rise fourfold by 2035 as AI and cloud computing expand. Power prices, grid connections, site selection and long-term energy contracts are becoming central constraints on computing capacity.",
       "summary": "AI 与云计算扩张正在把电力供应、并网速度和能效变成数据中心发展的硬约束。",
       "whyItMatters": "算力成本未来不仅取决于芯片，也取决于电价、选址、长期购电协议和电网接入能力。",
       "source": "TechCrunch",
@@ -92,6 +108,8 @@
     },
     {
       "title": "Super Micro 称订单达600亿美元，利润率表现推动股价上涨",
+      "originalTitle": "Super Micro sees strong margins, books $60 billion in orders; shares jump",
+      "originalSummary": "Super Micro reported strong margins and said it had booked $60 billion in orders, sending its shares higher. Investors are watching whether robust demand for AI servers can translate into timely deliveries and sustainable profits.",
       "summary": "AI 服务器需求仍然强劲，市场同时关注订单规模能否转化为可持续利润。",
       "whyItMatters": "AI 基础设施景气度较高，但企业判断供应商质量时应同时观察积压订单、交付与毛利率。",
       "source": "Reuters",
@@ -102,6 +120,8 @@
     },
     {
       "title": "先进芯片制造设备抵达纽约州创新中心",
+      "originalTitle": "Advanced chipmaking tool arrives at New York state innovation hub",
+      "originalSummary": "An advanced semiconductor manufacturing tool has arrived at a New York innovation hub, supporting US efforts to expand domestic chip research and production. The investment may reshape demand for equipment, materials, specialist talent and regional supply chains.",
       "summary": "美国继续强化本土先进半导体研发与制造基础设施，产业政策进入设备落地阶段。",
       "whyItMatters": "半导体本地化将改变设备、材料与人才流向，也可能带来新的补贴机会和区域成本差异。",
       "source": "Reuters",
