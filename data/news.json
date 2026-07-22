@@ -118,7 +118,7 @@
       "publishedLabel": "今日",
       "category": "科技",
       "url": "https://techcrunch.com/2026/07/21/dimension-capitals-800m-third-fund-shows-the-intersection-of-science-and-compute-is-booming/",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "空客将测试折叠机翼，为下一代主力机型探索新设计",
@@ -128,7 +128,7 @@
       "publishedLabel": "昨日",
       "category": "企业商业",
       "url": "https://www.theguardian.com/business/2026/jul/21/airbus-to-test-folding-wings-for-next-generation-of-bestselling-planes",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "英国高电价背后的三项结构性原因受到关注",
@@ -138,7 +138,7 @@
       "publishedLabel": "昨日",
       "category": "企业商业",
       "url": "https://www.bbc.co.uk/news/articles/cn8n5vnmjlzo?at_medium=RSS&at_campaign=rss",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "投资者担忧日本债券押注成为新的“寡妇交易”",
@@ -148,7 +148,7 @@
       "publishedLabel": "今日",
       "category": "财经",
       "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNUlh6enhQc3kxdUNCNnBhSGtMQzIySE9aX0FnVWR3ZU15UVRpNXpWQ0dMdmV6VXQwRTE5WWlxdDIwR2pSNFBmaFhkSmJTU0U3ajFVTGVWUHpuelFyMi1TMzlWc091dU9NVTZpNUYwQjJkMDNSXzhZMVd6VDlmc3gzTlJ5Y2o?oc=5",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "美国汽车业加速清除中国智能网联硬件",
@@ -158,7 +158,7 @@
       "publishedLabel": "昨日",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPS3k0VFhMXzdjcHd4SUczVkNmWVNQU1U5OHY3dHFVdjNzVklhYS01c0FnaW9vbUVrVnpaNFNvd3JGZ2FQUXAybzdXekU4Y1ptT1JVN0p0WEVJQUdEaS1HSDFvN29lbllLbmlQZThVaWphaUUxdVNSLURqSDlSZF9zTzBpRzIxSFJyMlhlUVZQZEZZTWg2N0o2d1Y1bG81RXVacXBCZHZrSEpxNjkxZWZnU3VxbE8xVFhJa2N3OVFqd053WUliQzFKd1BtUm9jVE02UHc?oc=5",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "特斯拉现金消耗将检验投资者对其 AI 押注的耐心",
@@ -168,7 +168,7 @@
       "publishedLabel": "昨日",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPSERzVnBrN2twV2ZlZ0VQOFRkRGJ6a3lyVlFuQnZ2NGQ5V0xCRkNDQ0hTZmJVb2pTOENXdUQzWmFWeWhNSXAyMnpDcWx6enpqSnhGaFM3R2pvNEN3TkFsT3dBYXJ1SjlVcV9Xb1dCemtJeVJoVThVSGFsaG5ZNFZEREhRa1Z4VjlRRUxjS3dYWDJST2hVZTdweUVKNGtySnM5WWZmU3BHTHhDQnVsYUE?oc=5",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "通用汽车上调利润预期，称消费者需求仍具韧性",
@@ -178,7 +178,7 @@
       "publishedLabel": "昨日",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOTGRVakJmSzhlMC11WHpydXBvV0pJR2lXSW5yNWo3UDhoUEdQQnhLZkxwLVAwUUlXOVB0TkY1NWZzR3JNT0FIcGI2XzY5NTFERGlncUZfaUNVaFh2Yk55ZGE0UHJrYWhYNDlUbU9yaWZheG5fOXBqRkwwSm5wd2xJZmZTSkx0Z0tIVmphUFJab0R2RHRtSzlYTWc2ZnN1dXpYeDNRempjUXdwWGJkZW1tSi1YcVoxaVp2aXc?oc=5",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "Mobileye 将向 Stellantis 提供云端驾驶辅助技术",
@@ -188,7 +188,7 @@
       "publishedLabel": "昨日",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQcDRsQzhDTG4tLVJucUtxZmk4TUNIbjVvRFR4bUxmTkJMbVN1WGctWlM5cVc1N1BvV0ZidnlPdDNkVGhqMGR0SGkzUmhMRWNMc09fWUhzY3gxMjE5TWJPbTQ2MTBZbmUzMkdITmI2Nzk0dVJKNHV0amFmbHNDWHF5WklhZmxSMmIzYnJHT2N2eXdGcW1XY2RXWVNReVVZemEtQk9BaXhyVDBKYkphSk9qd2VSWGFPbGNVOUtRcWRHRlpBZFE2SklfQVVld2FyMWFiVmZiQw?oc=5",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "上半年中国车市出口成为稳定增长极，新能源车继续担当主力",
@@ -208,7 +208,7 @@
       "publishedLabel": "昨日",
       "category": "汽车产业",
       "url": "https://techcrunch.com/2026/07/21/bucking-ev-slowdown-sila-raises-300m-to-expand-battery-materials-factory/",
-      "isTop": true
+      "isTop": false
     },
     {
       "title": "英国电网运营商卷入高温停电风险争议",
@@ -298,7 +298,7 @@
       "publishedLabel": "今日",
       "category": "财经",
       "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5tRFVmeGJXVkVXV0RBeS1FN0loeG9UVEcwZ3ozb0d0YjdMcXRGaDZXWER5MTJ4cFJ5UUFfUlgyS3liMVlFWkJWUWlSOC1IU1ppb0sw?oc=5",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "A股两日披露逾百份回购增持公告",
@@ -318,7 +318,7 @@
       "publishedLabel": "昨日",
       "category": "AI",
       "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5oZmxyR1VYd014WTFmZGVtS0R6ekJfeXIyNzUwcFZQYUZEcHU2V2tCSWtBZFNJWFQxU3lGbEtfMDlKVko5RjROVw?oc=5",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "存储芯片反弹，油价与黄金同步走强",
@@ -338,7 +338,7 @@
       "publishedLabel": "7月20日",
       "category": "企业商业",
       "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBRYTBycWlvamRwUzltUXkxaTR3elR0NzNzQ2RrdVVDQVlpcEJQZGFwS1dxMmtDWTlKQi1CbVBhTTZ4UGQ1Rnk2VzNtTXQ2T3F5YWZ4WmlLQ2U0Rkw1?oc=5",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "WAIC观察：AI从聊天走向拥有“身体”并执行任务",
@@ -348,7 +348,7 @@
       "publishedLabel": "今日早报",
       "category": "AI",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1vNmpjQTNsR0RydTJ5cU5odnBDdWtpLUNiNjlFb0lkcWpHLWxMUkY5V3c1cnktT1JsVWtZUE42a3BROXk1S0FCU0g5d3Nvalo4?oc=5",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "AI行业正在经历价格重估",
@@ -368,7 +368,7 @@
       "publishedLabel": "7月21日",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNQXhiREpKSkJ5U1RVaDA2WkttMERxYW90MEZTUmxqTTYzUjJkZ3NWMUF4MGZvdUdnSDRlMG5xVllCdGpBY2lfOE8xeldiMTNTUEJSb1Rkbktab19mTkdsaFU1SkcxSV9DalNXS2JpbDZVa2N5WTJrb25mcTdpSE1tVzREa3JxaHdlblpxNDVQZUw0aDk1MlBINVI2R2lRTV9rTGZJMGtSVktNZGNK?oc=5",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "工信部发布年度汽车标准化工作要点",
@@ -388,7 +388,7 @@
       "publishedLabel": "近期",
       "category": "汽车产业",
       "url": "https://www.cnautonews.com/xinnengyuan/2026/05/27/detail_20260527390131.html",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "氢能汽车商业化需要转向“用得起、用得稳、用得久”",
@@ -408,7 +408,7 @@
       "publishedLabel": "近期",
       "category": "汽车金融",
       "url": "https://www.stcn.com/article/detail/3936499.html",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "23家汽车金融公司资产止跌，但行业利润承压",
@@ -428,7 +428,7 @@
       "publishedLabel": "专题观察",
       "category": "汽车金融",
       "url": "https://www.yicai.com/news/103035275.html",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "多家银行七年期车贷活动到期下架",
@@ -448,7 +448,7 @@
       "publishedLabel": "7月10日",
       "category": "汽车金融",
       "url": "https://npo00410y.npoall.com/news/itemid-281701.html",
-      "isTop": false
+      "isTop": true
     },
     {
       "title": "经销商库存融资明确车辆监管与违约处置规则",
