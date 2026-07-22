@@ -48,7 +48,7 @@ try {
     $verified = $false
     do {
         try {
-            $online = Invoke-RestMethod -Uri ("$siteDataUrl?v=" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -TimeoutSec 20
+            $online = Invoke-RestMethod -Uri ("${siteDataUrl}?v=" + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -TimeoutSec 20
             if ($online.statusLabel -eq $expected) { $verified = $true; break }
         } catch {
             "[$(Get-Date -Format o)] deploy verification retry: $($_.Exception.Message)" | Add-Content -LiteralPath $logPath
