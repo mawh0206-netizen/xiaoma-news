@@ -5,3 +5,33 @@
 .card-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px}.read-more{font-size:12px;color:var(--accent);text-decoration:none;font-weight:700}.read-more:hover{text-decoration:underline}.detail-shell{width:min(860px,calc(100% - 40px));margin:0 auto}.detail-nav{padding:28px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.back-link{color:var(--muted);text-decoration:none;font-size:13px}.detail-article{padding:65px 0}.detail-kicker{display:flex;gap:10px;align-items:center;color:var(--accent);font-size:12px;font-weight:700;flex-wrap:wrap}.foreign-badge{background:var(--ink);color:var(--bg);padding:4px 9px;border-radius:20px}.detail-article h1{font:500 clamp(36px,6vw,68px)/1.12 Georgia,"Noto Serif SC",serif;letter-spacing:-.04em;margin:22px 0}.detail-deck{font:400 20px/1.75 Georgia,"Noto Serif SC",serif;color:var(--muted);border-bottom:1px solid var(--line);padding-bottom:35px}.detail-content{display:grid;grid-template-columns:1fr 230px;gap:60px;padding-top:38px}.detail-content h2{font:500 25px Georgia,"Noto Serif SC",serif;margin:36px 0 12px}.detail-content h2:first-child{margin-top:0}.detail-content p{font-size:16px}.fact-list{padding:0;list-style:none}.fact-list li{padding:13px 0;border-bottom:1px solid var(--line)}.decision-box{background:var(--paper);padding:24px;border-left:3px solid var(--accent);margin-top:30px}.source-panel{position:sticky;top:105px;height:max-content;border-top:2px solid var(--ink);padding-top:18px}.source-panel a{display:block;text-align:center;padding:11px;margin-top:12px;text-decoration:none}.primary-source{background:var(--ink);color:var(--bg)}.secondary-source{border:1px solid var(--line);color:var(--ink)}.access-note{font-size:11px;color:var(--muted);margin-top:12px}.related-list{margin-top:60px;border-top:1px solid var(--line);padding-top:30px}.related-list a{display:block;color:var(--ink);text-decoration:none;padding:16px 0;border-bottom:1px solid var(--line)}
 .original-title{font:400 22px/1.5 Georgia,serif;color:var(--muted);margin:-8px 0 28px}.bilingual-block{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin:26px 0}.bilingual-block>div{background:var(--paper);padding:22px}.bilingual-block small{display:block;color:var(--accent);font-weight:700;letter-spacing:.08em;margin-bottom:9px}.bilingual-block p{margin:0}.english-copy{font-family:Georgia,serif}
 @media(max-width:700px){.detail-article{padding-top:38px}.detail-content{grid-template-columns:1fr;gap:32px}.source-panel{position:static;order:-1}.detail-deck{font-size:18px}.bilingual-block{grid-template-columns:1fr}}
+
+/* Detail page reading hierarchy */
+.detail-shell{width:min(1080px,calc(100% - 48px))}
+.detail-article{padding:54px 0 80px}
+.detail-article>h1{max-width:920px;font-size:clamp(38px,5vw,62px);line-height:1.15;margin-bottom:16px}
+.detail-deck{max-width:900px;margin:0;padding:24px 28px;background:color-mix(in srgb,var(--paper) 88%,var(--accent) 3%);border:1px solid var(--line);border-left:4px solid var(--accent);font-size:19px;line-height:1.8;color:var(--ink)}
+.detail-content{grid-template-columns:minmax(0,1fr) 250px;gap:72px;padding-top:48px;align-items:start}
+.detail-content>div:first-child{counter-reset:detail-section}
+.detail-content>div:first-child>h2{counter-increment:detail-section;display:flex;align-items:center;gap:12px;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--line);font-size:27px;line-height:1.35}
+.detail-content>div:first-child>h2:first-child{margin-top:0;padding-top:0;border-top:0}
+.detail-content>div:first-child>h2::before{content:"0" counter(detail-section);display:grid;place-items:center;flex:0 0 34px;height:25px;border-radius:3px;background:var(--ink);color:var(--bg);font:700 11px/1 Inter,sans-serif;letter-spacing:.05em}
+.detail-content>div:first-child>p{margin:0 0 18px;color:color-mix(in srgb,var(--ink) 88%,var(--muted));font-size:16px;line-height:1.9}
+.fact-list{display:grid;gap:10px;margin:0;padding:0}
+.fact-list li{position:relative;padding:15px 18px 15px 42px;background:var(--paper);border:1px solid var(--line);border-radius:3px;line-height:1.65}
+.fact-list li::before{content:"";position:absolute;left:18px;top:24px;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
+.decision-box{margin:48px 0 0;padding:28px 30px;background:var(--ink);color:var(--bg);border:0;border-radius:4px;box-shadow:var(--shadow)}
+.decision-box h2{margin:0 0 12px!important;padding:0!important;border:0!important;color:inherit;font-size:25px!important}
+.decision-box h2::before{display:none!important}
+.decision-box p{margin:0!important;color:color-mix(in srgb,var(--bg) 82%,transparent)!important;line-height:1.85!important}
+.source-panel{top:104px;padding:22px;background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--ink);box-shadow:0 12px 34px rgba(30,34,30,.05)}
+.source-panel>b{display:block;font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.source-panel>p:not(.access-note){font:500 21px Georgia,serif;margin:12px 0 20px}
+.source-panel a{padding:13px 14px;margin-top:10px}
+.bilingual-block{margin:30px 0 0;border:0;border-radius:4px;overflow:hidden;box-shadow:0 8px 30px rgba(30,34,30,.06)}
+.bilingual-block>div{padding:26px 28px}
+.bilingual-block small{padding-bottom:10px;border-bottom:1px solid var(--line)}
+.bilingual-block p{font-size:15px;line-height:1.85}
+.related-list{margin-top:56px;padding-top:24px}
+.related-list h2{font-size:25px}
+@media(max-width:700px){.detail-shell{width:min(100% - 28px,1080px)}.detail-article{padding:32px 0 58px}.detail-article>h1{font-size:34px}.detail-deck{padding:20px;font-size:17px}.detail-content{gap:26px;padding-top:28px}.source-panel{padding:18px}.detail-content>div:first-child>h2{margin-top:38px;font-size:24px}.decision-box{padding:24px 22px}.bilingual-block>div{padding:22px}}
