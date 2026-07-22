@@ -11,6 +11,21 @@ $git = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\dependenci
 $newsPath = Join-Path $root "data\news.json"
 $siteDataUrl = "https://mawh0206-netizen.github.io/xiaoma-news/data/news.json"
 $logPath = Join-Path $root "runtime\pipeline.log"
+$proxyArgs = @()
+
+try {
+    $internetSettings = Get-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
+    if ($internetSettings.ProxyEnable -eq 1 -and $internetSettings.ProxyServer) {
+        $proxyServer = [string]$internetSettings.ProxyServer
+        if ($proxyServer -match "https=([^;]+)") { $proxyServer = $Matches[1] }
+        elseif ($proxyServer -match "http=([^;]+)") { $proxyServer = $Matches[1] }
+        if ($proxyServer -notmatch "^https?://") { $proxyServer = "http://$proxyServer" }
+        $proxyArgs = @("-c", "http.proxy=$proxyServer")
+        "[$(Get-Date -Format o)] using Windows internet proxy: $proxyServer" | Add-Content -LiteralPath $logPath
+    }
+} catch {
+    "[$(Get-Date -Format o)] Windows proxy detection skipped: $($_.Exception.Message)" | Add-Content -LiteralPath $logPath
+}
 
 if (-not (Test-Path -LiteralPath $git)) {
     $git = (Get-Command git -ErrorAction Stop).Source
@@ -21,7 +36,7 @@ try {
     $ErrorActionPreference = "Continue"
     for ($attempt = 1; $attempt -le $MaxPushAttempts; $attempt++) {
         "[$(Get-Date -Format o)] git push attempt $attempt/$MaxPushAttempts" | Add-Content -LiteralPath $logPath
-        & $git -C $root push 2>&1 | Tee-Object -FilePath $logPath -Append
+        & $git @proxyArgs -C $root push 2>&1 | Tee-Object -FilePath $logPath -Append
         if ($LASTEXITCODE -eq 0) { $pushed = $true; break }
         if ($attempt -lt $MaxPushAttempts) { Start-Sleep -Seconds $RetrySeconds }
     }
