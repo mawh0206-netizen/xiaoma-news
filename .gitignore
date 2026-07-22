@@ -2,5 +2,6 @@ runtime/
 *.log
 .DS_Store
 Thumbs.db
+__pycache__/
 smtp_settings.json
 smtp_credential.xml
