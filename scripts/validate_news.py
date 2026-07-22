@@ -30,6 +30,8 @@ try:
             if story.get("source") in {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}:
                 if not story.get("originalTitle") or len(str(story.get("originalSummary", "")).split()) < 50:
                     raise ValueError(f"foreign story {index} missing sufficient bilingual source material")
+                if not story.get("translatedSummary"):
+                    raise ValueError(f"foreign story {index} missing line-aligned Chinese translation")
     print(json.dumps({"valid": True, "stories": len(data["stories"])}, ensure_ascii=False))
 except Exception as exc:
     print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
