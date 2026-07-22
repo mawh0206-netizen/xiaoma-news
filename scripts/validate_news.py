@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 
 path = Path(__file__).resolve().parents[1] / "data" / "news.json"
+strict_details = "--strict-details" in sys.argv
 try:
     data = json.loads(path.read_text(encoding="utf-8"))
     required = {"dateLabel", "issue", "statusLabel", "dailyInsight", "sources", "stories"}
@@ -19,6 +20,16 @@ try:
             for key in ("market", "sentiment", "horizon", "riskNote"):
                 if not story.get(key):
                     raise ValueError(f"investment story {index} missing {key}")
+        if strict_details:
+            detail = str(story.get("detailBody", "")).strip()
+            facts = story.get("keyFacts") or []
+            if len(detail) < 400:
+                raise ValueError(f"story {index} detailBody too short: {len(detail)} chars (minimum 400)")
+            if len(facts) < 4:
+                raise ValueError(f"story {index} has only {len(facts)} keyFacts (minimum 4)")
+            if story.get("source") in {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}:
+                if not story.get("originalTitle") or len(str(story.get("originalSummary", "")).split()) < 50:
+                    raise ValueError(f"foreign story {index} missing sufficient bilingual source material")
     print(json.dumps({"valid": True, "stories": len(data["stories"])}, ensure_ascii=False))
 except Exception as exc:
     print(json.dumps({"valid": False, "error": str(exc)}, ensure_ascii=False), file=sys.stderr)
