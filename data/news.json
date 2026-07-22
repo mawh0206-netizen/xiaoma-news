@@ -1,0 +1,27 @@
+{
+  "dateLabel": "2026年7月22日 星期三",
+  "issue": 1,
+  "statusLabel": "原型数据 · 待首次晨报",
+  "defaultCategory": "AI",
+  "dailyInsight": {
+    "title": "从信息堆积转向决策线索：晨报将优先解释变化的影响",
+    "body": "这一版先展示阅读结构。正式运行后，每天会从全球权威媒体和国内外汽车行业来源中去重筛选，形成约 20 条首页必读与各领域扩展内容。",
+    "signals": ["AI 商业化", "企业经营", "资本市场", "汽车产业链", "房地产周期"]
+  },
+  "sources": ["Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"],
+  "stories": [
+    {"title":"AI 正从模型竞赛进入企业流程重构阶段","summary":"企业关注点逐渐由参数规模转向成本、可靠性、数据治理和实际生产率。","whyItMatters":"真正影响经营结果的将是流程采用率，而不是单一模型榜单。","source":"TechCrunch","publishedLabel":"示例","category":"AI","url":"https://techcrunch.com/category/artificial-intelligence/","isTop":true},
+    {"title":"全球企业重新评估技术投资与现金流的平衡","summary":"利率、需求与新技术投入共同改变企业资本配置顺序。","whyItMatters":"技术预算仍会增长，但项目需要更快证明回报和可复制性。","source":"Reuters","publishedLabel":"示例","category":"企业商业","url":"https://www.reuters.com/business/","isTop":true},
+    {"title":"汽车产业的竞争焦点延伸至软件、能源与全球渠道","summary":"新能源转型不再只是动力形式变化，而是整条价值链的重新分配。","whyItMatters":"车企与供应商需要同时观察销量、价格、库存和海外监管。","source":"Financial Times","publishedLabel":"示例","category":"汽车产业","url":"https://www.ft.com/automobiles","isTop":true},
+    {"title":"市场对增长预期的定价分歧正在扩大","summary":"资金在高增长叙事与确定性现金流之间持续切换。","whyItMatters":"财经信息需要与企业盈利和产业数据交叉验证。","source":"Reuters","publishedLabel":"示例","category":"财经","url":"https://www.reuters.com/markets/","isTop":true},
+    {"title":"房地产政策、融资与实际成交需要放在同一框架观察","summary":"单项政策信号不足以代表周期反转，库存和居民预期仍是关键。","whyItMatters":"关注政策传导速度，而不只关注政策标题本身。","source":"BBC","publishedLabel":"示例","category":"房地产","url":"https://www.bbc.com/news/business","isTop":true},
+    {"title":"企业级 AI 应用开始强调权限、审计和数据边界","summary":"规模化应用带来新的治理和责任问题。","whyItMatters":"治理能力会成为企业 AI 从试点进入核心业务的门槛。","source":"The Guardian","publishedLabel":"示例","category":"AI","url":"https://www.theguardian.com/technology/artificialintelligenceai","isTop":false},
+    {"title":"科技公司的产品节奏与监管节奏加速碰撞","summary":"创新速度与合规要求之间的张力持续上升。","whyItMatters":"产品路线图需要提前纳入多市场监管差异。","source":"BBC","publishedLabel":"示例","category":"科技","url":"https://www.bbc.com/news/technology","isTop":false},
+    {"title":"供应链韧性重新成为跨国企业的战略指标","summary":"成本之外，交付确定性与地缘风险权重上升。","whyItMatters":"采购与生产布局将更强调多路径和冗余能力。","source":"Financial Times","publishedLabel":"示例","category":"企业商业","url":"https://www.ft.com/companies","isTop":false},
+    {"title":"国内汽车市场观察将同时覆盖价格、销量与政策","summary":"单看终端销量容易忽略库存和促销对行业利润的影响。","whyItMatters":"需要把市场份额变化与盈利质量结合判断。","source":"盖世汽车","publishedLabel":"示例","category":"汽车产业","url":"https://auto.gasgoo.com/","isTop":false},
+    {"title":"海外汽车监管与贸易变化影响全球化节奏","summary":"关税、本地化生产和供应链规则正在改变出海成本。","whyItMatters":"海外销量增长不等于利润同步增长。","source":"Reuters","publishedLabel":"示例","category":"汽车产业","url":"https://www.reuters.com/business/autos-transportation/","isTop":false},
+    {"title":"宏观数据之外，企业盈利质量成为市场核心变量","summary":"市场将更仔细地区分收入增长与现金流改善。","whyItMatters":"判断行业景气度时应减少对单一宏观指标的依赖。","source":"Financial Times","publishedLabel":"示例","category":"财经","url":"https://www.ft.com/markets","isTop":false},
+    {"title":"房地产市场分化使城市与产品结构更重要","summary":"总量数据可能掩盖不同区域和产品类型的差异。","whyItMatters":"企业判断应下沉到城市、库存周期与客户结构。","source":"The Guardian","publishedLabel":"示例","category":"房地产","url":"https://www.theguardian.com/business/housingmarket","isTop":false},
+    {"title":"国际政策变化正在更快传导至科技与制造业","summary":"贸易、监管和产业政策之间的联动增强。","whyItMatters":"国际新闻需要落到供应链、成本和市场准入三个维度。","source":"BBC","publishedLabel":"示例","category":"国际要闻","url":"https://www.bbc.com/news/world","isTop":false}
+  ]
+}

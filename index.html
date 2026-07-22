@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ee">
+  <title>小马看世界</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="小马看世界首页">
+      <span class="brand-mark">马</span>
+      <span><strong>小马看世界</strong><small>每日决策简报</small></span>
+    </a>
+    <nav id="nav" aria-label="新闻栏目"></nav>
+    <div class="actions">
+      <button id="searchButton" class="icon-button" aria-label="搜索">⌕</button>
+      <button id="themeButton" class="icon-button" aria-label="切换深浅色">◐</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="masthead shell">
+      <div>
+        <p class="eyebrow" id="issueDate">正在读取今日简报</p>
+        <h1>早上好，<br><em>先看重要的。</em></h1>
+      </div>
+      <div class="brief-meta">
+        <span id="updateStatus" class="status"><i></i> 数据加载中</span>
+        <p>每天 09:00 前更新 · 北京时间</p>
+      </div>
+    </section>
+
+    <section class="shell insight-card" id="dailyInsight">
+      <div class="insight-label"><span>AI</span> 今日判断</div>
+      <div>
+        <h2 id="insightTitle">正在生成今日趋势判断</h2>
+        <p id="insightBody">请稍候。</p>
+        <div id="signals" class="signals"></div>
+      </div>
+    </section>
+
+    <section class="shell section-block" id="topStoriesSection">
+      <div class="section-heading">
+        <div><span>01</span><h2>今日必读</h2></div>
+        <p>从全球信息流中筛选出的关键变化</p>
+      </div>
+      <div id="leadGrid" class="lead-grid"></div>
+      <div id="storyGrid" class="story-grid"></div>
+    </section>
+
+    <section class="shell section-block" id="categorySection">
+      <div class="section-heading">
+        <div><span>02</span><h2 id="categoryTitle">分领域观察</h2></div>
+        <div id="categoryTabs" class="tabs"></div>
+      </div>
+      <div id="categoryGrid" class="category-grid"></div>
+    </section>
+
+    <section class="shell source-strip">
+      <span>核心国际来源</span>
+      <div id="sourceList"></div>
+    </section>
+  </main>
+
+  <footer class="shell">
+    <div><strong>小马看世界</strong><p>为企业决策者整理的个人新闻工作台</p></div>
+    <p>标题与摘要仅供个人阅读，版权归原媒体所有。</p>
+  </footer>
+
+  <dialog id="searchDialog">
+    <form method="dialog"><button aria-label="关闭">×</button></form>
+    <label for="searchInput">搜索今日新闻</label>
+    <input id="searchInput" type="search" placeholder="输入公司、行业或关键词…" autocomplete="off">
+    <div id="searchResults"></div>
+  </dialog>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
