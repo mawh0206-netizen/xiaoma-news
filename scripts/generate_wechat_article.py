@@ -26,8 +26,8 @@ def story_block(story: dict, index: int, number: int) -> str:
       <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;letter-spacing:.06em;">{number:02d} · {esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</p>
       <h3 style="margin:0 0 12px;color:#171a19;font-size:20px;line-height:1.5;font-weight:700;">{esc(story['title'])}</h3>
       <p style="margin:0 0 12px;color:#343936;font-size:16px;line-height:1.9;">{esc(story['summary'])}</p>
-      <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">小马解读：</strong>{esc(story['whyItMatters'])}</p>
-      <a href="{detail_url(index)}" style="color:#d94f36;font-size:14px;text-decoration:none;font-weight:700;">查看详细核心内容 →</a>
+      <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">产品经理观察：</strong>{esc(story['whyItMatters'])}</p>
+      <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
     </section>"""
 
 
@@ -59,47 +59,48 @@ def select(stories: list[dict], categories: set[str], limit: int) -> list[tuple[
 def main() -> None:
     data = json.loads(DATA.read_text(encoding="utf-8"))
     stories = data["stories"]
-    top = [(i, s) for i, s in enumerate(stories) if s.get("isTop")][:8]
-    markets = select(stories, {"投资市场"}, 4)
-    autos = select(stories, {"汽车产业", "汽车金融"}, 4)
-    economy = select(stories, {"财经", "房地产"}, 3)
-    bilingual = [(i, s) for i, s in enumerate(stories) if s.get("originalSummary") and s.get("translatedSummary")][:2]
+    foreign_sources = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}
+    auto_industry = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车产业"]
+    auto_finance = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车金融"]
+    domestic = [(i, s) for i, s in auto_industry if s.get("source") not in foreign_sources][:5]
+    global_auto = [(i, s) for i, s in auto_industry if s.get("source") in foreign_sources][:4]
+    finance = auto_finance[:3]
+    if not domestic or not global_auto or not finance:
+        raise ValueError("公众号汽车专刊缺少国内汽车、全球汽车或汽车金融内容")
+    lead_title = domestic[0][1]["title"]
+    lead_body = "；".join([domestic[0][1]["summary"], global_auto[0][1]["summary"], finance[0][1]["summary"]])
 
     body: list[str] = []
     body.append(f"""
       <header style="padding:34px 24px;background:#171a19;color:#fff;">
-        <p style="margin:0 0 12px;color:#ef7059;font-size:13px;font-weight:700;letter-spacing:.14em;">小马看世界 · DAILY BRIEF</p>
-        <h1 style="margin:0 0 14px;font-size:30px;line-height:1.3;">{esc(data['dateLabel'])} 新闻晨报</h1>
-        <p style="margin:0;color:#c9ceca;font-size:15px;line-height:1.8;">为企业从业者与个人投资者筛选的科技、AI、资本市场和汽车行业信息。</p>
+        <p style="margin:0 0 12px;color:#ef7059;font-size:13px;font-weight:700;letter-spacing:.14em;">小马儿YOUNG · 汽车产业观察</p>
+        <h1 style="margin:0 0 14px;font-size:30px;line-height:1.3;">{esc(data['dateLabel'])} 汽车行业晨报</h1>
+        <p style="margin:0;color:#c9ceca;font-size:15px;line-height:1.8;">聚焦智能网联、车载AI、整车与供应链、汽车金融，记录汽车产业每天值得关注的变化。</p>
       </header>
       <section style="margin:0;padding:26px 24px;background:#f5f3ee;border-bottom:1px solid #ddd8cc;">
-        <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;">AI 今日判断</p>
-        <h2 style="margin:0 0 12px;color:#171a19;font-size:23px;line-height:1.45;">{esc(data['dailyInsight']['title'])}</h2>
-        <p style="margin:0;color:#454b47;font-size:15px;line-height:1.9;">{esc(data['dailyInsight']['body'])}</p>
+        <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;">今日汽车产业观察</p>
+        <h2 style="margin:0 0 12px;color:#171a19;font-size:23px;line-height:1.45;">{esc(lead_title)}</h2>
+        <p style="margin:0;color:#454b47;font-size:15px;line-height:1.9;">{esc(lead_body)}</p>
       </section>""")
 
-    body.append(section_title("01", "今日必读", "先看影响最大、传导范围最广的八条新闻"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(top, 1))
-    body.append(section_title("02", "投资市场", "A股、港股、美股与关键资产价格"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(markets, 1))
-    body.append(section_title("03", "汽车与汽车金融", "国内外整车、供应链、经销商与资金变化"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(autos, 1))
-    body.append(section_title("04", "财经与房地产", "宏观政策、利率、企业融资与房地产市场"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(economy, 1))
-    body.append(section_title("05", "英语学习 · 中英对照", "英文在前，中文逐句对应，不混入额外观点"))
-    body.extend(bilingual_block(s, i) for i, s in bilingual)
+    body.append(section_title("01", "国内汽车", "整车、供应链、标准政策与产业落地"))
+    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(domestic, 1))
+    body.append(section_title("02", "全球汽车", "智能网联、车载AI及海外产业变化"))
+    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(global_auto, 1))
+    body.append(section_title("03", "汽车金融", "车贷、库存融资、经销商资金与风险管理"))
+    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(finance, 1))
     body.append(f"""
       <footer style="margin-top:42px;padding:28px 24px;background:#171a19;color:#d8dcd9;text-align:center;">
-        <p style="margin:0 0 10px;color:#fff;font-size:20px;font-weight:700;">小马看世界</p>
-        <p style="margin:0 0 15px;font-size:13px;line-height:1.7;">每日筛选 · 站内深度解读 · 国外新闻中英对照</p>
-        <p style="margin:0 0 15px;"><a href="{SITE}/" style="color:#ef7059;font-size:14px;font-weight:700;text-decoration:none;">访问完整新闻网站 →</a></p>
-        <p style="margin:0;color:#909792;font-size:11px;line-height:1.65;">本文为新闻信息整理与个人学习材料，不构成投资建议。新闻版权归原媒体所有。</p>
+        <p style="margin:0 0 10px;color:#fff;font-size:20px;font-weight:700;">小马儿Young</p>
+        <p style="margin:0 0 15px;font-size:13px;line-height:1.7;">汽车领域产品经理。关注智能网联与AI落地，持续精选汽车产业新闻，输出产品与行业观察。</p>
+        <p style="margin:0 0 15px;color:#ef7059;font-size:14px;font-weight:700;">详细资料与新闻来源请点击文末“阅读原文”</p>
+        <p style="margin:0;color:#909792;font-size:11px;line-height:1.65;">本文基于公开新闻资料整理，仅用于汽车行业信息交流，不构成投资、交易或其他专业建议。相关信息请以监管部门、企业公告及原媒体报道为准，版权归原作者与原媒体所有。</p>
       </footer>""")
 
     article = "".join(body)
     document = f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(data['dateLabel'])} · 小马看世界公众号稿</title>
+<title>{esc(data['dateLabel'])} · 小马儿Young汽车行业晨报</title>
 <style>body{{margin:0;background:#ecebe7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif}}.toolbar{{position:sticky;top:0;z-index:5;padding:12px;text-align:center;background:#fff;border-bottom:1px solid #ddd}}button{{padding:10px 18px;border:0;border-radius:4px;background:#1d6a55;color:#fff;font-size:14px;cursor:pointer}}#wechat-article{{width:min(677px,100%);margin:24px auto;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.08)}}@media(max-width:700px){{#wechat-article{{margin:0 auto}}}}</style></head>
 <body><div class="toolbar"><button id="copyButton">复制公众号正文</button> <span id="copyStatus"></span></div>
 <main id="wechat-article">{article}</main>
@@ -107,16 +108,16 @@ def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(document, encoding="utf-8")
     payload = {
-        "title": f"{data['dateLabel']}｜小马看世界新闻晨报",
-        "author": "小马JLYYoung",
-        "digest": data["dailyInsight"]["title"][:120],
+        "title": f"{data['dateLabel']}｜汽车行业晨报",
+        "author": "小马儿Young",
+        "digest": f"聚焦智能网联、车载AI、整车供应链与汽车金融。今日关注：{lead_title}"[:120],
         "content": article,
         "content_source_url": f"{SITE}/",
         "need_open_comment": 0,
         "only_fans_can_comment": 0,
     }
     PAYLOAD.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "top": len(top), "markets": len(markets), "autos": len(autos), "economy": len(economy), "bilingual": len(bilingual)}, ensure_ascii=False))
+    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "domestic_auto": len(domestic), "global_auto": len(global_auto), "auto_finance": len(finance)}, ensure_ascii=False))
 
 
 if __name__ == "__main__":
