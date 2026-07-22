@@ -34,8 +34,22 @@ SEARCHES = [
     ("Financial Times", "企业商业", "site:ft.com companies business"),
     ("Financial Times", "财经", "site:ft.com markets global economy"),
     ("Financial Times", "汽车产业", "site:ft.com automobiles EV"),
-    ("国内汽车", "汽车产业", "汽车 行业 新能源 车企 销量 政策"),
-    ("国内房地产", "房地产", "中国 房地产 政策 成交 融资"),
+    ("36氪", "科技", "site:36kr.com 科技 AI 企业"),
+    ("第一财经", "财经", "site:yicai.com 财经 市场 公司"),
+    ("财联社", "财经", "site:cls.cn 财经 产业 公司"),
+    ("证券时报", "企业商业", "site:stcn.com 公司 产业 经营"),
+    ("澎湃新闻", "国际要闻", "site:thepaper.cn 国际 科技 财经"),
+    ("界面新闻", "企业商业", "site:jiemian.com 公司 科技 商业"),
+    ("经济观察报", "企业商业", "site:eeo.com.cn 企业 产业 财经"),
+    ("盖世汽车", "汽车产业", "site:gasgoo.com 汽车 新能源 智能驾驶 供应链"),
+    ("中国汽车报", "汽车产业", "site:cnautonews.com 汽车 行业 政策 出口"),
+    ("中国汽车流通协会", "汽车产业", "site:cada.cn 汽车 流通 销量 库存"),
+    ("汽车之家", "汽车产业", "site:autohome.com.cn 行业 新能源 车企"),
+    ("中国房地产报", "房地产", "site:creb.com.cn 房地产 政策 市场"),
+    ("中房网", "房地产", "site:cfnews.com.cn 房地产 市场 政策"),
+    ("克而瑞", "房地产", "克而瑞 房地产 销售 土地 融资"),
+    ("国内汽车综合", "汽车产业", "汽车 行业 新能源 车企 销量 政策"),
+    ("国内房地产综合", "房地产", "中国 房地产 政策 成交 融资"),
     ("国际房地产", "房地产", "global real estate housing market"),
 ]
 
@@ -97,7 +111,7 @@ def main() -> int:
             errors.append(f"{source}/{category}: {type(exc).__name__}: {exc}")
     for source, category, query in SEARCHES:
         try:
-            locale = "zh" if source.startswith("国内") else "en"
+            locale = "en" if source in {"Reuters", "Financial Times", "国际房地产"} else "zh"
             candidates.extend(parse_feed(source, category, google_news_url(query, locale)))
         except Exception as exc:
             errors.append(f"{source}/{category}: {type(exc).__name__}: {exc}")
