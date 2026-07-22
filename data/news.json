@@ -1,27 +1,294 @@
 {
   "dateLabel": "2026年7月22日 星期三",
-  "issue": 1,
-  "statusLabel": "原型数据 · 待首次晨报",
+  "issue": 2,
+  "statusLabel": "已更新 · 13:16",
   "defaultCategory": "AI",
   "dailyInsight": {
-    "title": "从信息堆积转向决策线索：晨报将优先解释变化的影响",
-    "body": "这一版先展示阅读结构。正式运行后，每天会从全球权威媒体和国内外汽车行业来源中去重筛选，形成约 20 条首页必读与各领域扩展内容。",
-    "signals": ["AI 商业化", "企业经营", "资本市场", "汽车产业链", "房地产周期"]
+    "title": "地缘风险抬高成本底线，AI 投资开始同时接受安全、能源与现金流审视",
+    "body": "今天最值得企业关注的不是单一热点，而是三条线索正在汇合：中东冲突和北美关税推高外部不确定性；AI 从模型能力竞赛转向安全、专利和基础设施约束；汽车产业则在供应链本地化、智能驾驶和资本回报之间重新平衡。企业需要把技术投入与能源、合规、现金流放进同一张决策表。",
+    "signals": ["地缘冲突成本", "AI 安全边界", "算力电力约束", "汽车供应链本地化", "出海增长", "现金流验证"]
   },
   "sources": ["Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"],
   "stories": [
-    {"title":"AI 正从模型竞赛进入企业流程重构阶段","summary":"企业关注点逐渐由参数规模转向成本、可靠性、数据治理和实际生产率。","whyItMatters":"真正影响经营结果的将是流程采用率，而不是单一模型榜单。","source":"TechCrunch","publishedLabel":"示例","category":"AI","url":"https://techcrunch.com/category/artificial-intelligence/","isTop":true},
-    {"title":"全球企业重新评估技术投资与现金流的平衡","summary":"利率、需求与新技术投入共同改变企业资本配置顺序。","whyItMatters":"技术预算仍会增长，但项目需要更快证明回报和可复制性。","source":"Reuters","publishedLabel":"示例","category":"企业商业","url":"https://www.reuters.com/business/","isTop":true},
-    {"title":"汽车产业的竞争焦点延伸至软件、能源与全球渠道","summary":"新能源转型不再只是动力形式变化，而是整条价值链的重新分配。","whyItMatters":"车企与供应商需要同时观察销量、价格、库存和海外监管。","source":"Financial Times","publishedLabel":"示例","category":"汽车产业","url":"https://www.ft.com/automobiles","isTop":true},
-    {"title":"市场对增长预期的定价分歧正在扩大","summary":"资金在高增长叙事与确定性现金流之间持续切换。","whyItMatters":"财经信息需要与企业盈利和产业数据交叉验证。","source":"Reuters","publishedLabel":"示例","category":"财经","url":"https://www.reuters.com/markets/","isTop":true},
-    {"title":"房地产政策、融资与实际成交需要放在同一框架观察","summary":"单项政策信号不足以代表周期反转，库存和居民预期仍是关键。","whyItMatters":"关注政策传导速度，而不只关注政策标题本身。","source":"BBC","publishedLabel":"示例","category":"房地产","url":"https://www.bbc.com/news/business","isTop":true},
-    {"title":"企业级 AI 应用开始强调权限、审计和数据边界","summary":"规模化应用带来新的治理和责任问题。","whyItMatters":"治理能力会成为企业 AI 从试点进入核心业务的门槛。","source":"The Guardian","publishedLabel":"示例","category":"AI","url":"https://www.theguardian.com/technology/artificialintelligenceai","isTop":false},
-    {"title":"科技公司的产品节奏与监管节奏加速碰撞","summary":"创新速度与合规要求之间的张力持续上升。","whyItMatters":"产品路线图需要提前纳入多市场监管差异。","source":"BBC","publishedLabel":"示例","category":"科技","url":"https://www.bbc.com/news/technology","isTop":false},
-    {"title":"供应链韧性重新成为跨国企业的战略指标","summary":"成本之外，交付确定性与地缘风险权重上升。","whyItMatters":"采购与生产布局将更强调多路径和冗余能力。","source":"Financial Times","publishedLabel":"示例","category":"企业商业","url":"https://www.ft.com/companies","isTop":false},
-    {"title":"国内汽车市场观察将同时覆盖价格、销量与政策","summary":"单看终端销量容易忽略库存和促销对行业利润的影响。","whyItMatters":"需要把市场份额变化与盈利质量结合判断。","source":"盖世汽车","publishedLabel":"示例","category":"汽车产业","url":"https://auto.gasgoo.com/","isTop":false},
-    {"title":"海外汽车监管与贸易变化影响全球化节奏","summary":"关税、本地化生产和供应链规则正在改变出海成本。","whyItMatters":"海外销量增长不等于利润同步增长。","source":"Reuters","publishedLabel":"示例","category":"汽车产业","url":"https://www.reuters.com/business/autos-transportation/","isTop":false},
-    {"title":"宏观数据之外，企业盈利质量成为市场核心变量","summary":"市场将更仔细地区分收入增长与现金流改善。","whyItMatters":"判断行业景气度时应减少对单一宏观指标的依赖。","source":"Financial Times","publishedLabel":"示例","category":"财经","url":"https://www.ft.com/markets","isTop":false},
-    {"title":"房地产市场分化使城市与产品结构更重要","summary":"总量数据可能掩盖不同区域和产品类型的差异。","whyItMatters":"企业判断应下沉到城市、库存周期与客户结构。","source":"The Guardian","publishedLabel":"示例","category":"房地产","url":"https://www.theguardian.com/business/housingmarket","isTop":false},
-    {"title":"国际政策变化正在更快传导至科技与制造业","summary":"贸易、监管和产业政策之间的联动增强。","whyItMatters":"国际新闻需要落到供应链、成本和市场准入三个维度。","source":"BBC","publishedLabel":"示例","category":"国际要闻","url":"https://www.bbc.com/news/world","isTop":false}
+    {
+      "title": "美国再次空袭伊朗，特朗普威胁打击地下核设施",
+      "summary": "BBC 报道，美国恢复对伊朗的军事打击，局势可能进一步影响能源、航运和全球风险偏好。",
+      "whyItMatters": "企业应重新检查油价、海运保险、交付周期和外汇敞口，避免把冲突仅视为外交新闻。",
+      "source": "BBC",
+      "publishedLabel": "今日 11:05",
+      "category": "国际要闻",
+      "url": "https://www.bbc.co.uk/news/articles/cdrv0p37k8jo?at_medium=RSS&at_campaign=rss",
+      "isTop": true
+    },
+    {
+      "title": "美国称伊朗战争已耗资375亿美元，并寻求追加预算",
+      "summary": "美国国防部门披露的战争成本继续上升，财政支出和军工需求可能同时受到影响。",
+      "whyItMatters": "持续扩大的军费会影响财政空间、债券供给和相关产业订单，但也会加大长期利率压力。",
+      "source": "BBC",
+      "publishedLabel": "今日 10:15",
+      "category": "财经",
+      "url": "https://www.bbc.co.uk/news/articles/c70gek2kqyno?at_medium=RSS&at_campaign=rss",
+      "isTop": true
+    },
+    {
+      "title": "特朗普宣布对加拿大征收50%关税，加方评估全部应对选项",
+      "summary": "美加贸易摩擦升级，跨境制造、原材料和北美一体化供应链面临新的成本变量。",
+      "whyItMatters": "在北美有业务的企业需要模拟关税传导路径，并提前评估转移产地或调整定价的可行性。",
+      "source": "BBC",
+      "publishedLabel": "昨日",
+      "category": "国际要闻",
+      "url": "https://www.bbc.co.uk/news/articles/cg4dzq3x3e1o?at_medium=RSS&at_campaign=rss",
+      "isTop": true
+    },
+    {
+      "title": "法国通过法律，禁止15岁以下儿童使用社交媒体",
+      "summary": "法国加强未成年人网络保护，平台的年龄验证和产品设计责任进一步上升。",
+      "whyItMatters": "面向消费者的平台需要把年龄验证、隐私合规和未成年人体验纳入产品底层，而非上线后的补丁。",
+      "source": "BBC",
+      "publishedLabel": "今日 11:50",
+      "category": "科技",
+      "url": "https://www.bbc.co.uk/news/articles/cq56l9p4y93o?at_medium=RSS&at_campaign=rss",
+      "isTop": true
+    },
+    {
+      "title": "Anthropic 与机器人公司 Physical Intelligence 的传闻引发行业关注",
+      "summary": "围绕大模型公司与通用机器人技术结合的市场传闻升温，具身智能再次成为资本焦点。",
+      "whyItMatters": "模型能力向物理世界延伸会扩大数据、硬件和安全门槛，但传闻阶段不宜替代正式交易信息。",
+      "source": "TechCrunch",
+      "publishedLabel": "今日 11:20",
+      "category": "AI",
+      "url": "https://techcrunch.com/2026/07/21/the-anthropic-physical-intelligence-rumor-roiling-ai-twitter/",
+      "isTop": true
+    },
+    {
+      "title": "OpenAI 称预发布模型在 Hugging Face 遭到泄露",
+      "summary": "预发布模型相关安全事件暴露出 AI 供应链、托管平台和访问权限管理的新风险。",
+      "whyItMatters": "企业引入外部模型和开源平台时，应把模型文件、密钥、权限与审计纳入软件供应链安全体系。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://techcrunch.com/2026/07/21/openai-says-hugging-face-was-breached-by-its-pre-release-models/",
+      "isTop": true
+    },
+    {
+      "title": "Google 发布三款新 Gemini 模型，但未推出3.5 Pro",
+      "summary": "Google 扩充 Gemini 产品组合，模型供应继续向多规格、多成本档位发展。",
+      "whyItMatters": "企业选型不应等待单一旗舰型号，应按任务质量、时延、稳定性和单位成本建立可替换架构。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://techcrunch.com/2026/07/21/google-releases-three-new-gemini-models-but-no-3-5-pro/",
+      "isTop": true
+    },
+    {
+      "title": "数据中心用电量预计到2035年增长至四倍",
+      "summary": "AI 与云计算扩张正在把电力供应、并网速度和能效变成数据中心发展的硬约束。",
+      "whyItMatters": "算力成本未来不仅取决于芯片，也取决于电价、选址、长期购电协议和电网接入能力。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://techcrunch.com/2026/07/21/data-centers-expected-to-use-4x-more-electricity-by-2035/",
+      "isTop": true
+    },
+    {
+      "title": "Super Micro 称订单达600亿美元，利润率表现推动股价上涨",
+      "summary": "AI 服务器需求仍然强劲，市场同时关注订单规模能否转化为可持续利润。",
+      "whyItMatters": "AI 基础设施景气度较高，但企业判断供应商质量时应同时观察积压订单、交付与毛利率。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOWjJqS2h4N3J4Q0FHRUxCYURuby00QUtJY3Z6RkdKSDY4Ump2U0xjWDJ4enN0VWt5VU11VkcycDk2QXdHRjhOSlpmV3NmMkFONDYyNlZHWnRSVTFrTi1kLWNKTVZ5cHFxRTdwMDhyUW5Od0pUS2xvVEJVNExpWmtDeE9aZzBWU0tkYVlXekg4bTgwUk1zejYzVkRsV1g4STFKbHU4RU5n?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "先进芯片制造设备抵达纽约州创新中心",
+      "summary": "美国继续强化本土先进半导体研发与制造基础设施，产业政策进入设备落地阶段。",
+      "whyItMatters": "半导体本地化将改变设备、材料与人才流向，也可能带来新的补贴机会和区域成本差异。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "科技",
+      "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNbEZxWmEzZU84VnpLVDZtaDhweTFGYWhQYlhmM1pqWG5GNER4ZlR6ZVQ1UnV3cy10UHBQQVNkVFRkQjFxelBEek9jRDFOUHBoa09LR1BqcnJkOHpwcnNWZ2lMdnZqZi1fSjBuU25nNVNndTc3YmVHczNYVUNDU0JhcFhSdE1kenBIdjJqMzhHbm9zMGlYbDVCeXlHSGx3aG5TcEF1WnpESFRrMUE?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "Dimension Capital 募集8亿美元，押注科学与计算交叉领域",
+      "summary": "新基金显示资本仍在积极寻找计算技术与生命科学、材料等领域结合的机会。",
+      "whyItMatters": "企业级 AI 的下一阶段价值可能来自垂直科学场景，竞争壁垒更依赖数据与专业知识。",
+      "source": "TechCrunch",
+      "publishedLabel": "今日",
+      "category": "科技",
+      "url": "https://techcrunch.com/2026/07/21/dimension-capitals-800m-third-fund-shows-the-intersection-of-science-and-compute-is-booming/",
+      "isTop": true
+    },
+    {
+      "title": "空客将测试折叠机翼，为下一代主力机型探索新设计",
+      "summary": "折叠机翼可能在提升飞行效率的同时兼顾现有机场基础设施限制。",
+      "whyItMatters": "成熟制造业的创新往往来自产品设计与基础设施约束的协同优化，供应链可能出现新需求。",
+      "source": "The Guardian",
+      "publishedLabel": "昨日",
+      "category": "企业商业",
+      "url": "https://www.theguardian.com/business/2026/jul/21/airbus-to-test-folding-wings-for-next-generation-of-bestselling-planes",
+      "isTop": true
+    },
+    {
+      "title": "英国高电价背后的三项结构性原因受到关注",
+      "summary": "能源结构、电网和定价机制共同推高企业与居民用电成本。",
+      "whyItMatters": "高电价会直接影响制造、数据中心和零售业利润，能源采购应从运营事项升级为战略议题。",
+      "source": "BBC",
+      "publishedLabel": "昨日",
+      "category": "企业商业",
+      "url": "https://www.bbc.co.uk/news/articles/cn8n5vnmjlzo?at_medium=RSS&at_campaign=rss",
+      "isTop": true
+    },
+    {
+      "title": "投资者担忧日本债券押注成为新的“寡妇交易”",
+      "summary": "日本债券市场波动与政策预期分歧加大，逆势押注的风险受到金融市场关注。",
+      "whyItMatters": "日债变化可能通过汇率、套利交易和全球收益率传导，跨境企业应关注融资与日元敞口。",
+      "source": "Financial Times",
+      "publishedLabel": "今日",
+      "category": "财经",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNUlh6enhQc3kxdUNCNnBhSGtMQzIySE9aX0FnVWR3ZU15UVRpNXpWQ0dMdmV6VXQwRTE5WWlxdDIwR2pSNFBmaFhkSmJTU0U3ajFVTGVWUHpuelFyMi1TMzlWc091dU9NVTZpNUYwQjJkMDNSXzhZMVd6VDlmc3gzTlJ5Y2o?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "美国汽车业加速清除中国智能网联硬件",
+      "summary": "在联邦政策推动下，美国车企和供应商正调整车联网硬件来源与认证体系。",
+      "whyItMatters": "供应链替换将带来重新认证、成本上升和交付风险，也可能形成新的本地供应机会。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPS3k0VFhMXzdjcHd4SUczVkNmWVNQU1U5OHY3dHFVdjNzVklhYS01c0FnaW9vbUVrVnpaNFNvd3JGZ2FQUXAybzdXekU4Y1ptT1JVN0p0WEVJQUdEaS1HSDFvN29lbllLbmlQZThVaWphaUUxdVNSLURqSDlSZF9zTzBpRzIxSFJyMlhlUVZQZEZZTWg2N0o2d1Y1bG81RXVacXBCZHZrSEpxNjkxZWZnU3VxbE8xVFhJa2N3OVFqd053WUliQzFKd1BtUm9jVE02UHc?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "特斯拉现金消耗将检验投资者对其 AI 押注的耐心",
+      "summary": "市场在财报前关注机器人出租车和 AI 投资能否形成足够收入，以覆盖持续资本支出。",
+      "whyItMatters": "汽车公司的估值逻辑正从销量延伸至 AI，但最终仍需用现金流和商业化进度验证。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPSERzVnBrN2twV2ZlZ0VQOFRkRGJ6a3lyVlFuQnZ2NGQ5V0xCRkNDQ0hTZmJVb2pTOENXdUQzWmFWeWhNSXAyMnpDcWx6enpqSnhGaFM3R2pvNEN3TkFsT3dBYXJ1SjlVcV9Xb1dCemtJeVJoVThVSGFsaG5ZNFZEREhRa1Z4VjlRRUxjS3dYWDJST2hVZTdweUVKNGtySnM5WWZmU3BHTHhDQnVsYUE?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "通用汽车上调利润预期，称消费者需求仍具韧性",
+      "summary": "GM 对盈利前景更乐观，显示部分主流汽车需求尚未被宏观压力明显削弱。",
+      "whyItMatters": "销量韧性需要结合激励力度、产品结构与库存判断，避免把营收增长等同于利润改善。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOTGRVakJmSzhlMC11WHpydXBvV0pJR2lXSW5yNWo3UDhoUEdQQnhLZkxwLVAwUUlXOVB0TkY1NWZzR3JNT0FIcGI2XzY5NTFERGlncUZfaUNVaFh2Yk55ZGE0UHJrYWhYNDlUbU9yaWZheG5fOXBqRkwwSm5wd2xJZmZTSkx0Z0tIVmphUFJab0R2RHRtSzlYTWc2ZnN1dXpYeDNRempjUXdwWGJkZW1tSi1YcVoxaVp2aXc?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "Mobileye 将向 Stellantis 提供云端驾驶辅助技术",
+      "summary": "双方合作显示驾驶辅助能力正通过云端平台和软件服务深入整车体系。",
+      "whyItMatters": "智能驾驶竞争不只在车端芯片，也在数据闭环、持续更新和跨车型规模化能力。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQcDRsQzhDTG4tLVJucUtxZmk4TUNIbjVvRFR4bUxmTkJMbVN1WGctWlM5cVc1N1BvV0ZidnlPdDNkVGhqMGR0SGkzUmhMRWNMc09fWUhzY3gxMjE5TWJPbTQ2MTBZbmUzMkdITmI2Nzk0dVJKNHV0amFmbHNDWHF5WklhZmxSMmIzYnJHT2N2eXdGcW1XY2RXWVNReVVZemEtQk9BaXhyVDBKYkphSk9qd2VSWGFPbGNVOUtRcWRHRlpBZFE2SklfQVVld2FyMWFiVmZiQw?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "上半年中国车市出口成为稳定增长极，新能源车继续担当主力",
+      "summary": "证券时报梳理显示，出海和新能源仍是国内汽车行业的重要增长来源。",
+      "whyItMatters": "出海增长要继续观察区域结构、本地化投入、关税和渠道利润，而不能只看出口数量。",
+      "source": "证券时报",
+      "publishedLabel": "7月20日",
+      "category": "汽车产业",
+      "url": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE85QXBPZlViUV8xNkNUSVJQNndpdDZWLV9FQnBjNWdmeVdkUE50dnBpN1hhMnlSY2NNNklZRmlpeWJzUlY0dkZqY3JCYnAteXl4bkgwalJWbw?oc=5",
+      "isTop": true
+    },
+    {
+      "title": "电池材料公司 Sila 融资3亿美元扩建工厂",
+      "summary": "在电动车需求增速放缓的背景下，资本仍在押注下一代电池材料的规模化生产。",
+      "whyItMatters": "产业链投资正在从整车热度转向材料性能和制造良率，订单兑现能力比融资规模更重要。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://techcrunch.com/2026/07/21/bucking-ev-slowdown-sila-raises-300m-to-expand-battery-materials-factory/",
+      "isTop": true
+    },
+    {
+      "title": "英国电网运营商卷入高温停电风险争议",
+      "summary": "高温天气下的电力保障和政治争论，凸显电网韧性与能源转型之间的现实压力。",
+      "whyItMatters": "极端天气会放大能源基础设施瓶颈，企业应评估关键场所的备用电力与连续经营能力。",
+      "source": "The Guardian",
+      "publishedLabel": "今日",
+      "category": "财经",
+      "url": "https://www.theguardian.com/business/2026/jul/22/risking-blackouts-great-britain-grid-operator-neso-heatwave",
+      "isTop": false
+    },
+    {
+      "title": "Anthropic 因神经网络技术专利遭到起诉",
+      "summary": "AI 头部企业面临新的知识产权争议，模型研发的专利风险继续上升。",
+      "whyItMatters": "企业采购 AI 服务时应关注供应商知识产权保障、赔偿条款和服务连续性。",
+      "source": "Reuters",
+      "publishedLabel": "昨日",
+      "category": "AI",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQTnlDeHFoNDBpUEtsN3NlR2h3OHY0cHhqUXo5bWRIdmtJT0JyajQwalEwX2I3MnpxUGdMZnJkOVFydy1BSHpzdm5hYmRqbG0wd0pLZXJDVl9sbE5FT0lhTHpSRGtSbDBmR3lhVU9mZDZtMFQzM1czRGt1S0VKMVhlMU8wQ2JOQlNMUUgwbUt1bU5LZzFUMzhWYTBLUGlZQ0F6d1ByNXJtNDUyWmZnTUxvUUw2cGR4U1BXM05B?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "Jack Dorsey 推出面向团队与 AI 代理的群聊平台 Buzz",
+      "summary": "新产品试图把团队协作和 AI 代理放进同一沟通界面，与 Slack 等工具竞争。",
+      "whyItMatters": "协作软件下一轮差异化可能来自代理的任务执行能力，但企业仍需解决权限和责任归属。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "科技",
+      "url": "https://techcrunch.com/2026/07/21/jack-dorsey-is-taking-on-slack-with-buzz-a-group-chat-platform-for-teams-and-their-ai-agents/",
+      "isTop": false
+    },
+    {
+      "title": "Einride 投资3800万美元建设电动卡车充电网络",
+      "summary": "商用车电动化正在从车辆采购延伸到充电基础设施和运营网络。",
+      "whyItMatters": "车队电动化的核心经济性取决于车辆利用率、充电调度和能源成本，而非单车价格。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "汽车产业",
+      "url": "https://techcrunch.com/2026/07/21/einride-bets-38m-on-ev-charging-as-it-scales-electric-trucking/",
+      "isTop": false
+    },
+    {
+      "title": "深圳组建金融顾问团纾困房地产项目",
+      "summary": "地方尝试通过金融协调机制推进风险项目处置，关注点从政策表态转向落地执行。",
+      "whyItMatters": "房地产风险改善需要观察项目现金流、债务重组和交付进度，单一政策信号不足以确认反转。",
+      "source": "澎湃新闻",
+      "publishedLabel": "近期观察",
+      "category": "房地产",
+      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE8xdGlUc1NDNlEwR1hMaVhCOFVoS1BkM3F4bVN4YS13eUFMODlxMGtRSXRNN29WN3ZlRU51NFBHVzRlbzctR0d6M29iRGpLOW5iN0VTcThiSjBoODVWelE?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "中国房价长期涨幅被持续调整显著削弱",
+      "summary": "海外房地产媒体关注中国住宅价格长期累计涨幅回落及市场调整的持续性。",
+      "whyItMatters": "企业判断地产周期应关注实际成交、库存去化和居民预期，不宜只用名义价格判断底部。",
+      "source": "The Real Deal",
+      "publishedLabel": "近期观察",
+      "category": "房地产",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPNDlyRUxBamRkWFJzOGtpNFp0MFU3NlhXODhlNE1SME9vNmc3Q0pxWWgzY0VMOWNwdWgzMVJya0RBaTZHVmhVcnZYdUtCR2hBWTBrQk90UjFEZ0xfZ0JTZ3g0amFlM0NXMEFCc0ZlZXFPNnJmR1J2bzh0WEVMdDRDRWJyTjZ0c2ZMVExoVDZTejdDSVhLNnB2Q21jRFRzVElWX1dsd0FiMDlCdw?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "美国高端住宅的全球买家关注度据称明显上升",
+      "summary": "豪宅经纪机构数据显示，全球高净值买家对美国高端住宅市场的兴趣增加。",
+      "whyItMatters": "高端地产流动性与汇率、税制和跨境资本配置紧密相关，不能直接外推至大众住宅市场。",
+      "source": "PR Newswire",
+      "publishedLabel": "近期观察",
+      "category": "房地产",
+      "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxPc3EwbUo5WDlWUHZDRU8wWFRoS2paZnlBaXllb2lXMEwyTkVYbDcxdEVWU2Y0OC15aTJ3NVhqcnBPWE1FNHNHNWZ3di0teDUtV1BFdkFKLVlyRjFRNmZDUFdnVnpqUGJBLWFoV0tWak1rSzZlRjVmdWc0YWlUdVRpWEZiVmV6QmJpY2IxWXJFb3Q5Tzc3bUNkeWxiSUpPMWtjNWFYZ1hSYVFVcUlacEJSWDBWTWFUOVJXNUpab2dOd2xqa0VPb3hhZGlDZGk4Ym1VbWtMWXctWERXdzVtZ0dpTm5LOENRWjN0TlN1U3JucWlVYVRJM1hHV0dQMTY2MFdp?oc=5",
+      "isTop": false
+    },
+    {
+      "title": "苹果联合 Klarna 推出设备先租后买计划",
+      "summary": "苹果为 iPhone、iPad 和 Mac 引入新的消费金融与设备获取方式。",
+      "whyItMatters": "硬件厂商正用金融产品降低购买门槛，但企业要关注坏账、残值和渠道关系的长期影响。",
+      "source": "TechCrunch",
+      "publishedLabel": "昨日",
+      "category": "企业商业",
+      "url": "https://techcrunch.com/2026/07/21/apple-teams-up-with-klarna-to-launch-a-lease-to-own-program-for-iphones-ipads-and-macs/",
+      "isTop": false
+    }
   ]
 }
