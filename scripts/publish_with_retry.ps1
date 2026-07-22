@@ -18,12 +18,14 @@ if (-not (Test-Path -LiteralPath $git)) {
 
 try {
     $pushed = $false
+    $ErrorActionPreference = "Continue"
     for ($attempt = 1; $attempt -le $MaxPushAttempts; $attempt++) {
         "[$(Get-Date -Format o)] git push attempt $attempt/$MaxPushAttempts" | Add-Content -LiteralPath $logPath
         & $git -C $root push 2>&1 | Tee-Object -FilePath $logPath -Append
         if ($LASTEXITCODE -eq 0) { $pushed = $true; break }
         if ($attempt -lt $MaxPushAttempts) { Start-Sleep -Seconds $RetrySeconds }
     }
+    $ErrorActionPreference = "Stop"
     if (-not $pushed) { throw "GitHub push failed after $MaxPushAttempts attempts" }
 
     $expected = (Get-Content -LiteralPath $newsPath -Raw -Encoding utf8 | ConvertFrom-Json).statusLabel
