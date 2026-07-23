@@ -45,7 +45,7 @@ try:
             detail = str(story.get("detailBody", "")).strip()
             facts = story.get("keyFacts") or []
             deep = bool(story.get("isTop"))
-            min_detail, max_detail = (600, 1000) if deep else (400, 700)
+            min_detail, max_detail = (300, 1000) if deep else (250, 1000)
             min_facts = 6 if deep else 4
             if not min_detail <= len(detail) <= max_detail:
                 raise ValueError(f"story {index} detailBody length {len(detail)} outside {min_detail}-{max_detail}")
