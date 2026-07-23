@@ -17,7 +17,7 @@ RUNTIME = ROOT / "runtime"
 CN_TZ = timezone(timedelta(hours=8))
 
 FOREIGN = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch", "Electrek", "InsideEVs", "Automotive News"}
-DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融", "工信部", "中国汽车工业协会", "乘联会", "懂车帝", "新出行", "亿欧汽车", "汽车商业评论", "中国银行业协会", "零壹智库"}
+DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融", "工信部", "中国汽车工业协会", "乘联会", "懂车帝", "新出行", "亿欧汽车", "汽车商业评论", "中国银行业协会", "零壹智库", "重点车企"}
 QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 12, "房地产": 4, "汽车产业": 10, "汽车金融": 4}
 PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "Electrek": 8, "InsideEVs": 8, "Automotive News": 8, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8, "工信部": 10, "中国汽车工业协会": 9, "乘联会": 9, "懂车帝": 8, "新出行": 8, "亿欧汽车": 8, "汽车商业评论": 8}
 KEYWORDS = ("AI", "人工智能", "汽车", "智能", "芯片", "算力", "科技", "财报", "利润", "订单", "股票", "市场", "融资", "房地产", "房价", "供应链", "金融", "车贷", "电池", "自动驾驶", "云", "能源")
@@ -25,6 +25,7 @@ AUTO_TERMS = ("汽车", "新车", "车型", "车企", "整车", "新能源车", 
 AUTO_ENGLISH = re.compile(r"\b(?:car|cars|vehicle|vehicles|automotive|automaker|automakers|ev|evs|adas|driver-assistance|electric vehicle|connected-car)\b", re.I)
 AUTO_BLOCKERS = re.compile(r"\b(?:aircraft|airline|aviation|airport|ship|shipping|nike)\b", re.I)
 AUTO_FOCUS_TERMS = ("上市", "发布", "首发", "亮相", "新车", "车型", "智能网联", "智能驾驶", "自动驾驶", "车载AI", "座舱", "芯片", "电池", "充电", "供应链", "零部件", "汽车金融", "车贷", "经销商", "robotaxi", "ADAS", "launch", "debut", "connected-car")
+AUTO_DATA_TERMS = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "现金流", "同比", "环比", "万辆", "%", "sales", "deliveries", "revenue", "margin", "inventory")
 EXISTING_BY_URL = {s.get("url"): s for s in json.loads(DATA.read_text(encoding="utf-8")).get("stories", [])} if DATA.exists() else {}
 
 
@@ -57,6 +58,29 @@ def too_similar(item: dict, selected: list[dict]) -> bool:
     return False
 
 
+def auto_subtopic(item: dict) -> str:
+    text = f"{item.get('titleOriginal', '')} {item.get('snippetOriginal', '')}".lower()
+    if any(term.lower() in text for term in ("智能网联", "车载ai", "智能驾驶", "自动驾驶", "座舱", "芯片", "robotaxi", "adas", "connected-car", "software")):
+        return "smart"
+    if any(term.lower() in text for term in AUTO_DATA_TERMS):
+        return "data"
+    if any(term.lower() in text for term in ("新车", "上市", "首发", "亮相", "车型", "特斯拉", "理想", "蔚来", "小鹏", "小米", "比亚迪", "launch", "debut", "model")):
+        return "vehicle"
+    if any(term.lower() in text for term in ("供应链", "电池", "充电", "零部件", "产能", "工厂", "成本", "关税", "supply chain", "battery", "charging")):
+        return "supply"
+    return "industry"
+
+
+def diverse_auto_order(choices: list[dict]) -> list[dict]:
+    ordered = []
+    for topic in ("data", "smart", "vehicle", "supply"):
+        candidate = next((item for item in choices if auto_subtopic(item) == topic and item not in ordered), None)
+        if candidate:
+            ordered.append(candidate)
+    ordered.extend(item for item in choices if item not in ordered)
+    return ordered
+
+
 def translate(text: str) -> str:
     if not text or not re.search(r"[A-Za-z]", text):
         return text
@@ -76,6 +100,7 @@ def score(item: dict) -> tuple:
     relevance = sum(2 for word in KEYWORDS if word.lower() in text.lower())
     if item.get("categoryHint") in {"汽车产业", "汽车金融"}:
         relevance += sum(4 for word in AUTO_FOCUS_TERMS if word.lower() in text.lower())
+        relevance += sum(6 for word in AUTO_DATA_TERMS if word.lower() in text.lower())
     snippet = item.get("snippetOriginal", "")
     quality = min(len(snippet), 500) / 100
     return (PREFERRED.get(item.get("sourceHint"), 1) + relevance + quality, item.get("publishedAt", ""))
@@ -83,15 +108,23 @@ def score(item: dict) -> tuple:
 
 def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
     current_year = datetime.now(CN_TZ).year
+    current_month = datetime.now(CN_TZ).month
+    allowed_months = {current_month, 12 if current_month == 1 else current_month - 1}
     stale_year = re.compile(r"(?:201\d|202[0-5])年?") if current_year == 2026 else re.compile(r"$^")
-    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", "")) and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))]
+    def stale_month(item: dict) -> bool:
+        months = {int(value) for value in re.findall(r"(?<!\d)(1[0-2]|[1-9])月", item.get("titleOriginal", ""))}
+        return bool(months and not months & allowed_months)
+    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", "")) and not stale_month(x) and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))]
     picked, used = [], set()
     for category, quota in QUOTAS.items():
         choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
         foreign_target = quota // 2
         domestic_target = quota - foreign_target
         for group, target in ((FOREIGN, foreign_target), (DOMESTIC, domestic_target)):
-            for item in (x for x in choices if x["sourceHint"] in group):
+            group_choices = [x for x in choices if x["sourceHint"] in group]
+            if category == "汽车产业":
+                group_choices = diverse_auto_order(group_choices)
+            for item in group_choices:
                 category_picked = [x for x in picked if x["categoryHint"] == category]
                 if item["url"] in used or too_similar(item, category_picked):
                     continue
@@ -126,6 +159,11 @@ def detail_body(story: dict, deep: bool = False) -> str:
 def make_story(item: dict, index: int) -> dict:
     source = item["sourceHint"]
     original_title = clean_title(item.get("titleOriginal", ""), source)
+    if source == "重点车企":
+        publisher = re.search(r"\s+-\s+([^-]+)$", original_title)
+        if publisher:
+            source = publisher.group(1).strip()
+            original_title = original_title[:publisher.start()].strip()
     original_summary = (item.get("snippetOriginal") or original_title).strip()
     is_foreign = source in FOREIGN
     cached = EXISTING_BY_URL.get(item["url"], {})

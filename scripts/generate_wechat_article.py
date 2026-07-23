@@ -33,11 +33,14 @@ def detail_url(index: int) -> str:
 
 
 def story_block(story: dict, index: int, number: int) -> str:
+    metrics = extract_metrics(story)
+    data_line = f'<p style="margin:0 0 12px;padding:10px 14px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.7;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
     return f"""
     <section style="margin:0 0 28px;padding:0 0 25px;border-bottom:1px solid #e9e5dc;">
       <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;letter-spacing:.06em;">{number:02d} · {esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</p>
       <h3 style="margin:0 0 12px;color:#171a19;font-size:20px;line-height:1.5;font-weight:700;">{esc(story['title'])}</h3>
       <p style="margin:0 0 12px;color:#343936;font-size:16px;line-height:1.9;">{esc(story['summary'])}</p>
+      {data_line}
       <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">产品经理观察：</strong>{esc(story['whyItMatters'])}</p>
       <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
     </section>"""
@@ -77,34 +80,60 @@ def focus_score(story: dict) -> int:
         "零部件": 6, "汽车金融": 8, "车贷": 8, "经销商": 6,
         "robotaxi": 9, "adas": 9, "connected-car": 9,
     }
-    return sum(weight for term, weight in terms.items() if term in text)
+    score = sum(weight for term, weight in terms.items() if term in text)
+    data_terms = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "现金流", "同比", "环比", "sales", "deliveries", "revenue", "margin", "inventory")
+    score += min(36, sum(6 for term in data_terms if term in text))
+    score += min(24, len(extract_metrics(story)) * 6)
+    major_brands = ("特斯拉", "理想", "蔚来", "小鹏", "小米", "比亚迪", "tesla", "nio", "xpeng", "li auto", "xiaomi", "byd")
+    major_events = ("上市", "首发", "发布", "交付", "销量", "财报", "利润", "召回", "降价", "涨价", "launch", "deliver", "earnings", "recall")
+    if any(brand in text for brand in major_brands):
+        score += 8
+        if any(event in text for event in major_events):
+            score += 24
+    return score
+
+
+def extract_metrics(story: dict) -> list[str]:
+    text = f"{story.get('title', '')} {story.get('summary', '')}"
+    values = re.findall(r"(?:约|超|近|达|增长|下降)?\s*\d+(?:\.\d+)?\s*(?:%|万亿元|亿元|万美元|亿美元|万元|万辆|万台|万套|万|亿元|美元|元|辆|台|家|倍)", text, flags=re.I)
+    unique = []
+    for value in values:
+        cleaned = re.sub(r"\s+", "", value)
+        if cleaned not in unique:
+            unique.append(cleaned)
+    return unique[:4]
 
 
 def topic_groups(auto_items: list[tuple[int, dict]], finance_items: list[tuple[int, dict]]) -> list[tuple[str, str, str, list[tuple[int, dict]]]]:
-    ranked = sorted(auto_items, key=lambda item: focus_score(item[1]), reverse=True)
-    used: set[int] = set()
-    def take(terms: tuple[str, ...], limit: int) -> list[tuple[int, dict]]:
-        matches = []
-        for item in ranked:
-            index, story = item
-            text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
-            if index not in used and any(term in text for term in terms):
-                matches.append(item); used.add(index)
-                if len(matches) == limit:
-                    break
-        return matches
-    new_models = take(("新车", "上市", "首发", "车型", "model", "launch", "debut"), 3)
-    connected = take(("智能网联", "车载ai", "智能驾驶", "自动驾驶", "座舱", "robotaxi", "adas", "connected-car", "软件"), 3)
-    industry = [item for item in ranked if item[0] not in used][:4]
-    groups = []
-    if new_models:
-        groups.append(("01", "新车与整车热点", "新车上市、产品发布与整车企业关键变化", new_models))
-    if connected:
-        groups.append((f"{len(groups)+1:02d}", "智能网联与车载AI", "智能驾驶、车载软件、芯片与智能座舱", connected))
-    if industry:
-        groups.append((f"{len(groups)+1:02d}", "供应链与产业经营", "电池、零部件、产能、成本与全球供应链", industry))
-    groups.append((f"{len(groups)+1:02d}", "汽车金融", "车贷、库存融资、经销商资金与风险管理", sorted(finance_items, key=lambda item: focus_score(item[1]), reverse=True)[:4]))
-    return groups
+    buckets: dict[str, list[tuple[int, dict]]] = {"数据与市场": [], "整车与品牌": [], "智能网联与车载AI": [], "供应链与产业经营": [], "汽车金融": []}
+    subtitles = {
+        "数据与市场": "销量、交付、渗透率、价格、库存与经营数据",
+        "整车与品牌": "重磅产品、重点车企与整车经营变化",
+        "智能网联与车载AI": "智能驾驶、车载软件、芯片与智能座舱",
+        "供应链与产业经营": "电池、零部件、产能、成本与全球供应链",
+        "汽车金融": "车贷、库存融资、经销商资金与风险管理",
+    }
+    for item in auto_items:
+        story = item[1]
+        text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+        scores = {
+            "数据与市场": len(extract_metrics(story)) * 5 + sum(term in text for term in ("销量", "交付", "产量", "零售", "出口", "渗透率", "库存", "利润", "同比", "环比")) * 4,
+            "整车与品牌": sum(term in text for term in ("新车", "上市", "首发", "车型", "车企", "特斯拉", "理想", "蔚来", "小鹏", "小米", "比亚迪", "launch", "model")) * 4,
+            "智能网联与车载AI": sum(term in text for term in ("智能网联", "车载ai", "智能驾驶", "自动驾驶", "座舱", "芯片", "robotaxi", "adas", "软件")) * 4,
+            "供应链与产业经营": sum(term in text for term in ("供应链", "电池", "充电", "零部件", "产能", "工厂", "成本", "出口", "关税")) * 4,
+        }
+        topic = max(scores, key=scores.get)
+        buckets[topic].append(item)
+    buckets["汽车金融"] = finance_items
+    limits = {"汽车金融": 4}
+    ranked_groups = []
+    for title, items in buckets.items():
+        items = sorted(items, key=lambda item: focus_score(item[1]), reverse=True)[:limits.get(title, 3)]
+        if items:
+            group_score = max(focus_score(item[1]) for item in items)
+            ranked_groups.append((group_score, title, subtitles[title], items))
+    ranked_groups.sort(key=lambda group: group[0], reverse=True)
+    return [(f"{index:02d}", title, subtitle, items) for index, (_, title, subtitle, items) in enumerate(ranked_groups, 1)]
 
 
 def main() -> None:
