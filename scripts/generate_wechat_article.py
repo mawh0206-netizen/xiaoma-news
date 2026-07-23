@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA = ROOT / "data" / "news.json"
+DATA = ROOT / "runtime" / "wechat_news.json"
 OUTPUT = ROOT / "runtime" / "wechat_article.html"
 PAYLOAD = ROOT / "runtime" / "wechat_payload.json"
 SITE = "https://mawh0206-netizen.github.io/xiaoma-news"
@@ -128,7 +128,7 @@ def topic_groups(auto_items: list[tuple[int, dict]], finance_items: list[tuple[i
     limits = {"汽车金融": 4}
     ranked_groups = []
     for title, items in buckets.items():
-        items = sorted(items, key=lambda item: focus_score(item[1]), reverse=True)[:limits.get(title, 3)]
+        items = sorted(items, key=lambda item: focus_score(item[1]), reverse=True)[:limits.get(title, 10)]
         if items:
             group_score = max(focus_score(item[1]) for item in items)
             ranked_groups.append((group_score, title, subtitles[title], items))
