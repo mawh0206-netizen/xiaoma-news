@@ -51,6 +51,10 @@ try:
                 raise ValueError(f"story {index} detailBody length {len(detail)} outside {min_detail}-{max_detail}")
             if len(facts) < min_facts:
                 raise ValueError(f"story {index} has only {len(facts)} keyFacts (minimum {min_facts})")
+            paragraphs = [p.strip() for p in detail.split("\n") if p.strip()]
+            normalized_paragraphs = [re.sub(r"\s+", "", p) for p in paragraphs]
+            if len(normalized_paragraphs) != len(set(normalized_paragraphs)):
+                raise ValueError(f"story {index} detailBody contains duplicate paragraphs")
             if story.get("source") in foreign_sources:
                 word_count = len(str(story.get("originalSummary", "")).split())
                 if not story.get("originalTitle") or not 80 <= word_count <= 150:
