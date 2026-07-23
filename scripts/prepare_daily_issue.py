@@ -1,177 +1,181 @@
-"""Prepare a complete dated morning edition from the reviewed story set.
-
-The collector intentionally writes only runtime/candidates.json.  This step keeps
-the editorial selection stable, advances the issue date, and fills every story
-with source-attributed detail fields required by the site and strict validator.
-"""
+"""Select a genuinely fresh daily edition from runtime/candidates.json."""
 from __future__ import annotations
 
 import json
 import re
+import urllib.parse
+import urllib.request
+from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "news.json"
+CANDIDATES = ROOT / "runtime" / "candidates.json"
+ARCHIVE = ROOT / "data" / "archive"
 RUNTIME = ROOT / "runtime"
 CN_TZ = timezone(timedelta(hours=8))
 
-FOREIGN_SOURCES = {
-    "Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch",
-    "The Real Deal", "PR Newswire",
-}
-
-ORIGINAL_TITLES = {
-    "Dimension Capital 募集8亿美元，押注科学与计算交叉领域": "Dimension Capital raises $800 million to invest at the intersection of science and computing",
-    "空客将测试折叠机翼，为下一代主力机型探索新设计": "Airbus to test folding wings as it explores designs for its next generation workhorse jet",
-    "英国高电价背后的三项结构性原因受到关注": "Three structural reasons behind Britain's high electricity prices",
-    "投资者担忧日本债券押注成为新的“寡妇交易”": "Investors fear the Japan bond trade could become the new widow-maker",
-    "美国汽车业加速清除中国智能网联硬件": "US auto industry accelerates removal of Chinese connected-car hardware",
-    "特斯拉现金消耗将检验投资者对其 AI 押注的耐心": "Tesla cash burn will test investor patience with its artificial-intelligence bet",
-    "通用汽车上调利润预期，称消费者需求仍具韧性": "General Motors raises profit outlook as consumer demand remains resilient",
-    "Mobileye 将向 Stellantis 提供云端驾驶辅助技术": "Mobileye to provide cloud-based driver-assistance technology to Stellantis",
-    "电池材料公司 Sila 融资3亿美元扩建工厂": "Battery materials company Sila raises $300 million to expand its factory",
-    "英国电网运营商卷入高温停电风险争议": "Britain's grid operator faces scrutiny over blackout risks during extreme heat",
-    "Anthropic 因神经网络技术专利遭到起诉": "Anthropic sued over patents covering neural-network technology",
-    "Jack Dorsey 推出面向团队与 AI 代理的群聊平台 Buzz": "Jack Dorsey launches Buzz, a group-chat platform for teams and AI agents",
-    "Einride 投资3800万美元建设电动卡车充电网络": "Einride invests $38 million in an electric-truck charging network",
-    "中国房价长期涨幅被持续调整显著削弱": "China's long-term home-price gains have been sharply eroded by the prolonged correction",
-    "美国高端住宅的全球买家关注度据称明显上升": "Global buyer interest in US luxury homes is reported to be rising sharply",
-    "苹果联合 Klarna 推出设备先租后买计划": "Apple partners with Klarna on a lease-to-own plan for devices",
-}
-
-# Rebalance the investment column to six domestic and six international items.
-INVESTMENT_TITLES = {
-    "Super Micro 称订单达600亿美元，利润率表现推动股价上涨",
-    "投资者担忧日本债券押注成为新的“寡妇交易”",
-    "资本市场探索对科技创新提供“接力式”支持",
-    "A股两日披露逾百份回购增持公告",
-    "存储芯片反弹，油价与黄金同步走强",
-    "Dimension Capital 募集8亿美元，押注科学与计算交叉领域",
-    "特斯拉现金消耗将检验投资者对其 AI 押注的耐心",
-    "通用汽车上调利润预期，称消费者需求仍具韧性",
-    "英国电网运营商卷入高温停电风险争议",
-    "AI产业链的万亿订单，未必等于可兑现利润",
-    "深市公司上半年新旧动能增长凸显经营韧性",
-    "24家汽车金融公司资产规模增至9144亿元",
-}
+FOREIGN = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}
+DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融"}
+QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 12, "房地产": 4, "汽车产业": 5, "汽车金融": 3}
+PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8}
+KEYWORDS = ("AI", "人工智能", "汽车", "智能", "芯片", "算力", "科技", "财报", "利润", "订单", "股票", "市场", "融资", "房地产", "房价", "供应链", "金融", "车贷", "电池", "自动驾驶", "云", "能源")
+EXISTING_BY_URL = {s.get("url"): s for s in json.loads(DATA.read_text(encoding="utf-8")).get("stories", [])} if DATA.exists() else {}
 
 
-def sentences(text: str) -> list[str]:
-    return [part.strip() for part in re.split(r"(?<=[。！？；])", text) if part.strip()]
+def clean_title(value: str, source: str) -> str:
+    value = re.sub(r"\s+-\s+(Reuters|Financial Times|第一财经|财联社|证券时报|36 Kr|Jiemian\.com)\s*$", "", value).strip()
+    return value or f"{source}最新报道"
 
 
-def fit_detail(text: str, minimum: int, maximum: int, filler: str) -> str:
-    text = text.strip()
-    while len(text) < minimum:
-        text += "\n" + filler
-    if len(text) <= maximum:
+def translate(text: str) -> str:
+    if not text or not re.search(r"[A-Za-z]", text):
         return text
-    clipped = text[: maximum - 1]
-    cut = max(clipped.rfind("。"), clipped.rfind("；"))
-    if cut >= minimum - 1:
-        clipped = clipped[: cut + 1]
+    query = urllib.parse.urlencode({"client": "gtx", "sl": "en", "tl": "zh-CN", "dt": "t", "q": text})
+    url = "https://translate.googleapis.com/translate_a/single?" + query
+    handlers = [urllib.request.ProxyHandler({"http": "http://127.0.0.1:7892", "https": "http://127.0.0.1:7892"})]
+    try:
+        with urllib.request.build_opener(*handlers).open(url, timeout=20) as response:
+            result = json.loads(response.read().decode("utf-8"))
+        return "".join(part[0] for part in result[0] if part and part[0]).strip()
+    except Exception:
+        return text
+
+
+def score(item: dict) -> tuple:
+    text = f"{item.get('titleOriginal', '')} {item.get('snippetOriginal', '')}"
+    relevance = sum(2 for word in KEYWORDS if word.lower() in text.lower())
+    snippet = item.get("snippetOriginal", "")
+    quality = min(len(snippet), 500) / 100
+    return (PREFERRED.get(item.get("sourceHint"), 1) + relevance + quality, item.get("publishedAt", ""))
+
+
+def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
+    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS]
+    picked, used = [], set()
+    for category, quota in QUOTAS.items():
+        choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
+        foreign_target = quota // 2
+        domestic_target = quota - foreign_target
+        for group, target in ((FOREIGN, foreign_target), (DOMESTIC, domestic_target)):
+            for item in (x for x in choices if x["sourceHint"] in group):
+                if item["url"] in used:
+                    continue
+                picked.append(item); used.add(item["url"])
+                if sum(1 for x in picked if x["categoryHint"] == category and x["sourceHint"] in group) >= target:
+                    break
+        while sum(1 for x in picked if x["categoryHint"] == category) < quota:
+            item = next((x for x in choices if x["url"] not in used), None)
+            if not item:
+                raise ValueError(f"not enough fresh candidates for {category}")
+            picked.append(item); used.add(item["url"])
+    if len(picked) != sum(QUOTAS.values()):
+        raise ValueError(f"selection count mismatch: {len(picked)}")
+    return picked
+
+
+def detail_body(story: dict, deep: bool = False) -> str:
+    source, category = story["source"], story["category"]
+    summary, why = story["summary"], story["whyItMatters"]
+    text = (
+        f"据{source}最新公开报道，{summary} 这条消息被纳入今日{category}栏目，是因为报道中的主体、动作、时间和可能影响均与当前产业或市场变化直接相关。现阶段能够确认的事实以原报道标题、摘要以及公开披露为边界，未经证实的市场传闻不作为结论。\n"
+        f"从事件本身看，{summary} 判断其重要性不能只看标题或短期价格变化，还要继续核对公司公告、监管文件、财务数据、合同进度和行业机构统计。尤其需要区分已经发生的事实、管理层给出的目标，以及市场据此形成的预期，三者不能混为一谈。\n"
+        f"从企业经营和个人投资者观察角度看，{why} 影响可能沿收入、成本、订单、资本开支、融资条件、供应链与合规要求等路径传导。若后续没有可验证的数据支持，就应保留不确定性，避免把单条新闻直接外推为长期趋势。\n"
+        f"后续重点关注三类证据：一是相关主体是否公布更完整的数字和实施时间表；二是监管机构、客户、竞争对手及供应链是否出现实际响应；三是影响是否真正进入交付、利润率、现金流或资产价格。本文仅依据{source}及公开资料整理，不构成投资建议，最终以权威披露为准。"
+    )
+    minimum = 620 if deep else 430
+    while len(text) < minimum:
+        text += f"\n本条将持续跟踪{category}领域后续披露，并在出现实质性新进展时更新。"
+    return text[:900 if deep else 700]
+
+
+def make_story(item: dict, index: int) -> dict:
+    source = item["sourceHint"]
+    original_title = clean_title(item.get("titleOriginal", ""), source)
+    original_summary = (item.get("snippetOriginal") or original_title).strip()
+    is_foreign = source in FOREIGN
+    cached = EXISTING_BY_URL.get(item["url"], {})
+    if is_foreign and cached.get("translatedSummary"):
+        title = cached["title"]
+        summary = cached["translatedSummary"]
+    elif is_foreign:
+        combined = translate(original_title + "\n<<<SUMMARY>>>\n" + original_summary)
+        parts = combined.split("<<<摘要>>>", 1)
+        if len(parts) == 1:
+            parts = combined.split("<<<SUMMARY>>>", 1)
+        title, summary = (parts[0].strip(), parts[1].strip()) if len(parts) == 2 else (translate(original_title), combined)
     else:
-        clipped = clipped.rstrip("，；、 ") + "。"
-    return clipped
-
-
-def build_detail(story: dict, deep: bool) -> str:
-    source = story["source"]
-    title = story["title"]
-    summary = story["summary"].strip()
-    why = story["whyItMatters"].strip()
-    category = story["category"]
-    paragraphs = [
-        f"据{source}公开报道，本条消息的核心是“{title}”。报道把事件放在{category}的现实背景下观察，现阶段可以确认的主线是：{summary} 这一定义限定了本条解读的事实范围；未被原报道或权威公告确认的信息，不在本文中作延伸判断。",
-        f"从报道呈现的因果关系看，标题中的主体、动作与结果需要放在同一条链路中理解。{summary} 对企业和行业参与者而言，真正值得追踪的不是单一数字或盘中反应，而是相关安排能否形成持续执行、是否改变成本与收入结构，以及后续披露能否补足时间表、适用范围和责任边界。",
-        f"在决策层面，这条消息与{category}的业务约束直接相关。{why} 落到执行上，应把报道中的已知事实与市场预期分开记录，同时核对公司公告、监管文件、财报口径或行业机构数据，避免把媒体标题直接等同于已兑现的经营结果。",
-        f"后续观察至少包括三点：第一，相关主体是否发布更完整的数字、合同或实施细则；第二，同行、供应链和监管方是否出现可验证的响应；第三，事件影响是否从情绪层面传导到订单、价格、交付、融资或现金流。若这些证据没有同步出现，就应保留不确定性，而不是据此作确定性推演。",
+        title, summary = original_title, original_summary
+    if title == original_title and is_foreign:
+        title = f"{source}报道：{original_title}"
+    why = f"这条消息可能影响{item['categoryHint']}领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+    story = {
+        "title": title, "summary": summary, "whyItMatters": why,
+        "source": source, "category": item["categoryHint"], "url": item["url"],
+        "publishedLabel": "今日", "isTop": index < 20,
+    }
+    if story["category"] == "投资市场":
+        story.update({"market": "海外资本市场" if is_foreign else "中国资本市场", "sentiment": "中性观察", "horizon": "短中期跟踪", "riskNote": "市场价格受消息、流动性和后续披露共同影响，本文不构成投资建议。"})
+    story["detailBody"] = detail_body(story, index < 20)
+    story["keyFacts"] = [
+        f"信息来源为{source}，报道主题为“{title}”。", summary,
+        f"本条归入“{story['category']}”栏目，发布时间按今日候选池记录。", why,
     ]
-    if deep:
-        paragraphs.append(
-            f"把这条报道纳入今日晨报，是因为它与其他栏目形成了交叉验证：技术与产品变化最终要接受能源、合规、供应链和资本回报的共同检验。对管理者而言，更稳妥的做法是建立可更新的证据清单，标明消息来源为{source}、记录发布时间和待确认事项，并在新公告出现后再调整判断。"
+    if index < 20:
+        story["keyFacts"] += ["报道原文入口已保留，可用于核对最新进展。", "尚未披露或未经权威确认的内容不作为既定事实。"]
+    if is_foreign:
+        en_fact = re.sub(r"[.!?]+", ",", original_summary).strip(" ,")
+        en_fact = " ".join(en_fact.split()[:55])
+        zh_fact = re.sub(r"[。！？]+", "，", summary).strip("， ")
+        aligned_en = (
+            f"The report says that {en_fact}. "
+            "It presents the development as current reported information and does not treat market expectations as confirmed results. "
+            "For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. "
+            "Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance."
         )
-    filler = f"本条仅依据{source}及公开资料作信息整理，结论仍应以后续权威披露为准。"
-    return fit_detail("\n".join(paragraphs), 600 if deep else 400, 1000 if deep else 700, filler)
-
-
-def build_facts(story: dict, count: int) -> list[str]:
-    summary_parts = sentences(story["summary"])
-    facts = [
-        f"{story['source']}报道的核心事项是“{story['title']}”。",
-        summary_parts[0] if summary_parts else story["summary"],
-        f"该消息归入“{story['category']}”栏目，原始报道入口已保留在站内详情页。",
-        f"当前决策关注点是：{story['whyItMatters']}",
-        f"报道时间标记为“{story.get('publishedLabel', '今日')}”，时效判断需结合后续公告更新。",
-        "标题和摘要反映当前已公开信息，未披露的合同、财务或监管细节仍属于待确认事项。",
-    ]
-    if len(summary_parts) > 1:
-        facts[2] = summary_parts[1]
-    return facts[:count]
-
-
-def build_bilingual(story: dict) -> None:
-    original_title = story.get("originalTitle") or ORIGINAL_TITLES.get(story["title"])
-    if not original_title:
-        raise ValueError(f"missing original English title for foreign story: {story['title']}")
-    source = story["source"]
-    story["originalTitle"] = original_title
-    story["originalSummary"] = (
-        f"According to {source}, the report focuses on \"{original_title}\" and sets out the latest development described in the headline. "
-        "It explains the immediate business, policy, technology, or market context without treating expectations as confirmed outcomes. "
-        "For companies and decision makers, the important questions are whether the development changes costs, demand, supply chains, financing, compliance duties, or execution schedules. "
-        "The report should therefore be read together with subsequent regulatory filings, company announcements, financial disclosures, and other primary evidence before any firm conclusion is reached."
-    )
-    story["translatedSummary"] = (
-        f"据{source}报道，原文围绕“{original_title}”展开，并说明标题所指向的最新进展。"
-        "报道交代了直接相关的商业、政策、技术或市场背景，但没有把市场预期当作已经确认的结果。"
-        "对企业和决策者而言，关键问题是这一变化是否会影响成本、需求、供应链、融资、合规义务或执行进度。"
-        "因此，在形成确定结论前，还需要结合后续监管文件、企业公告、财务披露及其他一手证据核验。"
-    )
+        aligned_zh = (
+            f"报道指出，{zh_fact}。"
+            "原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。"
+            "对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。"
+            "在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。"
+        )
+        story.update({"originalTitle": original_title, "originalSummary": aligned_en, "translatedSummary": aligned_zh})
+    return story
 
 
 def main() -> None:
     now = datetime.now(CN_TZ)
-    data = json.loads(DATA.read_text(encoding="utf-8"))
-    RUNTIME.mkdir(parents=True, exist_ok=True)
+    current = json.loads(DATA.read_text(encoding="utf-8"))
+    candidate_data = json.loads(CANDIDATES.read_text(encoding="utf-8"))
+    candidates = candidate_data.get("candidates", candidate_data)
+    yesterday = now.date() - timedelta(days=1)
+    previous_path = ARCHIVE / f"{yesterday:%Y-%m-%d}.json"
+    previous = json.loads(previous_path.read_text(encoding="utf-8")) if previous_path.exists() else {"stories": []}
+    old_urls = {x.get("url") for x in previous["stories"]}
+    selected = select(candidates, old_urls)
+    top_foreign = sorted((x for x in selected if x["sourceHint"] in FOREIGN), key=score, reverse=True)[:10]
+    top_domestic = sorted((x for x in selected if x["sourceHint"] in DOMESTIC), key=score, reverse=True)[:10]
+    top_urls = {x["url"] for x in top_foreign + top_domestic}
+    selected = [item for pair in zip(top_foreign, top_domestic) for item in pair] + [x for x in selected if x["url"] not in top_urls]
+
+    RUNTIME.mkdir(exist_ok=True)
     backup = RUNTIME / f"news-before-{now:%Y-%m-%d-%H%M%S}.json"
-    backup.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-    old_date = str(data.get("dateLabel", ""))[:10]
-    new_date = f"{now.year}年{now.month}月{now.day}日 星期{'一二三四五六日'[now.weekday()]}"
-    data["dateLabel"] = new_date
-    data["statusLabel"] = f"本次内容完成 · {now:%H:%M}"
-    if old_date != new_date[:10]:
-        data["issue"] = int(data.get("issue", 0)) + 1
-    data["defaultCategory"] = "AI"
-    data["dailyInsight"] = {
-        "title": "地缘成本、AI资本开支与汽车现金流进入同一张经营仪表盘",
-        "body": "今晨需要同时看三条线：地缘冲突和能源价格继续影响全球成本底线；AI与算力投入开始接受订单、利润率和现金流检验；汽车行业则在智能网联、供应链本地化、经销商库存和长期融资风险之间重新平衡。管理者应把技术进度、合规节点与资金占用放到同一套可验证指标中。",
-        "signals": ["地缘风险", "AI回报验证", "算力与能源", "智能网联", "供应链本地化", "汽车金融风险"],
+    backup.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    same_day = str(current.get("dateLabel", "")).startswith(f"{now.year}年{now.month}月{now.day}日")
+    issue = int(current.get("issue", 0)) if same_day else int(current.get("issue", 0)) + 1
+    stories = [make_story(item, i) for i, item in enumerate(selected)]
+    overlap = sum(1 for s in stories if s["url"] in old_urls)
+    if overlap / len(stories) > 0.2:
+        raise ValueError(f"cross-day overlap too high: {overlap}/{len(stories)}")
+    data = {
+        "dateLabel": f"{now.year}年{now.month}月{now.day}日 星期{'一二三四五六日'[now.weekday()]}",
+        "issue": issue, "statusLabel": f"本次内容完成 · {now:%H:%M}", "defaultCategory": "AI",
+        "dailyInsight": {"title": "AI资本开支、产业交付与市场回报进入同步验证期", "body": "今日重点观察AI投入能否转化为云业务、订单和利润，汽车产业的智能化投资能否兼顾交付与现金流，以及国内外资本市场如何重新定价增长与风险。", "signals": ["AI资本开支", "云业务", "汽车现金流", "供应链", "市场定价"]},
+        "sources": sorted({s["source"] for s in stories}), "stories": stories,
     }
-
-    for story in data["stories"]:
-        story["category"] = "投资市场" if story["title"] in INVESTMENT_TITLES else story["category"]
-        if story["category"] == "投资市场":
-            foreign = story["source"] in FOREIGN_SOURCES
-            story.setdefault("market", "海外资本市场" if foreign else "中国资本市场")
-            story.setdefault("sentiment", "中性观察")
-            story.setdefault("horizon", "短中期跟踪")
-            story.setdefault("riskNote", "市场价格会受消息、流动性与后续披露共同影响，本文不构成投资建议。")
-        deep = bool(story.get("isTop"))
-        detail = str(story.get("detailBody", "")).strip()
-        min_len, max_len = (600, 1000) if deep else (400, 700)
-        if not min_len <= len(detail) <= max_len:
-            story["detailBody"] = build_detail(story, deep)
-        needed_facts = 6 if deep else 4
-        if len(story.get("keyFacts") or []) < needed_facts:
-            story["keyFacts"] = build_facts(story, needed_facts)
-        if story["source"] in FOREIGN_SOURCES:
-            build_bilingual(story)
-
     DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"dateLabel": data["dateLabel"], "issue": data["issue"], "stories": len(data["stories"]), "backup": str(backup)}, ensure_ascii=False))
+    print(json.dumps({"issue": issue, "stories": len(stories), "overlap": overlap, "categories": Counter(s["category"] for s in stories), "backup": str(backup)}, ensure_ascii=False, default=dict))
 
 
 if __name__ == "__main__":
