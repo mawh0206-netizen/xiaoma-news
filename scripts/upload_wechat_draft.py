@@ -61,18 +61,29 @@ def main() -> None:
     credentials = json.loads(CREDENTIALS.read_text(encoding="utf-8-sig"))
     article = json.loads(PAYLOAD.read_text(encoding="utf-8"))
     token = access_token(credentials)
-    thumb_media_id = upload_cover(token)
+    existing = json.loads(RESULT.read_text(encoding="utf-8")) if RESULT.exists() else {}
+    thumb_media_id = existing.get("cover_media_id") or upload_cover(token)
     article["thumb_media_id"] = thumb_media_id
     article["show_cover_pic"] = 1
-    draft = json_request(
-        "https://api.weixin.qq.com/cgi-bin/draft/add?" + urllib.parse.urlencode({"access_token": token}),
-        {"articles": [article]},
-    )
-    if not draft.get("media_id"):
-        raise RuntimeError(f"draft creation failed: {draft.get('errcode')} {draft.get('errmsg')}")
-    safe_result = {"media_id": draft["media_id"], "created_at": int(time.time()), "title": article["title"], "cover_media_id": thumb_media_id}
+    if existing.get("media_id") and existing.get("title") == article.get("title"):
+        draft = json_request(
+            "https://api.weixin.qq.com/cgi-bin/draft/update?" + urllib.parse.urlencode({"access_token": token}),
+            {"media_id": existing["media_id"], "index": 0, "articles": article},
+        )
+        if draft.get("errcode") != 0:
+            raise RuntimeError(f"draft update failed: {draft.get('errcode')} {draft.get('errmsg')}")
+        media_id, action = existing["media_id"], "updated"
+    else:
+        draft = json_request(
+            "https://api.weixin.qq.com/cgi-bin/draft/add?" + urllib.parse.urlencode({"access_token": token}),
+            {"articles": [article]},
+        )
+        if not draft.get("media_id"):
+            raise RuntimeError(f"draft creation failed: {draft.get('errcode')} {draft.get('errmsg')}")
+        media_id, action = draft["media_id"], "created"
+    safe_result = {"media_id": media_id, "created_at": existing.get("created_at", int(time.time())), "updated_at": int(time.time()), "title": article["title"], "cover_media_id": thumb_media_id}
     RESULT.write_text(json.dumps(safe_result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"created": True, "title": article["title"], "result": str(RESULT)}, ensure_ascii=False))
+    print(json.dumps({"action": action, "title": article["title"], "result": str(RESULT)}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

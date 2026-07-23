@@ -68,21 +68,59 @@ def select(stories: list[dict], categories: set[str], limit: int) -> list[tuple[
     return [(i, s) for i, s in enumerate(stories) if s.get("category") in categories][:limit]
 
 
+def focus_score(story: dict) -> int:
+    text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+    terms = {
+        "新车": 8, "上市": 8, "首发": 7, "发布": 5, "车型": 6,
+        "智能网联": 10, "车载ai": 10, "智能驾驶": 9, "自动驾驶": 9,
+        "座舱": 8, "芯片": 7, "电池": 6, "充电": 5, "供应链": 7,
+        "零部件": 6, "汽车金融": 8, "车贷": 8, "经销商": 6,
+        "robotaxi": 9, "adas": 9, "connected-car": 9,
+    }
+    return sum(weight for term, weight in terms.items() if term in text)
+
+
+def topic_groups(auto_items: list[tuple[int, dict]], finance_items: list[tuple[int, dict]]) -> list[tuple[str, str, str, list[tuple[int, dict]]]]:
+    ranked = sorted(auto_items, key=lambda item: focus_score(item[1]), reverse=True)
+    used: set[int] = set()
+    def take(terms: tuple[str, ...], limit: int) -> list[tuple[int, dict]]:
+        matches = []
+        for item in ranked:
+            index, story = item
+            text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+            if index not in used and any(term in text for term in terms):
+                matches.append(item); used.add(index)
+                if len(matches) == limit:
+                    break
+        return matches
+    new_models = take(("新车", "上市", "首发", "车型", "model", "launch", "debut"), 3)
+    connected = take(("智能网联", "车载ai", "智能驾驶", "自动驾驶", "座舱", "robotaxi", "adas", "connected-car", "软件"), 3)
+    industry = [item for item in ranked if item[0] not in used][:4]
+    groups = []
+    if new_models:
+        groups.append(("01", "新车与整车热点", "新车上市、产品发布与整车企业关键变化", new_models))
+    if connected:
+        groups.append((f"{len(groups)+1:02d}", "智能网联与车载AI", "智能驾驶、车载软件、芯片与智能座舱", connected))
+    if industry:
+        groups.append((f"{len(groups)+1:02d}", "供应链与产业经营", "电池、零部件、产能、成本与全球供应链", industry))
+    groups.append((f"{len(groups)+1:02d}", "汽车金融", "车贷、库存融资、经销商资金与风险管理", sorted(finance_items, key=lambda item: focus_score(item[1]), reverse=True)[:4]))
+    return groups
+
+
 def main() -> None:
     global ARCHIVE_DATE
     data = json.loads(DATA.read_text(encoding="utf-8"))
     ARCHIVE_DATE = date_key(data["dateLabel"])
     stories = data["stories"]
-    foreign_sources = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}
     auto_industry = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车产业"]
     auto_finance = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车金融"]
-    domestic = [(i, s) for i, s in auto_industry if s.get("source") not in foreign_sources][:5]
-    global_auto = [(i, s) for i, s in auto_industry if s.get("source") in foreign_sources][:4]
-    finance = auto_finance[:3]
-    if not domestic or not global_auto or not finance:
-        raise ValueError("公众号汽车专刊缺少国内汽车、全球汽车或汽车金融内容")
-    lead_title = domestic[0][1]["title"]
-    lead_body = "；".join([domestic[0][1]["summary"], global_auto[0][1]["summary"], finance[0][1]["summary"]])
+    groups = topic_groups(auto_industry, auto_finance)
+    selected = [item for _, _, _, items in groups for item in items]
+    if len(auto_industry) < 6 or len(auto_finance) < 3 or len(selected) < 8:
+        raise ValueError("公众号汽车专刊缺少足够的汽车热点或汽车金融内容")
+    lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
+    lead_title = lead_items[0][1]["title"]
+    lead_body = "；".join(item[1]["summary"] for item in lead_items)
 
     body: list[str] = []
     body.append(f"""
@@ -97,12 +135,9 @@ def main() -> None:
         <p style="margin:0;color:#454b47;font-size:15px;line-height:1.9;">{esc(lead_body)}</p>
       </section>""")
 
-    body.append(section_title("01", "国内汽车", "整车、供应链、标准政策与产业落地"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(domestic, 1))
-    body.append(section_title("02", "全球汽车", "智能网联、车载AI及海外产业变化"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(global_auto, 1))
-    body.append(section_title("03", "汽车金融", "车贷、库存融资、经销商资金与风险管理"))
-    body.extend(story_block(s, i, n) for n, (i, s) in enumerate(finance, 1))
+    for number, title, subtitle, items in groups:
+        body.append(section_title(number, title, subtitle))
+        body.extend(story_block(s, i, n) for n, (i, s) in enumerate(items, 1))
     body.append(f"""
       <footer style="margin-top:42px;padding:28px 24px;background:#171a19;color:#d8dcd9;text-align:center;">
         <p style="margin:0 0 10px;color:#fff;font-size:20px;font-weight:700;">小马儿Young</p>
@@ -131,7 +166,7 @@ def main() -> None:
         "only_fans_can_comment": 0,
     }
     PAYLOAD.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "domestic_auto": len(domestic), "global_auto": len(global_auto), "auto_finance": len(finance)}, ensure_ascii=False))
+    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "selected": len(selected), "sections": [title for _, title, _, _ in groups]}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

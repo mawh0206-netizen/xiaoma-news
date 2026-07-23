@@ -6,7 +6,7 @@ from pathlib import Path
 
 path = Path(__file__).resolve().parents[1] / "data" / "news.json"
 strict_details = "--strict-details" in sys.argv
-foreign_sources = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch", "The Real Deal", "PR Newswire"}
+foreign_sources = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch", "The Real Deal", "PR Newswire", "Electrek", "InsideEVs", "Automotive News"}
 domestic_sources = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "北汽汽车金融"}
 try:
     data = json.loads(path.read_text(encoding="utf-8"))

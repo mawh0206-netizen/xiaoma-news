@@ -50,10 +50,23 @@ SEARCHES = [
     ("中国汽车报", "汽车产业", "site:cnautonews.com 汽车 行业 政策 出口"),
     ("中国汽车流通协会", "汽车产业", "site:cada.cn 汽车 流通 销量 库存"),
     ("汽车之家", "汽车产业", "site:autohome.com.cn 行业 新能源 车企"),
+    ("工信部", "汽车产业", "site:miit.gov.cn 汽车 公告 智能网联 新能源 标准"),
+    ("中国汽车工业协会", "汽车产业", "site:caam.org.cn 汽车 产销 新能源 出口"),
+    ("乘联会", "汽车产业", "site:cpcaauto.com 汽车 销量 新能源 市场"),
+    ("懂车帝", "汽车产业", "site:dongchedi.com 新车 上市 首发 智能驾驶 座舱"),
+    ("新出行", "汽车产业", "site:xchuxing.com 新车 智能驾驶 座舱 新能源"),
+    ("亿欧汽车", "汽车产业", "site:iyiou.com 汽车 智能网联 车载AI 供应链"),
+    ("汽车商业评论", "汽车产业", "site:autobizreview.com 新车 汽车 供应链 智能驾驶"),
+    ("Electrek", "汽车产业", "site:electrek.co EV launch battery charging autonomous vehicle"),
+    ("InsideEVs", "汽车产业", "site:insideevs.com new EV launch battery charging software"),
+    ("Automotive News", "汽车产业", "site:autonews.com automaker vehicle launch supply chain software"),
+    ("TechCrunch", "汽车产业", "site:techcrunch.com transportation mobility EV autonomous vehicle"),
     ("汽车金融", "汽车金融", "汽车金融 车贷 融资租赁 经销商 库存融资 汽车保险 残值"),
     ("第一财经", "汽车金融", "site:yicai.com 汽车金融 车贷 融资租赁"),
     ("财联社", "汽车金融", "site:cls.cn 汽车金融 车贷 银行 经销商"),
     ("证券时报", "汽车金融", "site:stcn.com 汽车金融 公司 贷款"),
+    ("中国银行业协会", "汽车金融", "site:china-cba.net 汽车金融 车贷 风险"),
+    ("零壹智库", "汽车金融", "site:01caijing.com 汽车金融 车贷 融资租赁"),
     ("中国房地产报", "房地产", "site:creb.com.cn 房地产 政策 市场"),
     ("中房网", "房地产", "site:cfnews.com.cn 房地产 市场 政策"),
     ("克而瑞", "房地产", "克而瑞 房地产 销售 土地 融资"),
@@ -120,7 +133,7 @@ def main() -> int:
             errors.append(f"{source}/{category}: {type(exc).__name__}: {exc}")
     for source, category, query in SEARCHES:
         try:
-            locale = "en" if source in {"Reuters", "Financial Times", "国际房地产"} else "zh"
+            locale = "en" if source in {"Reuters", "Financial Times", "国际房地产", "Electrek", "InsideEVs", "Automotive News", "TechCrunch"} else "zh"
             candidates.extend(parse_feed(source, category, google_news_url(query, locale)))
         except Exception as exc:
             errors.append(f"{source}/{category}: {type(exc).__name__}: {exc}")

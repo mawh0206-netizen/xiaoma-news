@@ -16,17 +16,45 @@ ARCHIVE = ROOT / "data" / "archive"
 RUNTIME = ROOT / "runtime"
 CN_TZ = timezone(timedelta(hours=8))
 
-FOREIGN = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch"}
-DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融"}
-QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 12, "房地产": 4, "汽车产业": 5, "汽车金融": 3}
-PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8}
+FOREIGN = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch", "Electrek", "InsideEVs", "Automotive News"}
+DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融", "工信部", "中国汽车工业协会", "乘联会", "懂车帝", "新出行", "亿欧汽车", "汽车商业评论", "中国银行业协会", "零壹智库"}
+QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 12, "房地产": 4, "汽车产业": 10, "汽车金融": 4}
+PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "Electrek": 8, "InsideEVs": 8, "Automotive News": 8, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8, "工信部": 10, "中国汽车工业协会": 9, "乘联会": 9, "懂车帝": 8, "新出行": 8, "亿欧汽车": 8, "汽车商业评论": 8}
 KEYWORDS = ("AI", "人工智能", "汽车", "智能", "芯片", "算力", "科技", "财报", "利润", "订单", "股票", "市场", "融资", "房地产", "房价", "供应链", "金融", "车贷", "电池", "自动驾驶", "云", "能源")
+AUTO_TERMS = ("汽车", "新车", "车型", "车企", "整车", "新能源车", "智能网联", "智能驾驶", "自动驾驶", "车载", "座舱", "三电", "电池", "充电", "经销商", "车贷", "汽车金融", "库存融资", "零部件", "供应商", "robotaxi", "tesla", "byd", "xpeng", "geely", "ford", "gm", "volkswagen", "toyota", "stellantis")
+AUTO_ENGLISH = re.compile(r"\b(?:car|cars|vehicle|vehicles|automotive|automaker|automakers|ev|evs|adas|driver-assistance|electric vehicle|connected-car)\b", re.I)
+AUTO_BLOCKERS = re.compile(r"\b(?:aircraft|airline|aviation|airport|ship|shipping|nike)\b", re.I)
+AUTO_FOCUS_TERMS = ("上市", "发布", "首发", "亮相", "新车", "车型", "智能网联", "智能驾驶", "自动驾驶", "车载AI", "座舱", "芯片", "电池", "充电", "供应链", "零部件", "汽车金融", "车贷", "经销商", "robotaxi", "ADAS", "launch", "debut", "connected-car")
 EXISTING_BY_URL = {s.get("url"): s for s in json.loads(DATA.read_text(encoding="utf-8")).get("stories", [])} if DATA.exists() else {}
 
 
 def clean_title(value: str, source: str) -> str:
     value = re.sub(r"\s+-\s+(Reuters|Financial Times|第一财经|财联社|证券时报|36 Kr|Jiemian\.com)\s*$", "", value).strip()
     return value or f"{source}最新报道"
+
+
+def automotive_relevant(item: dict) -> bool:
+    text = f"{item.get('titleOriginal', '')} {item.get('snippetOriginal', '')}"
+    if AUTO_BLOCKERS.search(text):
+        return False
+    lowered = text.lower()
+    return any(term.lower() in lowered for term in AUTO_TERMS) or bool(AUTO_ENGLISH.search(text))
+
+
+def title_tokens(item: dict) -> set[str]:
+    text = item.get("titleOriginal", "").lower()
+    latin = {token for token in re.findall(r"[a-z0-9]+", text) if len(token) > 2}
+    chinese = set(re.findall(r"[\u4e00-\u9fff]{2,6}", text))
+    return latin | chinese
+
+
+def too_similar(item: dict, selected: list[dict]) -> bool:
+    tokens = title_tokens(item)
+    for other in selected:
+        other_tokens = title_tokens(other)
+        if tokens and other_tokens and len(tokens & other_tokens) / min(len(tokens), len(other_tokens)) >= 0.55:
+            return True
+    return False
 
 
 def translate(text: str) -> str:
@@ -46,6 +74,8 @@ def translate(text: str) -> str:
 def score(item: dict) -> tuple:
     text = f"{item.get('titleOriginal', '')} {item.get('snippetOriginal', '')}"
     relevance = sum(2 for word in KEYWORDS if word.lower() in text.lower())
+    if item.get("categoryHint") in {"汽车产业", "汽车金融"}:
+        relevance += sum(4 for word in AUTO_FOCUS_TERMS if word.lower() in text.lower())
     snippet = item.get("snippetOriginal", "")
     quality = min(len(snippet), 500) / 100
     return (PREFERRED.get(item.get("sourceHint"), 1) + relevance + quality, item.get("publishedAt", ""))
@@ -54,7 +84,7 @@ def score(item: dict) -> tuple:
 def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
     current_year = datetime.now(CN_TZ).year
     stale_year = re.compile(r"(?:201\d|202[0-5])年?") if current_year == 2026 else re.compile(r"$^")
-    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", ""))]
+    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", "")) and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))]
     picked, used = [], set()
     for category, quota in QUOTAS.items():
         choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
@@ -62,13 +92,17 @@ def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
         domestic_target = quota - foreign_target
         for group, target in ((FOREIGN, foreign_target), (DOMESTIC, domestic_target)):
             for item in (x for x in choices if x["sourceHint"] in group):
-                if item["url"] in used:
+                category_picked = [x for x in picked if x["categoryHint"] == category]
+                if item["url"] in used or too_similar(item, category_picked):
+                    continue
+                if category in {"汽车产业", "汽车金融"} and sum(x["sourceHint"] == item["sourceHint"] for x in category_picked) >= 2:
                     continue
                 picked.append(item); used.add(item["url"])
                 if sum(1 for x in picked if x["categoryHint"] == category and x["sourceHint"] in group) >= target:
                     break
         while sum(1 for x in picked if x["categoryHint"] == category) < quota:
-            item = next((x for x in choices if x["url"] not in used), None)
+            category_picked = [x for x in picked if x["categoryHint"] == category]
+            item = next((x for x in choices if x["url"] not in used and not too_similar(x, category_picked) and (category not in {"汽车产业", "汽车金融"} or sum(y["sourceHint"] == x["sourceHint"] for y in category_picked) < 2)), None)
             if not item:
                 raise ValueError(f"not enough fresh candidates for {category}")
             picked.append(item); used.add(item["url"])
