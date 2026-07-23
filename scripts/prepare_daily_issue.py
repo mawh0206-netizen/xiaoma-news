@@ -98,9 +98,9 @@ def make_story(item: dict, index: int) -> dict:
     original_summary = (item.get("snippetOriginal") or original_title).strip()
     is_foreign = source in FOREIGN
     cached = EXISTING_BY_URL.get(item["url"], {})
-    if is_foreign and cached.get("translatedSummary"):
+    if is_foreign and cached.get("sourceTranslatedSummary"):
         title = cached["title"]
-        summary = cached["translatedSummary"]
+        summary = cached["sourceTranslatedSummary"]
     elif is_foreign:
         combined = translate(original_title + "\n<<<SUMMARY>>>\n" + original_summary)
         parts = combined.split("<<<摘要>>>", 1)
@@ -142,7 +142,7 @@ def make_story(item: dict, index: int) -> dict:
             "对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。"
             "在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。"
         )
-        story.update({"originalTitle": original_title, "originalSummary": aligned_en, "translatedSummary": aligned_zh})
+        story.update({"originalTitle": original_title, "originalSummary": aligned_en, "sourceTranslatedSummary": summary, "translatedSummary": aligned_zh})
     return story
 
 
