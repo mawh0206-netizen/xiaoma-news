@@ -52,7 +52,9 @@ def score(item: dict) -> tuple:
 
 
 def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
-    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS]
+    current_year = datetime.now(CN_TZ).year
+    stale_year = re.compile(r"(?:201\d|202[0-5])年?") if current_year == 2026 else re.compile(r"$^")
+    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", ""))]
     picked, used = [], set()
     for category, quota in QUOTAS.items():
         choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
