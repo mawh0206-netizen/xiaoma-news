@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from pathlib import Path
 
@@ -29,7 +29,83 @@ def fresh(item: dict, now: datetime) -> bool:
     return not months or bool(months & allowed)
 
 
-def choose(pool: list[dict], limit: int, topic_coverage: bool) -> list[dict]:
+def published_at(item: dict) -> datetime | None:
+    raw = str(item.get("publishedAt", "")).strip()
+    if not raw:
+        return None
+    try:
+        value = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=daily.CN_TZ)
+    return value.astimezone(daily.CN_TZ)
+
+
+def within_age(item: dict, now: datetime, maximum: timedelta) -> bool:
+    published = published_at(item)
+    if published is None:
+        return False
+    age = now - published
+    return -timedelta(hours=6) <= age <= maximum
+
+
+def published_label(item: dict, now: datetime) -> str:
+    published = published_at(item)
+    if published is None:
+        raise ValueError(f"missing or invalid publishedAt: {item.get('titleOriginal', '')}")
+    if published.date() == now.date():
+        return f"今日 {published:%H:%M}"
+    if published.date() == (now - timedelta(days=1)).date():
+        return f"昨日 {published:%H:%M}"
+    return f"{published.month}月{published.day}日"
+
+
+def editorial_topic(item: dict) -> str:
+    text = f"{item.get('titleOriginal', '')} {item.get('summaryOriginal', '')}".lower()
+    if "电池" in text and any(term in text for term in ("消费税", "电池税", "征税")):
+        return "battery-tax"
+    return ""
+
+
+def substantive_title(item: dict) -> bool:
+    title = re.sub(r"\s+[-—]\s+[^-—]{2,16}$", "", item.get("titleOriginal", "")).strip()
+    return (
+        len(title) >= 7
+        and title not in {"汽车出行", "汽车行业", "新能源汽车"}
+        and not ("快讯" in title and "；" in title)
+    )
+
+
+def acceptable_publisher(item: dict) -> bool:
+    url = str(item.get("url", "")).lower()
+    title = str(item.get("titleOriginal", ""))
+    if item.get("sourceHint") == "国内汽车综合" and (
+        "163.com/" in url or "手机网易网" in title
+    ):
+        return False
+    return True
+
+
+def automotive_finance_relevant(item: dict) -> bool:
+    text = f"{item.get('titleOriginal', '')} {item.get('summaryOriginal', '')}".lower()
+    return any(
+        term in text
+        for term in (
+            "汽车金融", "车贷", "购车贷款", "融资租赁", "库存融资",
+            "经销商资金", "经销商融资", "贴息", "首付", "汽车保险",
+        )
+    )
+
+
+def choose(
+    pool: list[dict],
+    limit: int,
+    topic_coverage: bool,
+    minimum: int | None = None,
+    source_limit: int = 2,
+) -> list[dict]:
+    minimum = limit if minimum is None else minimum
     ranked = sorted(pool, key=daily.score, reverse=True)
     ordered: list[dict] = []
     if topic_coverage:
@@ -42,13 +118,16 @@ def choose(pool: list[dict], limit: int, topic_coverage: bool) -> list[dict]:
     for item in ordered:
         if daily.too_similar(item, selected):
             continue
-        if sum(existing["sourceHint"] == item["sourceHint"] for existing in selected) >= 2:
+        topic = editorial_topic(item)
+        if topic and any(editorial_topic(existing) == topic for existing in selected):
+            continue
+        if sum(existing["sourceHint"] == item["sourceHint"] for existing in selected) >= source_limit:
             continue
         selected.append(item)
         if len(selected) == limit:
             break
-    if len(selected) < limit:
-        raise ValueError(f"not enough independent WeChat automotive candidates: {len(selected)}/{limit}")
+    if len(selected) < minimum:
+        raise ValueError(f"not enough independent WeChat automotive candidates: {len(selected)}/{minimum}")
     return selected
 
 
@@ -118,12 +197,27 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         )
         watch = ["工厂产能利用率", "在手订单", "零部件缺口", "新品认证与投产节点"]
     elif any(term in text for term in ("销量", "交付", "产量", "零售", "出口", "市场份额")):
-        judgment = (
-            f"“{subject}”提供了规模信号，但单一销量数字不足以判断经营质量。{data_anchor}"
-            "需要区分批发、零售、出口和库存转移，并观察增长是否依赖降价；"
-            "只有份额提升与单车盈利同步，规模增长才具有可持续性。"
-        )
-        watch = ["批发与零售差值", "出口占比", "成交均价", "单车毛利"]
+        if "出口" in text or any(term in text for term in ("欧洲", "海外", "全球")):
+            judgment = (
+                f"“{subject}”显示中国汽车的增长空间正进一步转向海外，但出口量不等于海外零售。"
+                f"{data_anchor}需要拆分整车实际注册、渠道库存和区域价格，"
+                "并核对关税、本地化生产与售后网络能否支撑持续扩张。"
+            )
+            watch = ["海外终端注册量", "出口与零售差", "区域单车利润", "本地化产能"]
+        elif any(term in text for term in ("暴跌", "下滑", "遇冷", "下降")):
+            judgment = (
+                f"“{subject}”需要先判断是需求收缩还是统计口径与高基数造成的表观下降。"
+                f"{data_anchor}若零售、上险和经销商库存同步恶化，才说明终端压力真实存在；"
+                "若主要由批发节奏变化驱动，则不宜直接外推全年市场。"
+            )
+            watch = ["终端上险量", "批零差", "库存预警指数", "价格折扣"]
+        else:
+            judgment = (
+                f"“{subject}”提供了规模信号，但单一销量数字不足以判断经营质量。{data_anchor}"
+                "需要区分批发、零售、出口和库存转移，并观察增长是否依赖降价；"
+                "只有份额提升与单车盈利同步，规模增长才具有可持续性。"
+            )
+            watch = ["批发与零售差值", "出口占比", "成交均价", "单车毛利"]
     elif any(term in text for term in ("渗透率", "新能源市场", "市场展望")):
         judgment = (
             f"“{subject}”反映的是结构变化，不是所有品牌都能同比例受益。{data_anchor}"
@@ -131,8 +225,36 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "弱产品组合反而更容易在高渗透阶段被淘汰。"
         )
         watch = ["分价格带渗透率", "区域差异", "复购率", "新能源单车利润"]
-    elif any(term in text for term in ("智能驾驶", "自动驾驶", "线控", "座舱", "车载ai", "adas", "robotaxi")):
-        if any(term in text for term in ("线控", "底盘")):
+    elif any(term in text for term in ("增程", "纯电续航", "油箱")):
+        judgment = (
+            f"“{subject}”不是动力路线口号之争，而是用户补能焦虑、整车成本和使用效率的取舍。"
+            f"{data_anchor}增程方案是否成立，要看真实纯电使用占比、高速馈电能耗和增程器介入体验；"
+            "若多数用户仍频繁用油，所谓纯电体验就没有形成产品闭环。"
+        )
+        watch = ["真实纯电使用占比", "馈电油耗", "增程器介入噪声", "电池与油箱成本"]
+    elif any(term in text for term in ("智能驾驶", "自动驾驶", "智能网联", "机器人出租车", "行泊一体", "域控制器", "北斗", "线控", "座舱", "车载ai", "adas", "robotaxi")):
+        if any(term in text for term in ("robotaxi", "机器人出租车")):
+            judgment = (
+                f"“{subject}”应按运营业务而非自动驾驶演示来评估。{data_anchor}"
+                "Robotaxi的关键不是单次无接管，而是限定区域内的车队利用率、安全员退出进度、"
+                "事故责任和每公里成本能否共同收敛；管理层口径变化往往意味着商业化假设正在重估。"
+            )
+            watch = ["每万公里接管次数", "车队利用率", "安全员配置", "单公里运营成本"]
+        elif "北斗" in text:
+            judgment = (
+                f"“{subject}”的价值在于把定位与营运监管从项目验收转成持续可用的运营能力。"
+                f"{data_anchor}验收只代表阶段性交付，后续要看在线率、定位完整性、"
+                "跨区域数据一致性和异常事件闭环，才能判断系统是否真正降低车队管理风险。"
+            )
+            watch = ["车辆在线率", "定位数据完整率", "异常闭环时长", "跨区域覆盖"]
+        elif any(term in text for term in ("运维", "养车", "维修")):
+            judgment = (
+                f"“{subject}”补的是自动驾驶商业化中容易被忽略的车队运维环节。"
+                f"{data_anchor}合作是否有价值，要看维护网络能否缩短停驶时间、标准化传感器校准，"
+                "并把单车维护成本压到可复制水平，而不是只增加一个生态合作伙伴。"
+            )
+            watch = ["单车停驶时长", "维保网点覆盖", "传感器校准合格率", "每公里维护成本"]
+        elif any(term in text for term in ("线控", "底盘")):
             judgment = (
                 f"“{subject}”涉及的是自动驾驶执行层，价值不在概念先进，而在冗余、安全和整车集成。"
                 f"{data_anchor}线控底盘要进入量产，必须通过功能安全验证并与制动、转向和域控制器协同，"
@@ -161,12 +283,27 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             )
         watch = ["量产定点与SOP", "装车量", "用户使用率", "单车硬件与算力成本"]
     elif any(term in text for term in ("供应链", "电池", "芯片", "零部件", "工厂", "产能", "关税", "硬件")):
-        judgment = (
-            f"“{subject}”首先影响的不是传播声量，而是BOM成本、供应连续性和合规路径。"
-            f"{data_anchor}企业需要判断变化是一次性扰动还是会迫使供应商本地化，"
-            "并评估替代件验证周期是否会拖慢车型交付。"
-        )
-        watch = ["BOM成本变化", "替代供应商验证周期", "客户集中度", "交付周期"]
+        if "芯片" in text:
+            judgment = (
+                f"“{subject}”的门槛不只是算力参数，而是车规可靠性、工具链和长期供货承诺。"
+                f"{data_anchor}芯片能否进入主机厂核心平台，要看功能安全认证、软件迁移成本、"
+                "量产良率和车型生命周期内的稳定供货，奖项或样片本身还不能证明商业化。"
+            )
+            watch = ["车规与功能安全认证", "主机厂定点", "量产良率", "软件迁移周期"]
+        elif any(term in text for term in ("磁材", "材料", "零部件")):
+            judgment = (
+                f"“{subject}”体现的是隐形零部件供应商的质量壁垒，而非单纯扩产故事。"
+                f"{data_anchor}材料企业的议价能力取决于认证周期、产品一致性和客户平台覆盖；"
+                "若收入增长仍依赖少数客户或原料价格波动，技术积累未必能直接转化为稳定利润。"
+            )
+            watch = ["客户平台覆盖", "认证周期", "产品良率", "客户与原料集中度"]
+        else:
+            judgment = (
+                f"“{subject}”首先影响的不是传播声量，而是BOM成本、供应连续性和合规路径。"
+                f"{data_anchor}企业需要判断变化是一次性扰动还是会迫使供应商本地化，"
+                "并评估替代件验证周期是否会拖慢车型交付。"
+            )
+            watch = ["BOM成本变化", "替代供应商验证周期", "客户集中度", "交付周期"]
     elif any(term in text for term in ("召回", "安全", "故障")):
         judgment = (
             f"“{subject}”应按产品质量事件处理，而不是普通舆情。{data_anchor}"
@@ -219,18 +356,44 @@ def main() -> None:
     payload = json.loads(CANDIDATES.read_text(encoding="utf-8"))
     candidates = payload.get("candidates", payload)
     valid_sources = daily.FOREIGN | daily.DOMESTIC | {"重点车企"}
-    pool = [
+    base_pool = [
         item for item in candidates
         if item.get("sourceHint") in valid_sources
         and item.get("categoryHint") in {"汽车产业", "汽车金融"}
         and daily.automotive_relevant(item)
         and fresh(item, now)
+        and substantive_title(item)
+        and acceptable_publisher(item)
     ]
-    auto_pool = [item for item in pool if item["categoryHint"] == "汽车产业"]
-    finance_pool = [item for item in pool if item["categoryHint"] == "汽车金融"]
-    domestic_auto = choose([item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN], 7, True)
-    foreign_auto = choose([item for item in auto_pool if item["sourceHint"] in daily.FOREIGN], 3, True)
-    finance = choose([item for item in finance_pool if item["sourceHint"] not in daily.FOREIGN], 4, False)
+    auto_pool = [
+        item for item in base_pool
+        if item["categoryHint"] == "汽车产业"
+        and within_age(item, now, timedelta(hours=48))
+    ]
+    finance_pool = [
+        item for item in base_pool
+        if item["categoryHint"] == "汽车金融"
+        and automotive_finance_relevant(item)
+        and within_age(item, now, timedelta(days=7))
+    ]
+    domestic_auto = choose(
+        [item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN],
+        7,
+        True,
+        source_limit=3,
+    )
+    finance = choose(
+        [item for item in finance_pool if item["sourceHint"] not in daily.FOREIGN],
+        4,
+        False,
+        minimum=0,
+    )
+    foreign_target = max(2, min(3, round((len(domestic_auto) + len(finance)) / 4)))
+    foreign_auto = choose(
+        [item for item in auto_pool if item["sourceHint"] in daily.FOREIGN],
+        foreign_target,
+        True,
+    )
     auto = domestic_auto + foreign_auto
     selected = auto + finance
     domestic_count = sum(item["sourceHint"] not in daily.FOREIGN for item in selected)
@@ -240,6 +403,8 @@ def main() -> None:
     stories = [daily.make_story(item, index + 30) for index, item in enumerate(selected)]
     resolved_urls = resolve_urls([item["url"] for item in selected])
     for story, item in zip(stories, selected):
+        story["publishedAt"] = item["publishedAt"]
+        story["publishedLabel"] = published_label(item, now)
         original_url = item["url"]
         direct_url = resolved_urls.get(original_url, original_url)
         if is_google_news_url(direct_url):
@@ -250,6 +415,10 @@ def main() -> None:
         observation, watch = professional_observation(story)
         story["whyItMatters"] = observation
         story["watchMetrics"] = watch
+    for story, item in zip(stories, selected):
+        maximum = timedelta(days=7) if item["categoryHint"] == "汽车金融" else timedelta(hours=48)
+        if not within_age(item, now, maximum):
+            raise ValueError(f"WeChat freshness validation failed: {story['title']}")
     observations = [story["whyItMatters"] for story in stories]
     if len(set(observations)) != len(observations):
         raise ValueError("WeChat professional observations must be unique")
@@ -259,7 +428,12 @@ def main() -> None:
         for right in range(left + 1, len(observations)):
             similarity = SequenceMatcher(None, observations[left], observations[right]).ratio()
             if similarity > 0.78:
-                raise ValueError(f"WeChat professional observations too similar: {left + 1}/{right + 1} ({similarity:.2f})")
+                raise ValueError(
+                    "WeChat professional observations too similar: "
+                    f"{left + 1}/{right + 1} ({similarity:.2f}) / "
+                    f"{stories[left]['title']} / {stories[right]['title']} / "
+                    f"{observations[left][:100]} / {observations[right][:100]}"
+                )
     data = {
         "dateLabel": f"{now.year}年{now.month}月{now.day}日 星期{'一二三四五六日'[now.weekday()]}",
         "statusLabel": f"公众号选题完成 · {now:%H:%M}",

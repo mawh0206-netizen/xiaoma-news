@@ -158,7 +158,7 @@ def main() -> None:
     auto_finance = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车金融"]
     groups = topic_groups(auto_industry, auto_finance)
     selected = [item for _, _, _, items in groups for item in items]
-    if len(auto_industry) < 6 or len(auto_finance) < 3 or len(selected) < 8:
+    if len(auto_industry) < 9 or len(selected) < 9:
         raise ValueError("公众号汽车专刊缺少足够的汽车热点或汽车金融内容")
     lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
     lead_title = lead_items[0][1]["title"]

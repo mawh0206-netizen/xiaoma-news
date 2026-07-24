@@ -138,6 +138,10 @@ def main() -> int:
             errors.append(f"{source}/{category}: {type(exc).__name__}: {exc}")
     for source, category, query in SEARCHES:
         try:
+            if category == "汽车产业":
+                query = f"{query} when:2d"
+            elif category == "汽车金融":
+                query = f"{query} when:7d"
             locale = "en" if source in {"Reuters", "Financial Times", "国际房地产", "Electrek", "InsideEVs", "Automotive News", "TechCrunch"} else "zh"
             candidates.extend(parse_feed(source, category, google_news_url(query, locale)))
         except Exception as exc:

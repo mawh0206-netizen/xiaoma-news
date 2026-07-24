@@ -58,6 +58,30 @@ def upload_cover(token: str) -> str:
     return result["media_id"]
 
 
+def find_draft_media_id(token: str, title: str) -> str:
+    result = json_request(
+        "https://api.weixin.qq.com/cgi-bin/draft/batchget?" + urllib.parse.urlencode({"access_token": token}),
+        {"offset": 0, "count": 20, "no_content": 0},
+    )
+    if result.get("errcode"):
+        raise RuntimeError(f"draft lookup failed: {result.get('errcode')} {result.get('errmsg')}")
+    for item in result.get("item", []):
+        news_items = item.get("content", {}).get("news_item", [])
+        if news_items and news_items[0].get("title") == title:
+            return item.get("media_id", "")
+    return ""
+
+
+def add_draft(token: str, article: dict) -> str:
+    result = json_request(
+        "https://api.weixin.qq.com/cgi-bin/draft/add?" + urllib.parse.urlencode({"access_token": token}),
+        {"articles": [article]},
+    )
+    if not result.get("media_id"):
+        raise RuntimeError(f"draft creation failed: {result.get('errcode')} {result.get('errmsg')}")
+    return result["media_id"]
+
+
 def main() -> None:
     credentials = json.loads(CREDENTIALS.read_text(encoding="utf-8-sig"))
     article = json.loads(PAYLOAD.read_text(encoding="utf-8"))
@@ -73,21 +97,29 @@ def main() -> None:
     article["thumb_media_id"] = thumb_media_id
     article["show_cover_pic"] = 1
     if existing.get("media_id") and existing.get("title") == article.get("title"):
+        action = "updated"
         draft = json_request(
             "https://api.weixin.qq.com/cgi-bin/draft/update?" + urllib.parse.urlencode({"access_token": token}),
             {"media_id": existing["media_id"], "index": 0, "articles": article},
         )
+        if draft.get("errcode") == 40007:
+            recovered_media_id = find_draft_media_id(token, article["title"])
+            if recovered_media_id:
+                draft = json_request(
+                    "https://api.weixin.qq.com/cgi-bin/draft/update?" + urllib.parse.urlencode({"access_token": token}),
+                    {"media_id": recovered_media_id, "index": 0, "articles": article},
+                )
+                media_id = recovered_media_id
+            else:
+                media_id = add_draft(token, article)
+                draft = {"errcode": 0}
+                action = "created"
+        else:
+            media_id = existing["media_id"]
         if draft.get("errcode") != 0:
             raise RuntimeError(f"draft update failed: {draft.get('errcode')} {draft.get('errmsg')}")
-        media_id, action = existing["media_id"], "updated"
     else:
-        draft = json_request(
-            "https://api.weixin.qq.com/cgi-bin/draft/add?" + urllib.parse.urlencode({"access_token": token}),
-            {"articles": [article]},
-        )
-        if not draft.get("media_id"):
-            raise RuntimeError(f"draft creation failed: {draft.get('errcode')} {draft.get('errmsg')}")
-        media_id, action = draft["media_id"], "created"
+        media_id, action = add_draft(token, article), "created"
     safe_result = {
         "media_id": media_id,
         "created_at": existing.get("created_at", int(time.time())),
