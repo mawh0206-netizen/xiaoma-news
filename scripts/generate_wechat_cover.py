@@ -20,6 +20,11 @@ PALETTES = [
     ("#17201C", "#3D725F", "#D9A441", "#F2EEE4"),
     ("#1E1A17", "#806147", "#D95B43", "#F5F0E8"),
 ]
+MEDIA_BRANDS = (
+    "汽车之家", "盖世汽车社区", "盖世汽车", "亿欧汽车", "亿欧",
+    "财联社", "第一财经", "证券时报", "新出行", "Reuters",
+    "Financial Times", "Electrek", "InsideEVs", "Automotive News", "TechCrunch",
+)
 
 
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
@@ -55,6 +60,15 @@ def lead_score(story: dict) -> int:
         if term in text
     )
     return score
+
+
+def cover_title(story: dict) -> str:
+    """Keep publisher attribution in the article, never in the visual cover."""
+    title = str(story.get("title", "")).strip()
+    title = re.sub(r"\s+[-—]\s+[^-—]{2,20}$", "", title).strip()
+    for brand in MEDIA_BRANDS:
+        title = title.replace(brand, "").strip(" -—｜|·")
+    return re.sub(r"\s{2,}", " ", title)
 
 
 def wrap(draw: ImageDraw.ImageDraw, text: str, face: ImageFont.FreeTypeFont, max_width: int, lines: int) -> list[str]:
@@ -96,7 +110,8 @@ def wrap(draw: ImageDraw.ImageDraw, text: str, face: ImageFont.FreeTypeFont, max
 def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     stories = data["stories"]
     lead = max(stories, key=lead_score)
-    seed = hashlib.sha256(f"{data['dateLabel']}|{lead['title']}".encode("utf-8")).digest()
+    headline = cover_title(lead)
+    seed = hashlib.sha256(f"{data['dateLabel']}|{headline}".encode("utf-8")).digest()
     bg, accent, signal, paper = PALETTES[seed[0] % len(PALETTES)]
     image = Image.new("RGB", (WIDTH, HEIGHT), bg)
     draw = ImageDraw.Draw(image, "RGBA")
@@ -118,7 +133,7 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     draw.text((70, 102), "汽车行业晨报", font=font(68, True), fill=paper)
 
     title_face = font(35, True)
-    title_lines = wrap(draw, lead["title"], title_face, 680, 2)
+    title_lines = wrap(draw, headline, title_face, 680, 2)
     title_y = 205
     for line in title_lines:
         draw.text((72, title_y), line, font=title_face, fill=paper)
@@ -137,12 +152,12 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     date_match = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", data["dateLabel"])
     date_text = f"{date_match.group(1)}.{int(date_match.group(2)):02d}.{int(date_match.group(3)):02d}" if date_match else data["dateLabel"]
     draw.text((72, 438), date_text, font=font(25, True), fill=signal)
-    draw.text((285, 438), f"HEADLINE · {lead['source']}", font=font(22), fill=paper)
+    draw.text((285, 438), "HEADLINE · INDUSTRY BRIEF", font=font(22), fill=paper)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output, "PNG", optimize=True)
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
-    return {"output": str(output), "sha256": digest, "lead": lead["title"], "size": [WIDTH, HEIGHT]}
+    return {"output": str(output), "sha256": digest, "lead": headline, "size": [WIDTH, HEIGHT]}
 
 
 def main() -> None:
