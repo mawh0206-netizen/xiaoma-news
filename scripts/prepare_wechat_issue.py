@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 from pathlib import Path
 
 import prepare_daily_issue as daily
+from google_news_url import is_google_news_url, resolve_urls
 
 ROOT = Path(__file__).resolve().parents[1]
 CANDIDATES = ROOT / "runtime" / "candidates.json"
@@ -237,7 +238,15 @@ def main() -> None:
     if not 0.75 <= domestic_ratio <= 0.85:
         raise ValueError(f"WeChat domestic source ratio outside target range: {domestic_count}/{len(selected)}")
     stories = [daily.make_story(item, index + 30) for index, item in enumerate(selected)]
-    for story in stories:
+    resolved_urls = resolve_urls([item["url"] for item in selected])
+    for story, item in zip(stories, selected):
+        original_url = item["url"]
+        direct_url = resolved_urls.get(original_url, original_url)
+        if is_google_news_url(direct_url):
+            raise ValueError(f"WeChat publisher URL unresolved: {story['source']} / {story['title']}")
+        if direct_url != original_url:
+            story["aggregatorUrl"] = original_url
+        story["url"] = direct_url
         observation, watch = professional_observation(story)
         story["whyItMatters"] = observation
         story["watchMetrics"] = watch
