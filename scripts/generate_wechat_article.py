@@ -132,7 +132,8 @@ def topic_groups(auto_items: list[tuple[int, dict]], finance_items: list[tuple[i
         if items:
             group_score = max(focus_score(item[1]) for item in items)
             ranked_groups.append((group_score, title, subtitles[title], items))
-    ranked_groups.sort(key=lambda group: group[0], reverse=True)
+    fixed_order = {"整车与品牌": 0, "数据与市场": 1, "智能网联与车载AI": 2, "汽车金融": 3, "供应链与产业经营": 4}
+    ranked_groups.sort(key=lambda group: fixed_order.get(group[1], 99))
     return [(f"{index:02d}", title, subtitle, items) for index, (_, title, subtitle, items) in enumerate(ranked_groups, 1)]
 
 
@@ -190,7 +191,7 @@ def main() -> None:
         "author": "小马儿Young",
         "digest": f"聚焦智能网联、车载AI、整车供应链与汽车金融。今日关注：{lead_title}"[:120],
         "content": article,
-        "content_source_url": f"{SITE}/archive.html?date={ARCHIVE_DATE}",
+        "content_source_url": f"{SITE}/wechat.html?date={ARCHIVE_DATE}",
         "need_open_comment": 0,
         "only_fans_can_comment": 0,
     }
