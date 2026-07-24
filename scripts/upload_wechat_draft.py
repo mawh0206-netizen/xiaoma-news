@@ -5,6 +5,7 @@ This script never calls the publish or mass-send APIs.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import mimetypes
 import time
@@ -62,7 +63,13 @@ def main() -> None:
     article = json.loads(PAYLOAD.read_text(encoding="utf-8"))
     token = access_token(credentials)
     existing = json.loads(RESULT.read_text(encoding="utf-8")) if RESULT.exists() else {}
-    thumb_media_id = existing.get("cover_media_id") or upload_cover(token)
+    cover_sha256 = hashlib.sha256(COVER.read_bytes()).hexdigest()
+    same_cover = (
+        existing.get("title") == article.get("title")
+        and existing.get("cover_sha256") == cover_sha256
+        and existing.get("cover_media_id")
+    )
+    thumb_media_id = existing["cover_media_id"] if same_cover else upload_cover(token)
     article["thumb_media_id"] = thumb_media_id
     article["show_cover_pic"] = 1
     if existing.get("media_id") and existing.get("title") == article.get("title"):
@@ -81,7 +88,14 @@ def main() -> None:
         if not draft.get("media_id"):
             raise RuntimeError(f"draft creation failed: {draft.get('errcode')} {draft.get('errmsg')}")
         media_id, action = draft["media_id"], "created"
-    safe_result = {"media_id": media_id, "created_at": existing.get("created_at", int(time.time())), "updated_at": int(time.time()), "title": article["title"], "cover_media_id": thumb_media_id}
+    safe_result = {
+        "media_id": media_id,
+        "created_at": existing.get("created_at", int(time.time())),
+        "updated_at": int(time.time()),
+        "title": article["title"],
+        "cover_media_id": thumb_media_id,
+        "cover_sha256": cover_sha256,
+    }
     RESULT.write_text(json.dumps(safe_result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"action": action, "title": article["title"], "result": str(RESULT)}, ensure_ascii=False))
 

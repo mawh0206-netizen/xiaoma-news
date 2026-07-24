@@ -6,6 +6,8 @@ import json
 import re
 from pathlib import Path
 
+from generate_wechat_cover import render_cover
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "runtime" / "wechat_news.json"
 OUTPUT = ROOT / "runtime" / "wechat_article.html"
@@ -35,13 +37,23 @@ def detail_url(index: int) -> str:
 def story_block(story: dict, index: int, number: int) -> str:
     metrics = extract_metrics(story)
     data_line = f'<p style="margin:0 0 12px;padding:10px 14px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.7;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
+    observation = esc(story["whyItMatters"])
+    observation = observation.replace(
+        "判断：",
+        '<strong style="color:#1d6a55;">判断：</strong>',
+        1,
+    ).replace(
+        "验证重点：",
+        '<br><strong style="color:#1d6a55;">验证重点：</strong>',
+        1,
+    )
     return f"""
     <section style="margin:0 0 28px;padding:0 0 25px;border-bottom:1px solid #e9e5dc;">
       <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;letter-spacing:.06em;">{number:02d} · {esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</p>
       <h3 style="margin:0 0 12px;color:#171a19;font-size:20px;line-height:1.5;font-weight:700;">{esc(story['title'])}</h3>
       <p style="margin:0 0 12px;color:#343936;font-size:16px;line-height:1.9;">{esc(story['summary'])}</p>
       {data_line}
-      <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">产品经理观察：</strong>{esc(story['whyItMatters'])}</p>
+      <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">产品经理观察</strong><br>{observation}</p>
       <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
     </section>"""
 
@@ -151,6 +163,7 @@ def main() -> None:
     lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
     lead_title = lead_items[0][1]["title"]
     lead_body = "；".join(item[1]["summary"] for item in lead_items)
+    cover_result = render_cover(data)
 
     body: list[str] = []
     body.append(f"""
@@ -196,7 +209,7 @@ def main() -> None:
         "only_fans_can_comment": 0,
     }
     PAYLOAD.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "selected": len(selected), "sections": [title for _, title, _, _ in groups]}, ensure_ascii=False))
+    print(json.dumps({"output": str(OUTPUT), "payload": str(PAYLOAD), "cover": cover_result, "selected": len(selected), "sections": [title for _, title, _, _ in groups]}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

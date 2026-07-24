@@ -1,6 +1,6 @@
 {
   "dateLabel": "2026年7月24日 星期五",
-  "statusLabel": "公众号选题完成 · 08:42",
+  "statusLabel": "公众号选题完成 · 09:14",
   "sources": [
     "Automotive News",
     "Electrek",
@@ -18,7 +18,7 @@
     {
       "title": "车企2026销量目标“爆表”：总和已超2500万辆 - 盖世汽车社区",
       "summary": "车企2026销量目标“爆表”：总和已超2500万辆 盖世汽车社区",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“车企2026销量目标“爆表”：总和已超2500万辆”中各企业目标的简单加总并不等于真实市场容量。报道中的超2500万辆需要放回统计口径和时间周期中看，目标要成立，必须同时满足终端需求、渠道库存和产能利用率三项约束；如果零售增速跟不上批发目标，压力最终会转化为价格折让和经销商资金占用。 验证重点：终端零售、批零差、渠道库存天数、产能利用率。",
       "source": "盖世汽车",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE9jQnZVOV9lNGI5eEF6eEIyVnh0WUZ3UVNzM3AzbXlNdGhtTTNrN2VaYVlHUWtFRDJOQWtFdEdHU2JfTzJ6RmVwM2U3d3Q2MkxG?oc=5",
@@ -30,12 +30,18 @@
         "车企2026销量目标“爆表”：总和已超2500万辆 盖世汽车社区",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "终端零售",
+        "批零差",
+        "渠道库存天数",
+        "产能利用率"
       ]
     },
     {
       "title": "驭势科技-行泊一体智能驾驶系统 | 申报2026第八届金辑奖最佳技术实践应用奖 - 盖世汽车社区",
       "summary": "驭势科技-行泊一体智能驾驶系统 | 申报2026第八届金辑奖最佳技术实践应用奖 盖世汽车社区",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“驭势科技-行泊一体智能驾驶系统 | 申报2026第…”目前提供的是技术案例背书，而不是新增订单证明。奖项材料应继续核对对应车型、实际装车规模和客户验收结果；只有案例能复制到更多平台并保持交付质量，技术影响力才会转化为商业壁垒。 验证重点：量产定点与SOP、装车量、用户使用率、单车硬件与算力成本。",
       "source": "盖世汽车",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1OdkNUczFTYWhoSFdhWFhxMmd1ZXJicTB6WlhYZ2FUVnJkSVotLTd4T0ptXzBfVGJxenJ3NjV3cTk4UjlRWlF1WTFyck5rNVNR?oc=5",
@@ -47,12 +53,18 @@
         "驭势科技-行泊一体智能驾驶系统 | 申报2026第八届金辑奖最佳技术实践应用奖 盖世汽车社区",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "量产定点与SOP",
+        "装车量",
+        "用户使用率",
+        "单车硬件与算力成本"
       ]
     },
     {
       "title": "实拍R 汽车全新车型ES33 “R-TECH 高能智慧体”重磅发布_文章 - 新出行",
       "summary": "实拍R 汽车全新车型ES33 “R-TECH 高能智慧体”重磅发布_文章 新出行",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“实拍R 汽车全新车型ES33 “R-TECH 高能…”把智能化作为核心卖点，真正的产品差异要落到用户可感知体验。应重点验证功能是否随车交付、OTA节奏是否稳定，以及智能配置带来的成本能否通过选装率或成交溢价收回。 验证重点：功能随车交付率、OTA频次、智能配置选装率、成交溢价。",
       "source": "新出行",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiT0FVX3lxTFBmTlM3dzItS2RHZ3BsLTZwbVYtTUhIWXRsOW00cUtIeUYzX1pMTmJjNnk4UUxoaXlSRGNVckJPaG5GZ3htWnVoaDU0dnljMlE?oc=5",
@@ -64,12 +76,18 @@
         "实拍R 汽车全新车型ES33 “R-TECH 高能智慧体”重磅发布_文章 新出行",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "功能随车交付率",
+        "OTA频次",
+        "智能配置选装率",
+        "成交溢价"
       ]
     },
     {
       "title": "东风日产N7新车首发亮相新能源转型再提速_文章 - 新出行",
       "summary": "东风日产N7新车首发亮相新能源转型再提速_文章 新出行",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“东风日产N7新车首发亮相新能源转型再提速”承担的不只是单车销量任务，也是传统品牌新能源转型的渠道验证。关键要看燃油车经销网络能否有效承接新能源获客与服务，以及新车定价是否会冲击原有产品体系而没有带来新增用户。 验证重点：新能源线索转化、经销商单店销量、增购用户占比、油电产品价格重叠。",
       "source": "新出行",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTFAySzVMbmJjOGZkLUZtQlk0QVRnTkNRTERRVGJOU0hfNzhDRzlna2FVX1JmRTdvN3NTM0I2My01Y3RTVHFxRG5hSDI1NVprR0s1?oc=5",
@@ -81,12 +99,18 @@
         "东风日产N7新车首发亮相新能源转型再提速_文章 新出行",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "新能源线索转化",
+        "经销商单店销量",
+        "增购用户占比",
+        "油电产品价格重叠"
       ]
     },
     {
       "title": "乐道L90、理想i8等新车上市！智己汽车发布超级增程技术！多家车企公布7月销量！丨一周大事件",
       "summary": "乐道L90、理想i8等新车上市！智己汽车发布超级增程技术！多家车企公布7月销量！丨一周大事件 电子工程专辑",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“乐道L90、理想i8等新车上市！智己汽车发布超级增…”提供了规模信号，但单一销量数字不足以判断经营质量。需要区分批发、零售、出口和库存转移，并观察增长是否依赖降价；只有份额提升与单车盈利同步，规模增长才具有可持续性。 验证重点：批发与零售差值、出口占比、成交均价、单车毛利。",
       "source": "电子工程专辑",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE1lQTl5TUp1ODZNZHdud29mbHE1MTVtVktfdVNGUGx5am1xU1dkaGhwLS1OTWcyQUJ4bl9rY2R4ZE1mX21ZN3l2Y3QxWFBPa2VJS0h3?oc=5",
@@ -98,12 +122,18 @@
         "乐道L90、理想i8等新车上市！智己汽车发布超级增程技术！多家车企公布7月销量！丨一周大事件 电子工程专辑",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "批发与零售差值",
+        "出口占比",
+        "成交均价",
+        "单车毛利"
       ]
     },
     {
       "title": "2026年新能源汽车市场展望：渗透率有望突破60% - 四川新闻",
       "summary": "2026年新能源汽车市场展望：渗透率有望突破60% 四川新闻",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“2026年新能源汽车市场展望：渗透率有望突破60%”反映的是结构变化，不是所有品牌都能同比例受益。报道中的60%需要放回统计口径和时间周期中看，渗透率上升后，竞争重点会从教育市场转向价格带覆盖、补能体验和存量用户复购，弱产品组合反而更容易在高渗透阶段被淘汰。 验证重点：分价格带渗透率、区域差异、复购率、新能源单车利润。",
       "source": "国内汽车综合",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9WUFNRUy1aS290X1ozSGVhc3NwUWpnQkJidzlsNnZ5T2RLWFpXU19oRVR5S3lKMG85a3RyN0ZYbUxqdDFiV3FWUklrbWxzdElqa0RySW41X0RrYldtdnhrZHl1aw?oc=5",
@@ -115,12 +145,18 @@
         "2026年新能源汽车市场展望：渗透率有望突破60% 四川新闻",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "分价格带渗透率",
+        "区域差异",
+        "复购率",
+        "新能源单车利润"
       ]
     },
     {
       "title": "第一届自动驾驶线控底盘技术研讨会暨拿森新产品发布会在杭州隆重召开 - 亿欧",
       "summary": "第一届自动驾驶线控底盘技术研讨会暨拿森新产品发布会在杭州隆重召开 亿欧",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“第一届自动驾驶线控底盘技术研讨会暨拿森新产品发布会…”涉及的是自动驾驶执行层，价值不在概念先进，而在冗余、安全和整车集成。线控底盘要进入量产，必须通过功能安全验证并与制动、转向和域控制器协同，单一零部件参数领先并不能替代主机厂的系统级验证。 验证重点：量产定点与SOP、装车量、用户使用率、单车硬件与算力成本。",
       "source": "亿欧汽车",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE5zWkdSQktJclg4WWJSamdrTTQzMl9ZcVZnNThnT2VrUlpWZEdIY29odENkSzZiSm9idDVINFlRMnoyaTUzR1J6WmMwQ1lUWTZjMk4xaA?oc=5",
@@ -132,12 +168,18 @@
         "第一届自动驾驶线控底盘技术研讨会暨拿森新产品发布会在杭州隆重召开 亿欧",
         "本条归入“汽车产业”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "量产定点与SOP",
+        "装车量",
+        "用户使用率",
+        "单车硬件与算力成本"
       ]
     },
     {
       "title": "日产 3 月份日本产量暴跌 44%，推迟 Z 汽车发布 - 汽车新闻",
       "summary": "3 月份日本产量锐减 44%，日产推迟 Z 汽车发布",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“日产 3 月份日本产量暴跌 44%，推迟 Z 汽车…”更像供需失衡或生产切换信号，不能用常规销量增长逻辑解释。报道中的44%需要放回统计口径和时间周期中看，需要先区分减产来自订单不足、零部件约束还是车型换代；若同时推迟新品，说明问题可能已从单月波动扩展到研发、认证或供应协同。 验证重点：工厂产能利用率、在手订单、零部件缺口、新品认证与投产节点。",
       "source": "Automotive News",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxObGl6cTJaTXZ2dlR2bjVHOU5UNVpITTJIX0NkUUZ3c0ZHN194aklsZEJPa05pMVNLVmRuanVRNWpFTEhDSGtRejd4V3Bta2RHRy05WVRtWUhITFNYV1NpUTJtaW5DUEhLMDlzdGpiWjNsRFZzUmhsOXQ3dGpwUmptVnlXSjdwcF9OUm5UU3FtRXp0YzRmWjZOOXEtTTc?oc=5",
@@ -153,12 +195,18 @@
       "originalTitle": "Nissan delays Z car launch, as Japan output plunges 44% in March - Automotive News",
       "originalSummary": "The report says that Nissan delays Z car launch, as Japan output plunges 44% in March Automotive News. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
       "sourceTranslatedSummary": "3 月份日本产量锐减 44%，日产推迟 Z 汽车发布",
-      "translatedSummary": "报道指出，3 月份日本产量锐减 44%，日产推迟 Z 汽车发布。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。"
+      "translatedSummary": "报道指出，3 月份日本产量锐减 44%，日产推迟 Z 汽车发布。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "watchMetrics": [
+        "工厂产能利用率",
+        "在手订单",
+        "零部件缺口",
+        "新品认证与投产节点"
+      ]
     },
     {
       "title": "在联邦政府的推动下，美国汽车行业竞相清除中国联网汽车硬件",
       "summary": "在联邦政府推动下，美国汽车行业竞相清除中国联网汽车硬件 路透",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“在联邦政府的推动下，美国汽车行业竞相清除中国联网汽…”首先影响的不是传播声量，而是BOM成本、供应连续性和合规路径。企业需要判断变化是一次性扰动还是会迫使供应商本地化，并评估替代件验证周期是否会拖慢车型交付。 验证重点：BOM成本变化、替代供应商验证周期、客户集中度、交付周期。",
       "source": "Reuters",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPS3k0VFhMXzdjcHd4SUczVkNmWVNQU1U5OHY3dHFVdjNzVklhYS01c0FnaW9vbUVrVnpaNFNvd3JGZ2FQUXAybzdXekU4Y1ptT1JVN0p0WEVJQUdEaS1HSDFvN29lbllLbmlQZThVaWphaUUxdVNSLURqSDlSZF9zTzBpRzIxSFJyMlhlUVZQZEZZTWg2N0o2d1Y1bG81RXVacXBCZHZrSEpxNjkxZWZnU3VxbE8xVFhJa2N3OVFqd053WUliQzFKd1BtUm9jVE02UHc?oc=5",
@@ -174,12 +222,18 @@
       "originalTitle": "U.S. auto industry races to purge Chinese connected-car hardware amid federal push",
       "originalSummary": "The report says that U,S, auto industry races to purge Chinese connected-car hardware amid federal push Reuters. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
       "sourceTranslatedSummary": "在联邦政府推动下，美国汽车行业竞相清除中国联网汽车硬件 路透",
-      "translatedSummary": "报道指出，在联邦政府推动下，美国汽车行业竞相清除中国联网汽车硬件 路透。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。"
+      "translatedSummary": "报道指出，在联邦政府推动下，美国汽车行业竞相清除中国联网汽车硬件 路透。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "watchMetrics": [
+        "BOM成本变化",
+        "替代供应商验证周期",
+        "客户集中度",
+        "交付周期"
+      ]
     },
     {
       "title": "雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以快速转向电动汽车 - Electrek",
       "summary": "雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以快速转向电动汽车 Electrek",
-      "whyItMatters": "这条消息可能影响汽车产业领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以…”检验的是同一电动车平台跨区域复制的效率。海外扩张不能只看上市国家数量，还要比较本地认证、电池供应、渠道成本和定价后的竞争力；区域版本差异过大，会削弱平台规模效应。 验证重点：区域售价、本地认证进度、电池本地化率、单平台全球销量。",
       "source": "Electrek",
       "category": "汽车产业",
       "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNNXNqU0dVRExIZ3JzOWpWS1d3RF9IZS15QXlvU3BxYnlTVWxmR3N0VkVxbTYxWmJld3ZpeUxGeHhXdGVMYmZGVkxxUFJ2SS1ZRWJyTW5YSG5aM1JCU0hENjFTUEtQcVpCTFNkZGwzekhfQm1wSnRrSk5IYXJ3VFhZaFAzaHd1cXNEdVJLRDRUb3FNMUNjUG5PWUU4VDY5SVZwbmVncXZYRnRFelRoV1F1eTAzd0JITG9zMFRnbWRmSjNqUQ?oc=5",
@@ -195,12 +249,18 @@
       "originalTitle": "Lexus launches electric SUV for Asia and Europe, showing that Toyota can quickly shift to EVs - Electrek",
       "originalSummary": "The report says that Lexus launches electric SUV for Asia and Europe, showing that Toyota can quickly shift to EVs Electrek. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
       "sourceTranslatedSummary": "雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以快速转向电动汽车 Electrek",
-      "translatedSummary": "报道指出，雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以快速转向电动汽车 Electrek。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。"
+      "translatedSummary": "报道指出，雷克萨斯在亚洲和欧洲推出电动 SUV，表明丰田可以快速转向电动汽车 Electrek。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "watchMetrics": [
+        "区域售价",
+        "本地认证进度",
+        "电池本地化率",
+        "单平台全球销量"
+      ]
     },
     {
       "title": "汽车十年销量大增4倍 金融渗透率20%显尴尬",
       "summary": "汽车十年销量大增4倍 金融渗透率20%显尴尬 第一财经",
-      "whyItMatters": "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“汽车十年销量大增4倍 金融渗透率20%显尴尬”不能简单解读为金融渗透率越高越好。报道中的4倍、20%需要放回统计口径和时间周期中看，真正决定业务质量的是金融是否带来新增成交，同时没有用过度授信掩盖终端需求不足。 验证重点：金融渗透率、单车融资额、新增成交贡献、不良率。",
       "source": "第一财经",
       "category": "汽车金融",
       "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5aQjRuWEs1RTVkbmlWNHRDRGQ0LTRvWkFNSjFNVW1UbGd4ZlpLZTFVaWE0ZWpfcTdDa1NhLUEtVFhhTV9YV0N3Q3JicTdEcENN?oc=5",
@@ -212,12 +272,18 @@
         "汽车十年销量大增4倍 金融渗透率20%显尴尬 第一财经",
         "本条归入“汽车金融”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "金融渗透率",
+        "单车融资额",
+        "新增成交贡献",
+        "不良率"
       ]
     },
     {
       "title": "至少7家汽车金融公司官宣车贷“0首付”，领先商业银行成为“急先锋”，业内：风险预警要做好",
       "summary": "至少7家汽车金融公司官宣车贷“0首付”，领先商业银行成为“急先锋”，业内：风险预警要做好 财联社",
-      "whyItMatters": "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“至少7家汽车金融公司官宣车贷“0首付”，领先商业银…”的核心不是促销力度，而是信用风险从首付款转移到更高贷款价值比。报道中的7家需要放回统计口径和时间周期中看，短期订单转化可能改善，但如果利率补贴、残值假设和经销商回购责任不透明，坏账与提前结清成本会在后端暴露。 验证重点：实际年化利率、贷款价值比LTV、首期逾期率、经销商追索责任。",
       "source": "财联社",
       "category": "汽车金融",
       "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFBnTlhaQ2NEWmlJX3VQWHg2RDQ4NDgzcWkxMVpRdFJXTEN0RUYwY1lCNmFmTmJhRXNVTjFpZF9LN0wxbmpwTHZLTw?oc=5",
@@ -229,12 +295,18 @@
         "至少7家汽车金融公司官宣车贷“0首付”，领先商业银行成为“急先锋”，业内：风险预警要做好 财联社",
         "本条归入“汽车金融”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "实际年化利率",
+        "贷款价值比LTV",
+        "首期逾期率",
+        "经销商追索责任"
       ]
     },
     {
       "title": "新车不做理想、蔚来？中国银行回应传闻内容“不属实”，多家银行仍在“冲刺”汽车金融市场",
       "summary": "新车不做理想、蔚来？中国银行回应传闻内容“不属实”，多家银行仍在“冲刺”汽车金融市场 财联社",
-      "whyItMatters": "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“新车不做理想、蔚来？中国银行回应传闻内容“不属实”…”意味着获客竞争正从审批速度转向资金成本与风险定价。产品侧不能只比较名义利率，还要拆分贴息来源、审批通过率、提前还款规则以及银行和汽车金融公司的客群分层。 验证重点：审批通过率、资金成本、单车贴息、30天以上逾期率。",
       "source": "财联社",
       "category": "汽车金融",
       "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE0zYm5IYzJaWFFtSVFIdGpIUm9MMk1aaUVTMEJyWkl1N0xCck1FSkhjYTFUeE50d0pWYlFlLW5IT2RNNEFxelpEQQ?oc=5",
@@ -246,12 +318,18 @@
         "新车不做理想、蔚来？中国银行回应传闻内容“不属实”，多家银行仍在“冲刺”汽车金融市场 财联社",
         "本条归入“汽车金融”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "审批通过率",
+        "资金成本",
+        "单车贴息",
+        "30天以上逾期率"
       ]
     },
     {
       "title": "车贷新规显效 银行、汽车金融公司入局 记者实探“0首付”成色几何",
       "summary": "车贷新规显效 银行、汽车金融公司入局 记者实探“0首付”成色几何 证券时报",
-      "whyItMatters": "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。",
+      "whyItMatters": "判断：“车贷新规显效 银行、汽车金融公司入局 记者实探“0…”要验证的是新规落地后产品有没有把首付门槛变成隐性融资成本。低首付本身并不违规，但销售流程必须充分披露实际年化利率、附加服务和提前还款条件，否则成交提升会以投诉、退贷和合规成本的形式回流。 验证重点：合同实际年化利率、捆绑服务费用、提前还款率、投诉与退贷率。",
       "source": "证券时报",
       "category": "汽车金融",
       "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9Eb0o0VW83b0JrX0txTEtoaWZUSlRWNkpKV3NqRlZTSmlUZDVLQ09rZ2NMcERRNWVhd0xWZXRFTHU3VGRyY180MlVxSlVfdUFpbkl0djBZckJPWktk?oc=5",
@@ -263,6 +341,12 @@
         "车贷新规显效 银行、汽车金融公司入局 记者实探“0首付”成色几何 证券时报",
         "本条归入“汽车金融”栏目，发布时间按今日候选池记录。",
         "这条消息可能影响汽车金融领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
+      ],
+      "watchMetrics": [
+        "合同实际年化利率",
+        "捆绑服务费用",
+        "提前还款率",
+        "投诉与退贷率"
       ]
     }
   ]
