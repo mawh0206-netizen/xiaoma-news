@@ -7,6 +7,7 @@ import urllib.parse
 import urllib.request
 from collections import Counter
 from datetime import datetime, timedelta, timezone
+from difflib import SequenceMatcher
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +29,11 @@ AUTO_ENGLISH = re.compile(r"\b(?:car|cars|vehicle|vehicles|automotive|automaker|
 AUTO_BLOCKERS = re.compile(r"\b(?:aircraft|airline|aviation|airport|ship|shipping|nike)\b", re.I)
 AUTO_FOCUS_TERMS = ("上市", "发布", "首发", "亮相", "新车", "车型", "智能网联", "智能驾驶", "自动驾驶", "车载AI", "座舱", "芯片", "电池", "充电", "供应链", "零部件", "汽车金融", "车贷", "经销商", "robotaxi", "ADAS", "launch", "debut", "connected-car")
 AUTO_DATA_TERMS = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "现金流", "同比", "环比", "万辆", "%", "sales", "deliveries", "revenue", "margin", "inventory")
+DECISION_METRIC_RE = re.compile(
+    r"(?:约|超|近|达|增长|下降|上涨|下跌)?\s*\d+(?:\.\d+)?\s*"
+    r"(?:%|万亿元|亿元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
+    re.I,
+)
 EXISTING_BY_URL = {s.get("url"): s for s in json.loads(DATA.read_text(encoding="utf-8")).get("stories", [])} if DATA.exists() else {}
 
 
@@ -174,6 +180,158 @@ def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
     return picked
 
 
+def decision_metrics(story: dict) -> list[str]:
+    text = f"{story.get('title', '')} {story.get('summary', '')}"
+    values = []
+    for value in DECISION_METRIC_RE.findall(text):
+        cleaned = re.sub(r"\s+", "", value)
+        if cleaned not in values:
+            values.append(cleaned)
+    return values[:3]
+
+
+def decision_note(story: dict) -> str:
+    title = str(story.get("title", "")).strip()
+    summary = re.sub(r"\s+", " ", str(story.get("summary", ""))).strip()
+    display_title = re.sub(r"\s+[-—]\s+[^-—]{2,20}$", "", title).strip()
+    display_summary = re.sub(r"\s+[-—]\s+[^-—]{2,20}$", "", summary).strip()
+    category = story.get("category", "")
+    text = f"{title} {summary}".lower()
+    subject = display_title if len(display_title) <= 34 else display_title[:33] + "…"
+    metrics = decision_metrics(story)
+    data = f"先核对报道中的{'、'.join(metrics)}采用什么统计口径；" if metrics else ""
+    openings = (
+        f"这条新闻真正要看的不是标题，而是“{subject}”会不会改变业务结果。",
+        f"把“{subject}”放进经营里看，关键不在声量，而在结果能否兑现。",
+        f"对决策最有用的信息，是“{subject}”背后的约束条件。",
+        f"别急着顺着“{subject}”下结论，先看它通过哪条路径影响经营。",
+    )
+    opening = openings[sum(ord(char) for char in title) % len(openings)]
+
+    if category == "AI":
+        if any(term in text for term in ("政治", "特朗普", "政府", "选举", "争议")):
+            core = "这类消息对AI业务的直接影响有限，更值得看的是创始人言论会不会转化为监管摩擦、品牌风险或关键客户态度变化。"
+            watch = "观察政府合同、监管动作、客户流失和公司治理是否出现实质变化；没有这些变化，就不必把政治表态当成经营拐点。"
+        elif any(term in text for term in ("重聚", "家人", "寻亲", "个人故事")):
+            core = "这是产品进入真实生活场景的案例，但个案感染力不能代替规模证据；价值在于AI是否解决了传统工具难以完成的信息整理和线索匹配。"
+            watch = "后续看类似任务的成功率、隐私保护、人工核验和用户是否持续使用。"
+        elif any(term in text for term in ("就业", "岗位", "劳动力", "裁员", "招聘", "失业")):
+            core = "AI对就业的影响不会平均发生，最先变化的是可标准化任务、初级岗位数量和团队人效，而不是某个职业一夜消失。"
+            watch = "盯住企业实际招聘、每名员工产出和AI工具使用率，三项同时变化才算结构性替代。"
+        elif any(term in text for term in ("数据中心", "电力", "算力", "芯片", "资本开支", "capex")):
+            core = "算力扩张能否成立，取决于电力、折旧和推理成本能否被真实收入覆盖，宣布投资规模本身不等于形成回报。"
+            watch = "重点看上架率、单位推理成本、付费客户增速和资本开支回收期。"
+        elif any(term in text for term in ("监管", "版权", "隐私", "安全", "诉讼", "法案")):
+            core = "规则变化会直接抬高数据取得、模型训练和产品上线的合规成本，也可能重新划分平台与内容方的议价权。"
+            watch = "后续看正式条款、适用范围、整改期限和企业是否调整产品功能。"
+        elif any(term in text for term in ("融资", "估值", "投资", "收购")):
+            core = "融资证明资本愿意下注，不证明产品已经找到稳定需求；高估值会把收入增长和毛利兑现压力提前。"
+            watch = "更值得跟踪的是年度经常性收入、客户续费、现金消耗速度和下一轮融资条件。"
+        elif any(term in text for term in ("模型", "助手", "智能体", "chatgpt", "claude", "发布")):
+            core = "模型能力只有转成高频使用、付费转化和更低交付成本，才会形成产品壁垒；榜单领先通常维持不了太久。"
+            watch = "观察活跃用户、任务完成率、续费率以及每次有效任务的推理成本。"
+        else:
+            core = "这更像一个AI使用场景信号，不能直接外推成行业增长；需要区分一次性尝鲜、真实效率提升和长期付费意愿。"
+            watch = "看用户是否持续使用、是否愿意付费，以及风险和人工复核成本有没有同步上升。"
+    elif category == "科技":
+        if any(term in text for term in ("芯片", "半导体", "传感器", "硬件")):
+            core = "技术参数领先只是起点，商业价值要经过良率、认证、客户导入和量产成本四道关。"
+            watch = "后续关注量产时间、客户定点、良率爬坡和单颗毛利，而不是只看实验室指标。"
+        elif any(term in text for term in ("融资", "天使轮", "a轮", "投资")):
+            core = "早期融资解决的是生存时间，不是商业模式；真正的分水岭是能否把试用客户变成可续费收入。"
+            watch = "判断时看现金跑道、付费客户数、客单价和获客成本是否改善。"
+        elif any(term in text for term in ("安全", "漏洞", "攻击", "故障")):
+            core = "安全事件的严重性取决于影响范围、数据敏感度和修复速度，单看厂商声明容易低估后续成本。"
+            watch = "核对受影响用户、补丁完成率、监管通报和客户流失情况。"
+        else:
+            core = "新技术能否成为生意，要看它是否解决高频痛点，并在性能、成本和切换门槛之间形成明确优势。"
+            watch = "下一步看真实部署、客户复购、交付周期和毛利，而不是发布会上的功能数量。"
+    elif category == "企业商业":
+        if any(term in text for term in ("营收", "利润", "财报", "亏损", "毛利")):
+            core = "财务数字要拆成增长来源和利润质量：涨价、并表和一次性收益，含金量都低于核心业务量价齐升。"
+            watch = "把收入增速、经营现金流、毛利率和管理层指引放在一起看。"
+        elif any(term in text for term in ("裁员", "重组", "合并", "收购", "出售")):
+            core = "组织调整可以降成本，也可能伤害交付和客户关系；真正效果要看节省费用是否超过整合损耗。"
+            watch = "关注重组费用、员工流失、客户续约和调整后的利润率。"
+        elif any(term in text for term in ("订单", "签约", "合作", "中标")):
+            core = "签约不是收入，关键是合同金额、履约周期、回款条件和客户是否有取消权。"
+            watch = "后续用订单转收入比例、应收账款和现金回款验证合作质量。"
+        else:
+            core = "企业动作是否重要，要看它能否带来新增客户、提高议价权或降低长期成本，而不是短期曝光。"
+            watch = "跟踪客户数、客单价、交付效率和经营现金流的实际变化。"
+    elif category == "财经":
+        if any(term in text for term in ("利率", "降息", "降准", "通胀", "cpi", "货币")):
+            core = "宏观政策不会直接变成增长，必须经过资金成本、信用投放和居民企业需求三层传导。"
+            watch = "看市场利率、信贷结构、企业融资和终端需求是否同步改善。"
+        elif any(term in text for term in ("银行", "贷款", "不良", "信贷", "金融公司")):
+            core = "金融规模增长是否健康，取决于资金成本、资产收益和坏账三者的平衡，不能只看余额。"
+            watch = "重点核对净息差、不良生成率、拨备覆盖和逾期迁徙。"
+        elif any(term in text for term in ("政策", "监管", "改革", "规则")):
+            core = "政策信号和实际效果之间隔着执行细则、地方落实和市场主体响应，方向正确不等于马上见效。"
+            watch = "后续看正式文件、实施时间、覆盖对象和第一批真实业务数据。"
+        else:
+            core = "这类财经信息要区分短期情绪与中期基本面，单一数字通常不能说明经济拐点。"
+            watch = "结合连续月份数据、结构分项和企业现金流判断趋势是否成立。"
+    elif category == "投资市场":
+        if any(term in text for term in ("财报", "营收", "利润", "业绩", "指引")):
+            core = "市场交易的是业绩相对预期的差，而不是数字绝对好坏；好业绩若早已计价，也可能不涨。"
+            watch = "比较实际结果、市场一致预期、下一期指引和估值位置。"
+        elif any(term in text for term in ("上涨", "下跌", "暴涨", "暴跌", "新高", "跳水")):
+            core = "价格异动先说明资金和预期在变，不等于基本面已经改变；追着涨跌解释很容易倒因为果。"
+            watch = "核对成交量、资金流、事件持续性和盈利预期是否真的调整。"
+        elif any(term in text for term in ("债券", "收益率", "国债", "美元", "汇率")):
+            core = "利率和汇率变化会通过估值折现、融资成本和跨境资金流影响资产，但不同板块敏感度差异很大。"
+            watch = "看期限利差、实际利率、美元流动性和企业盈利暴露。"
+        else:
+            core = "这条消息能否形成投资逻辑，要回答盈利是否改变、市场是否已计价、风险回报是否仍合算三个问题。"
+            watch = "不要只看事件方向，继续跟踪盈利预测、估值和资金行为。"
+    elif category == "房地产":
+        if any(term in text for term in ("房价", "销售", "成交", "库存", "去化")):
+            core = "楼市是否企稳要同时看量、价和库存；单月成交回升如果依赖大幅折价，不能算真正复苏。"
+            watch = "盯住新房与二手房成交、价格折扣、去化周期和土地市场。"
+        elif any(term in text for term in ("债", "融资", "违约", "偿债", "现金流")):
+            core = "地产信用风险的核心是项目现金回笼能否覆盖到期债务，融资消息本身只能缓解时间压力。"
+            watch = "核对销售回款、受限现金、到期债务和融资成本。"
+        elif any(term in text for term in ("政策", "降准", "利率", "救市", "限购")):
+            core = "政策效果取决于能否降低购房门槛并修复收入预期；资金更便宜，不代表居民马上加杠杆。"
+            watch = "看按揭利率、首付比例、来访转化和政策后连续成交数据。"
+        else:
+            core = "地产信息要落到项目和城市层面，全国口径容易掩盖区域、产品和企业信用的巨大差异。"
+            watch = "继续看所在城市库存、项目去化、开发商现金流和交付进度。"
+    elif category == "汽车产业":
+        if any(term in text for term in ("销量", "交付", "产量", "零售", "出口", "份额")):
+            core = "销量增长不等于经营变好，要区分批发、零售、出口和库存转移，还要看是否靠降价换量。"
+            watch = "判断质量时同时看批零差、成交均价、库存天数和单车毛利。"
+        elif any(term in text for term in ("智能驾驶", "自动驾驶", "座舱", "fsd", "传感器", "芯片")):
+            core = "智能化价值不在功能演示，而在能否安全量产、被用户持续使用，并把单车成本转成收入或溢价。"
+            watch = "后续看车型定点、装车量、用户使用率、接管数据和硬件成本。"
+        elif any(term in text for term in ("电池", "供应链", "零部件", "产能", "工厂", "关税")):
+            core = "供应链变化首先影响BOM成本、交付连续性和资本占用；自研并不天然比外采更划算。"
+            watch = "核对良率、产能利用率、替代验证周期和真实成本节省。"
+        elif any(term in text for term in ("裁员", "重组", "合资", "亏损", "利润")):
+            core = "车企调整的本质是重新寻找规模与盈利的平衡，砍成本如果同时伤害新品和渠道，效果会反噬销量。"
+            watch = "看固定成本下降、产能利用率、新品节奏和经销商库存。"
+        else:
+            core = "汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。"
+            watch = "继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+    elif category == "汽车金融":
+        if any(term in text for term in ("不良", "逾期", "资产规模", "贷款")):
+            core = "汽车金融不能只看规模和低不良率，还要看新增贷款质量、资金成本以及风险是否被宽限期暂时掩盖。"
+            watch = "核对首期逾期、30天以上逾期、净息差、拨备和经销商敞口。"
+        elif any(term in text for term in ("首付", "贴息", "利率", "车贷")):
+            core = "低首付和贴息能拉动成交，也会提高贷款价值比；促销力度必须和客户偿付能力一起看。"
+            watch = "关注实际年化利率、审批通过率、提前还款和首期逾期。"
+        else:
+            core = "这条信息先要确认是否真属于汽车金融，而不是把车企股价或普通汽车新闻误当金融业务。"
+            watch = "后续必须看到贷款、租赁、库存融资、保险或经销商资金的明确数据。"
+    else:
+        core = "这条消息的价值取决于它是否改变需求、成本、竞争位置或现金流，而不是短期讨论热度。"
+        watch = "继续用正式披露和后续经营数据验证。"
+
+    fact = display_summary[:56] + ("…" if len(display_summary) > 56 else "")
+    return f"{opening}{data}{core}报道给出的事实锚点是：{fact}。{watch}"
+
+
 def detail_body(story: dict, deep: bool = False) -> str:
     source, category = story["source"], story["category"]
     summary, why = story["summary"], story["whyItMatters"]
@@ -210,12 +368,13 @@ def make_story(item: dict, index: int) -> dict:
         title, summary = original_title, original_summary
     if title == original_title and is_foreign:
         title = f"{source}报道：{original_title}"
-    why = f"这条消息可能影响{item['categoryHint']}领域的需求、成本、竞争格局或资本回报，需要结合后续公告与经营数据验证。"
     story = {
-        "title": title, "summary": summary, "whyItMatters": why,
+        "title": title, "summary": summary,
         "source": source, "category": item["categoryHint"], "url": item["url"],
         "publishedLabel": "今日", "isTop": index < 20,
     }
+    story["whyItMatters"] = decision_note(story)
+    why = story["whyItMatters"]
     if story["category"] == "投资市场":
         story.update({"market": "海外资本市场" if is_foreign else "中国资本市场", "sentiment": "中性观察", "horizon": "短中期跟踪", "riskNote": "市场价格受消息、流动性和后续披露共同影响，本文不构成投资建议。"})
     story["detailBody"] = detail_body(story, index < 20)
@@ -266,6 +425,20 @@ def main() -> None:
     same_day = str(current.get("dateLabel", "")).startswith(f"{now.year}年{now.month}月{now.day}日")
     issue = int(current.get("issue", 0)) if same_day else int(current.get("issue", 0)) + 1
     stories = [make_story(item, i) for i, item in enumerate(selected)]
+    notes = [story["whyItMatters"] for story in stories]
+    if len(set(notes)) != len(notes) or any(len(note) < 90 for note in notes):
+        raise ValueError("website decision-note uniqueness or depth validation failed")
+    max_similarity = 0.0
+    max_pair = (0, 0)
+    for left in range(len(notes)):
+        for right in range(left + 1, len(notes)):
+            similarity = SequenceMatcher(None, notes[left], notes[right]).ratio()
+            if similarity > max_similarity:
+                max_similarity, max_pair = similarity, (left + 1, right + 1)
+    if max_similarity > 0.82:
+        raise ValueError(
+            f"website decision notes too similar: {max_pair[0]}/{max_pair[1]} ({max_similarity:.2f})"
+        )
     overlap = sum(1 for s in stories if s["url"] in old_urls)
     if overlap / len(stories) > 0.2:
         raise ValueError(f"cross-day overlap too high: {overlap}/{len(stories)}")
