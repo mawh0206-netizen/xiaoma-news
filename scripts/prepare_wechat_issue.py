@@ -26,7 +26,16 @@ def fresh(item: dict, now: datetime) -> bool:
         return False
     months = {int(value) for value in re.findall(r"(?<!\d)(1[0-2]|[1-9])月", title)}
     allowed = {now.month, 12 if now.month == 1 else now.month - 1}
-    return not months or bool(months & allowed)
+    if months and not months & allowed:
+        return False
+    quarter_map = {"一": 1, "二": 2, "三": 3, "四": 4}
+    quarters = {
+        int(value) if value.isdigit() else quarter_map[value]
+        for value in re.findall(r"([一二三四1-4])季度", title)
+    }
+    current_quarter = (now.month - 1) // 3 + 1
+    allowed_quarters = {current_quarter, max(1, current_quarter - 1)}
+    return not quarters or bool(quarters & allowed_quarters)
 
 
 def published_at(item: dict) -> datetime | None:
@@ -73,6 +82,8 @@ def substantive_title(item: dict) -> bool:
     return (
         len(title) >= 7
         and title not in {"汽车出行", "汽车行业", "新能源汽车"}
+        and "行业日报" not in title
+        and "产业日报" not in title
         and not ("快讯" in title and "；" in title)
     )
 
@@ -232,7 +243,7 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "若多数用户仍频繁用油，所谓纯电体验就没有形成产品闭环。"
         )
         watch = ["真实纯电使用占比", "馈电油耗", "增程器介入噪声", "电池与油箱成本"]
-    elif any(term in text for term in ("智能驾驶", "自动驾驶", "智能网联", "机器人出租车", "行泊一体", "域控制器", "北斗", "线控", "座舱", "车载ai", "adas", "robotaxi")):
+    elif any(term in text for term in ("智能驾驶", "自动驾驶", "智能网联", "机器人出租车", "行泊一体", "域控制器", "北斗", "线控", "座舱", "车载ai", "fsd", "adas", "robotaxi")):
         if any(term in text for term in ("robotaxi", "机器人出租车")):
             judgment = (
                 f"“{subject}”应按运营业务而非自动驾驶演示来评估。{data_anchor}"
