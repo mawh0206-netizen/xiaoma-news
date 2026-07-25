@@ -74,6 +74,8 @@ def editorial_topic(item: dict) -> str:
     text = f"{item.get('titleOriginal', '')} {item.get('summaryOriginal', '')}".lower()
     if "电池" in text and any(term in text for term in ("消费税", "电池税", "征税")):
         return "battery-tax"
+    if "渗透率" in text:
+        return "penetration-rate"
     return ""
 
 
@@ -115,6 +117,7 @@ def choose(
     topic_coverage: bool,
     minimum: int | None = None,
     source_limit: int = 2,
+    against: list[dict] | None = None,
 ) -> list[dict]:
     minimum = limit if minimum is None else minimum
     ranked = sorted(pool, key=daily.score, reverse=True)
@@ -127,10 +130,17 @@ def choose(
     ordered.extend(item for item in ranked if item not in ordered)
     selected: list[dict] = []
     for item in ordered:
-        if daily.too_similar(item, selected):
+        comparison = selected + (against or [])
+        if daily.too_similar(item, comparison):
             continue
         topic = editorial_topic(item)
-        if topic and any(editorial_topic(existing) == topic for existing in selected):
+        if topic and any(editorial_topic(existing) == topic for existing in comparison):
+            continue
+        candidate_observation = observation_preview(item)
+        if any(
+            SequenceMatcher(None, candidate_observation, observation_preview(existing)).ratio() > 0.78
+            for existing in comparison
+        ):
             continue
         if sum(existing["sourceHint"] == item["sourceHint"] for existing in selected) >= source_limit:
             continue
@@ -358,8 +368,21 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         )
         watch = ["后续正式公告", "终端用户反馈", "商业化进度", "经营数据兑现"]
 
-    observation = f"判断：{judgment} 验证重点：{'、'.join(watch)}。"
+    fact_anchor = re.sub(r"\s+", " ", str(story.get("summary", ""))).strip()
+    if len(fact_anchor) > 48:
+        fact_anchor = fact_anchor[:48] + "…"
+    evidence = f" 事实锚点：{fact_anchor}。" if fact_anchor else ""
+    observation = f"判断：{judgment}{evidence} 验证重点：{'、'.join(watch)}。"
     return observation, watch
+
+
+def observation_preview(item: dict) -> str:
+    story = {
+        "title": item.get("titleOriginal", ""),
+        "summary": item.get("snippetOriginal", ""),
+        "category": item.get("categoryHint", ""),
+    }
+    return professional_observation(story)[0]
 
 
 def main() -> None:
@@ -398,12 +421,14 @@ def main() -> None:
         4,
         False,
         minimum=0,
+        against=domestic_auto,
     )
     foreign_target = max(2, min(3, round((len(domestic_auto) + len(finance)) / 4)))
     foreign_auto = choose(
         [item for item in auto_pool if item["sourceHint"] in daily.FOREIGN],
         foreign_target,
         True,
+        against=domestic_auto + finance,
     )
     auto = domestic_auto + foreign_auto
     selected = auto + finance
