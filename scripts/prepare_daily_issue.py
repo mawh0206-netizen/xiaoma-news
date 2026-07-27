@@ -10,6 +10,8 @@ from datetime import datetime, timedelta, timezone
 from difflib import SequenceMatcher
 from pathlib import Path
 
+from google_news_url import is_google_news_url, resolve_urls
+
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "news.json"
 CANDIDATES = ROOT / "runtime" / "candidates.json"
@@ -34,7 +36,12 @@ DECISION_METRIC_RE = re.compile(
     r"(?:%|万亿元|亿元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
     re.I,
 )
-EXISTING_BY_URL = {s.get("url"): s for s in json.loads(DATA.read_text(encoding="utf-8")).get("stories", [])} if DATA.exists() else {}
+EXISTING_BY_URL = {}
+if DATA.exists():
+    for existing_story in json.loads(DATA.read_text(encoding="utf-8")).get("stories", []):
+        for existing_url in (existing_story.get("url"), existing_story.get("aggregatorUrl")):
+            if existing_url:
+                EXISTING_BY_URL[existing_url] = existing_story
 
 
 def clean_title(value: str, source: str) -> str:
@@ -546,7 +553,12 @@ def main() -> None:
     yesterday = now.date() - timedelta(days=1)
     previous_path = ARCHIVE / f"{yesterday:%Y-%m-%d}.json"
     previous = json.loads(previous_path.read_text(encoding="utf-8")) if previous_path.exists() else {"stories": []}
-    old_urls = {x.get("url") for x in previous["stories"]}
+    old_urls = {
+        url
+        for item in previous["stories"]
+        for url in (item.get("url"), item.get("aggregatorUrl"))
+        if url
+    }
     selected = select(candidates, old_urls)
     top_foreign = sorted((x for x in selected if x["sourceHint"] in FOREIGN), key=score, reverse=True)[:10]
     top_domestic = sorted((x for x in selected if x["sourceHint"] in DOMESTIC), key=score, reverse=True)[:10]
@@ -559,6 +571,15 @@ def main() -> None:
     same_day = str(current.get("dateLabel", "")).startswith(f"{now.year}年{now.month}月{now.day}日")
     issue = int(current.get("issue", 0)) if same_day else int(current.get("issue", 0)) + 1
     stories = [make_story(item, i) for i, item in enumerate(selected)]
+    resolved_urls = resolve_urls([item["url"] for item in selected])
+    for story, item in zip(stories, selected):
+        aggregator_url = item["url"]
+        direct_url = resolved_urls.get(aggregator_url, aggregator_url)
+        if is_google_news_url(direct_url):
+            raise ValueError(f"website publisher URL unresolved: {story['source']} / {story['title']}")
+        if direct_url != aggregator_url:
+            story["aggregatorUrl"] = aggregator_url
+        story["url"] = direct_url
     notes = [story["whyItMatters"] for story in stories]
     if len(set(notes)) != len(notes) or any(len(note) < 90 for note in notes):
         raise ValueError("website decision-note uniqueness or depth validation failed")
