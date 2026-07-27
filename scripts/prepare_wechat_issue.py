@@ -18,6 +18,11 @@ METRIC_RE = re.compile(
     r"(?:%|万亿元|亿元|万美元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
     re.I,
 )
+OBSERVATION_FINAL_LIMIT = 0.78
+# Selection needs a buffer because the final story can reuse a richer cached
+# summary than the candidate preview. Without a buffer, a pair just below the
+# preview threshold can cross the hard final threshold and abort the edition.
+OBSERVATION_SELECTION_LIMIT = 0.74
 
 
 def fresh(item: dict, now: datetime) -> bool:
@@ -76,6 +81,11 @@ def editorial_topic(item: dict) -> str:
         return "battery-tax"
     if "渗透率" in text:
         return "penetration-rate"
+    if (
+        any(term in text for term in ("汽车行业", "汽车业", "车企", "整车行业"))
+        and any(term in text for term in ("利润率", "利润同比", "微利", "盈利水平"))
+    ):
+        return "auto-industry-profitability"
     return ""
 
 
@@ -138,7 +148,8 @@ def choose(
             continue
         candidate_observation = observation_preview(item)
         if any(
-            SequenceMatcher(None, candidate_observation, observation_preview(existing)).ratio() > 0.78
+            SequenceMatcher(None, candidate_observation, observation_preview(existing)).ratio()
+            >= OBSERVATION_SELECTION_LIMIT
             for existing in comparison
         ):
             continue
@@ -303,6 +314,16 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "才会从营销卖点变成持续收入或品牌溢价。"
             )
         watch = ["量产定点与SOP", "装车量", "用户使用率", "单车硬件与算力成本"]
+    elif (
+        any(term in text for term in ("汽车行业", "汽车业", "车企", "整车行业"))
+        and any(term in text for term in ("利润率", "利润同比", "微利", "盈利水平"))
+    ):
+        judgment = (
+            f"“{subject}”说明行业规模与盈利仍在背离，不能把销量增长直接当成经营改善。"
+            f"{data_anchor}利润率下行通常同时受终端降价、渠道返利、产品结构和上游成本影响，"
+            "需要拆分整车厂、零部件和电池环节的利润分配，判断压力来自短期价格战还是商业模式失衡。"
+        )
+        watch = ["行业利润率口径", "单车毛利", "终端折扣", "经营现金流"]
     elif any(term in text for term in ("供应链", "电池", "芯片", "零部件", "工厂", "产能", "关税", "硬件")):
         if "芯片" in text:
             judgment = (
@@ -410,24 +431,29 @@ def main() -> None:
         and automotive_finance_relevant(item)
         and within_age(item, now, timedelta(days=7))
     ]
-    domestic_auto = choose(
-        [item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN],
-        7,
-        True,
-        source_limit=3,
-    )
     finance = choose(
         [item for item in finance_pool if item["sourceHint"] not in daily.FOREIGN],
-        4,
+        3,
         False,
         minimum=0,
-        against=domestic_auto,
     )
-    foreign_target = max(2, min(3, round((len(domestic_auto) + len(finance)) / 4)))
+    # Keep the edition close to the 11 domestic / 3 foreign editorial target.
+    # Qualified finance stories take domestic slots instead of expanding the
+    # issue beyond 14 items; when finance is unavailable, fresh auto stories
+    # fill those slots.
+    domestic_auto = choose(
+        [item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN],
+        11 - len(finance),
+        True,
+        minimum=max(7 - len(finance), 0),
+        source_limit=3,
+        against=finance,
+    )
     foreign_auto = choose(
         [item for item in auto_pool if item["sourceHint"] in daily.FOREIGN],
-        foreign_target,
+        3,
         True,
+        minimum=2,
         against=domestic_auto + finance,
     )
     auto = domestic_auto + foreign_auto
@@ -463,7 +489,7 @@ def main() -> None:
     for left in range(len(observations)):
         for right in range(left + 1, len(observations)):
             similarity = SequenceMatcher(None, observations[left], observations[right]).ratio()
-            if similarity > 0.78:
+            if similarity > OBSERVATION_FINAL_LIMIT:
                 raise ValueError(
                     "WeChat professional observations too similar: "
                     f"{left + 1}/{right + 1} ({similarity:.2f}) / "
