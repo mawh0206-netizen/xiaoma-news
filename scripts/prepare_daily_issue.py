@@ -332,6 +332,140 @@ def decision_note(story: dict) -> str:
     return f"{opening}{data}{core}报道给出的事实锚点是：{fact}。{watch}"
 
 
+INSIGHT_THEMES = (
+    {
+        "key": "auto_profit", "categories": {"汽车产业"},
+        "terms": ("销量", "交付", "出口", "市场份额", "利润", "亏损", "价格", "毛利"),
+        "headline": "汽车规模扩张与单车利润重新校准",
+        "claim": "车企需要证明销量和份额不是靠过度降价与渠道压库换来的，规模只有同时改善单车利润和现金回款才有价值",
+        "signals": ("汽车销量质量", "单车利润", "渠道库存"),
+    },
+    {
+        "key": "auto_smart", "categories": {"汽车产业"},
+        "terms": ("智能驾驶", "自动驾驶", "座舱", "芯片", "传感器", "fsd", "电池", "供应链"),
+        "headline": "汽车智能化进入量产与成本验证",
+        "claim": "智能化和供应链投入要从功能展示走向车型定点、稳定交付与可回收的单车成本",
+        "signals": ("智能化量产", "供应链成本", "用户使用率"),
+    },
+    {
+        "key": "ai_work", "categories": {"AI"},
+        "terms": ("就业", "岗位", "劳动力", "裁员", "招聘", "工作", "效率", "员工"),
+        "headline": "AI就业争论回到真实人效",
+        "claim": "企业是否减少岗位不是唯一答案，更重要的是AI有没有提高一线员工产出、降低错误率并保住组织能力",
+        "signals": ("AI人效", "岗位变化", "工具使用率"),
+    },
+    {
+        "key": "ai_infra", "categories": {"AI", "科技"},
+        "terms": ("数据中心", "算力", "电力", "芯片", "资本开支", "基础设施", "能源"),
+        "headline": "AI算力扩张面对能源与回报约束",
+        "claim": "数据中心和芯片投资最终要由利用率、推理收入和电力成本共同验证，建设规模本身不能代表商业回报",
+        "signals": ("AI资本开支", "电力约束", "推理成本"),
+    },
+    {
+        "key": "ai_governance", "categories": {"AI", "科技"},
+        "terms": ("安全", "黑客", "监管", "版权", "隐私", "失控", "诉讼", "道歉"),
+        "headline": "AI能力扩张同步抬高治理成本",
+        "claim": "能力越强，企业越需要把权限边界、人工复核和事故责任写进产品，而不是把风险留给用户承担",
+        "signals": ("AI安全", "合规成本", "人工复核"),
+    },
+    {
+        "key": "market_earnings", "categories": {"投资市场", "企业商业", "科技"},
+        "terms": ("财报", "营收", "利润", "业绩", "指引", "收入增长", "财报季"),
+        "headline": "财报季开始检验科技投入含金量",
+        "claim": "市场会重新比较AI投入、收入增速和利润率，只有资本开支转成可持续订单，估值才能得到基本面支撑",
+        "signals": ("科技财报", "盈利指引", "估值重定价"),
+    },
+    {
+        "key": "market_rates", "categories": {"投资市场", "财经"},
+        "terms": ("利率", "加息", "降息", "收益率", "美元", "汇率", "通胀", "央行"),
+        "headline": "利率预期重新牵动资产定价",
+        "claim": "利率路径会同时改变融资成本、估值折现和跨境资金流，单次政策信号需要用连续数据确认",
+        "signals": ("利率路径", "资金成本", "市场定价"),
+    },
+    {
+        "key": "property", "categories": {"房地产"},
+        "terms": ("房价", "成交", "销售", "库存", "去化", "融资", "地产债", "救市"),
+        "headline": "房地产修复继续看量价与现金流",
+        "claim": "政策和成交回升只有同时改善价格、库存去化和开发商回款，才说明市场开始形成自我修复",
+        "signals": ("楼市成交", "去化周期", "地产现金流"),
+    },
+    {
+        "key": "auto_finance", "categories": {"汽车金融", "财经"},
+        "terms": ("汽车金融", "车贷", "不良", "逾期", "首付", "贴息", "保值率"),
+        "headline": "汽车金融在增长与风险间找平衡",
+        "claim": "金融渗透和资产规模要与资金成本、逾期表现和车辆残值一起看，促销不能掩盖信用风险",
+        "signals": ("汽车金融", "资金成本", "逾期风险"),
+    },
+)
+
+
+def insight_subject(story: dict) -> str:
+    title = re.sub(r"\s+[-—]\s+[^-—]{2,20}$", "", str(story.get("title", ""))).strip()
+    return title if len(title) <= 30 else title[:29] + "…"
+
+
+def build_daily_insight(stories: list[dict], previous: dict) -> dict:
+    ranked_themes = []
+    for theme in INSIGHT_THEMES:
+        candidates = []
+        for position, story in enumerate(stories):
+            if story.get("category") not in theme["categories"]:
+                continue
+            text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+            hits = sum(term.lower() in text for term in theme["terms"])
+            if not hits:
+                continue
+            story_score = hits * 4 + len(decision_metrics(story)) * 2 + (5 if story.get("isTop") else 0) + max(0, 3 - position // 6)
+            candidates.append((story_score, story))
+        if not candidates:
+            continue
+        candidates.sort(key=lambda item: item[0], reverse=True)
+        representative = candidates[0][1]
+        theme_score = candidates[0][0] + min(6, len(candidates) * 2)
+        ranked_themes.append((theme_score, theme, representative))
+    ranked_themes.sort(key=lambda item: item[0], reverse=True)
+    chosen = ranked_themes[:3]
+    if len(chosen) < 2:
+        fallback = []
+        seen = set()
+        for story in stories:
+            if story["category"] in seen:
+                continue
+            seen.add(story["category"])
+            fallback.append((0, {
+                "headline": f"{story['category']}进入事实验证",
+                "claim": "当天信息需要用后续经营数据确认，不能只按标题判断趋势",
+                "signals": (story["category"],),
+            }, story))
+            if len(chosen) + len(fallback) >= 3:
+                break
+        chosen.extend(fallback)
+    title = "，".join(item[1]["headline"] for item in chosen[:2])
+    body_parts = [
+        f"围绕“{insight_subject(story)}”，{theme['claim']}"
+        for _, theme, story in chosen[:3]
+    ]
+    body = "今天的判断来自三条具体线索：" + "；".join(body_parts) + "。"
+    signals = []
+    for _, theme, _ in chosen:
+        for signal in theme["signals"]:
+            if signal not in signals:
+                signals.append(signal)
+            if len(signals) == 5:
+                break
+        if len(signals) == 5:
+            break
+    insight = {"title": title, "body": body, "signals": signals}
+    previous_insight = previous.get("dailyInsight", {})
+    old_text = f"{previous_insight.get('title', '')} {previous_insight.get('body', '')}"
+    new_text = f"{title} {body}"
+    if old_text and SequenceMatcher(None, old_text, new_text).ratio() > 0.82:
+        lead = insight_subject(stories[0])
+        insight["title"] = f"{chosen[0][1]['headline']}：{lead}成为今日验证点"
+        insight["body"] = body + f" 今天的首要事实锚点是“{lead}”，后续判断必须回到对应数据。"
+    return insight
+
+
 def detail_body(story: dict, deep: bool = False) -> str:
     source, category = story["source"], story["category"]
     summary, why = story["summary"], story["whyItMatters"]
@@ -445,9 +579,20 @@ def main() -> None:
     data = {
         "dateLabel": f"{now.year}年{now.month}月{now.day}日 星期{'一二三四五六日'[now.weekday()]}",
         "issue": issue, "statusLabel": f"本次内容完成 · {now:%H:%M}", "defaultCategory": "AI",
-        "dailyInsight": {"title": "AI资本开支、产业交付与市场回报进入同步验证期", "body": "今日重点观察AI投入能否转化为云业务、订单和利润，汽车产业的智能化投资能否兼顾交付与现金流，以及国内外资本市场如何重新定价增长与风险。", "signals": ["AI资本开支", "云业务", "汽车现金流", "供应链", "市场定价"]},
+        "dailyInsight": build_daily_insight(stories, previous),
         "sources": sorted({s["source"] for s in stories}), "stories": stories,
     }
+    previous_insight = previous.get("dailyInsight", {})
+    if previous_insight and data["dailyInsight"] == previous_insight:
+        raise ValueError("daily insight must differ from the previous issue")
+    if len(data["dailyInsight"]["signals"]) < 4 or len(data["dailyInsight"]["body"]) < 120:
+        raise ValueError("daily insight lacks enough themes or analytical depth")
+    if previous_insight:
+        previous_text = f"{previous_insight.get('title', '')} {previous_insight.get('body', '')}"
+        current_text = f"{data['dailyInsight']['title']} {data['dailyInsight']['body']}"
+        similarity = SequenceMatcher(None, previous_text, current_text).ratio()
+        if similarity > 0.82:
+            raise ValueError(f"daily insight too similar to previous issue: {similarity:.2f}")
     DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"issue": issue, "stories": len(stories), "overlap": overlap, "categories": Counter(s["category"] for s in stories), "backup": str(backup)}, ensure_ascii=False, default=dict))
 
