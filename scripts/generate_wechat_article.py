@@ -34,9 +34,9 @@ def detail_url(index: int) -> str:
     return f"{SITE}/detail.html?date={ARCHIVE_DATE}&story={index}"
 
 
-def story_block(story: dict, index: int, number: int) -> str:
+def story_block(story: dict, index: int, section_number: str, number: int) -> str:
     metrics = extract_metrics(story)
-    data_line = f'<p style="margin:0 0 12px;padding:10px 14px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.7;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
+    data_line = f'<p style="margin:0 0 10px;padding:8px 12px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.65;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
     observation = esc(story["whyItMatters"])
     observation = observation.replace(
         "判断：",
@@ -48,12 +48,12 @@ def story_block(story: dict, index: int, number: int) -> str:
         1,
     )
     return f"""
-    <section style="margin:0 0 28px;padding:0 0 25px;border-bottom:1px solid #e9e5dc;">
-      <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;letter-spacing:.06em;">{number:02d} · {esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</p>
-      <h3 style="margin:0 0 12px;color:#171a19;font-size:20px;line-height:1.5;font-weight:700;">{esc(story['title'])}</h3>
-      <p style="margin:0 0 12px;color:#343936;font-size:16px;line-height:1.9;">{esc(story['summary'])}</p>
+    <section style="margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid #e9e5dc;">
+      <p style="margin:0 0 7px;line-height:1.5;"><span style="display:inline-block;margin-right:8px;padding:2px 7px;background:#d94f36;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;">{section_number}-{number:02d}</span><span style="color:#8a5146;font-size:12px;font-weight:700;letter-spacing:.04em;">{esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</span></p>
+      <h3 style="margin:0 0 9px;color:#171a19;font-size:20px;line-height:1.45;font-weight:700;">{esc(story['title'])}</h3>
+      <p style="margin:0 0 10px;color:#343936;font-size:16px;line-height:1.75;">{esc(story['summary'])}</p>
       {data_line}
-      <p style="margin:0 0 13px;padding:12px 15px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.8;"><strong style="color:#1d6a55;">产品经理观察</strong><br>{observation}</p>
+      <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">产品经理观察</strong><br>{observation}</p>
       <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
     </section>"""
 
@@ -72,10 +72,10 @@ def bilingual_block(story: dict, index: int) -> str:
 
 def section_title(number: str, title: str, subtitle: str) -> str:
     return f"""
-    <section style="margin:42px 0 24px;">
-      <p style="margin:0 0 7px;color:#d94f36;font-size:13px;font-weight:700;letter-spacing:.12em;">{number}</p>
-      <h2 style="margin:0 0 8px;color:#171a19;font-size:26px;line-height:1.35;">{esc(title)}</h2>
-      <p style="margin:0;color:#7a7f7b;font-size:14px;line-height:1.7;">{esc(subtitle)}</p>
+    <section style="margin:28px 0 14px;padding:14px 0 12px;border-top:3px solid #171a19;border-bottom:1px solid #e9e5dc;">
+      <p style="margin:0 0 6px;"><span style="display:inline-block;padding:3px 9px;background:#171a19;color:#fff;font-size:12px;font-weight:700;letter-spacing:.08em;">栏目 {number}</span></p>
+      <h2 style="margin:0 0 5px;color:#171a19;font-size:25px;line-height:1.3;font-weight:700;">{esc(title)}</h2>
+      <p style="margin:0;color:#7a7f7b;font-size:13px;line-height:1.6;">{esc(subtitle)}</p>
     </section>"""
 
 
@@ -180,7 +180,7 @@ def main() -> None:
 
     for number, title, subtitle, items in groups:
         body.append(section_title(number, title, subtitle))
-        body.extend(story_block(s, i, n) for n, (i, s) in enumerate(items, 1))
+        body.extend(story_block(s, i, number, n) for n, (i, s) in enumerate(items, 1))
     body.append(f"""
       <footer style="margin-top:42px;padding:28px 24px;background:#171a19;color:#d8dcd9;text-align:center;">
         <p style="margin:0 0 10px;color:#fff;font-size:20px;font-weight:700;">小马儿Young</p>
