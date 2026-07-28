@@ -228,8 +228,8 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "说明问题可能已从单月波动扩展到研发、认证或供应协同。"
         )
         watch = ["工厂产能利用率", "在手订单", "零部件缺口", "新品认证与投产节点"]
-    elif any(term in text for term in ("销量", "交付", "产量", "零售", "出口", "市场份额")):
-        if "出口" in text or any(term in text for term in ("欧洲", "海外", "全球")):
+    elif any(term in text for term in ("销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额", "registrations")):
+        if "出口" in text or any(term in text for term in ("欧洲", "海外", "全球", "加拿大", "美国", "北美", "英国", "德国")):
             judgment = (
                 f"“{subject}”显示中国汽车的增长空间正进一步转向海外，但出口量不等于海外零售。"
                 f"{data_anchor}需要拆分整车实际注册、渠道库存和区域价格，"
@@ -324,6 +324,13 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "需要拆分整车厂、零部件和电池环节的利润分配，判断压力来自短期价格战还是商业模式失衡。"
         )
         watch = ["行业利润率口径", "单车毛利", "终端折扣", "经营现金流"]
+    elif any(term in text for term in ("充电设施", "充电桩", "充电站", "补能网络", "换电站", "超充")):
+        judgment = (
+            f"“{subject}”衡量的是补能网络能否跟上电动车保有量，而不只是累计设施数量。"
+            f"{data_anchor}需要拆分公共与私人设施、快充与慢充，以及城市和高速场景，"
+            "并用实际利用率、故障率和高峰等待时间判断新增供给是否落在真实缺口上。"
+        )
+        watch = ["车桩比", "公共桩利用率", "设备在线率", "高峰平均等待时间"]
     elif any(term in text for term in ("供应链", "电池", "芯片", "零部件", "工厂", "产能", "关税", "硬件")):
         if "芯片" in text:
             judgment = (

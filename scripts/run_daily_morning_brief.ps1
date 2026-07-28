@@ -259,12 +259,17 @@ catch {
     }
     Write-State -Path $failurePath -State $failure
     Write-RunLog "daily run failed stage=$script:currentStage error=$($_.Exception.Message)"
-    Send-FailureAlert -Subject "[Xiaoma News] Daily briefing failed" -Body (
-        "The daily briefing automation failed.`r`n`r`n" +
-        "Date: $dateKey`r`nTime: $($failedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
-        "Stage: $script:currentStage`r`nError: $($_.Exception.Message)`r`n" +
-        "The last successful website edition remains online.`r`nLog: $logPath"
-    )
+    if ($failedAt -ge $alertAt) {
+        Send-FailureAlert -Subject "[Xiaoma News] Daily briefing failed" -Body (
+            "The daily briefing automation failed.`r`n`r`n" +
+            "Date: $dateKey`r`nTime: $($failedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
+            "Stage: $script:currentStage`r`nError: $($_.Exception.Message)`r`n" +
+            "The last successful website edition remains online.`r`nLog: $logPath"
+        )
+    }
+    else {
+        Write-RunLog "early failure recorded; SMTP deferred to watchdog recovery and 07:50 SLA check"
+    }
     exit 1
 }
 finally {
