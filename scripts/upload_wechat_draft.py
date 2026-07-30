@@ -59,16 +59,22 @@ def upload_cover(token: str) -> str:
 
 
 def find_draft_media_id(token: str, title: str) -> str:
-    result = json_request(
-        "https://api.weixin.qq.com/cgi-bin/draft/batchget?" + urllib.parse.urlencode({"access_token": token}),
-        {"offset": 0, "count": 20, "no_content": 0},
-    )
-    if result.get("errcode"):
-        raise RuntimeError(f"draft lookup failed: {result.get('errcode')} {result.get('errmsg')}")
-    for item in result.get("item", []):
-        news_items = item.get("content", {}).get("news_item", [])
-        if news_items and news_items[0].get("title") == title:
-            return item.get("media_id", "")
+    offset = 0
+    while True:
+        result = json_request(
+            "https://api.weixin.qq.com/cgi-bin/draft/batchget?" + urllib.parse.urlencode({"access_token": token}),
+            {"offset": offset, "count": 20, "no_content": 0},
+        )
+        if result.get("errcode"):
+            raise RuntimeError(f"draft lookup failed: {result.get('errcode')} {result.get('errmsg')}")
+        items = result.get("item", [])
+        for item in items:
+            news_items = item.get("content", {}).get("news_item", [])
+            if news_items and news_items[0].get("title") == title:
+                return item.get("media_id", "")
+        offset += len(items)
+        if not items or offset >= int(result.get("total_count", 0)):
+            break
     return ""
 
 

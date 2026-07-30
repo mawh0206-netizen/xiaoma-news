@@ -22,7 +22,7 @@ PALETTES = [
 ]
 MEDIA_BRANDS = (
     "汽车之家", "盖世汽车社区", "盖世汽车", "亿欧汽车", "亿欧",
-    "财联社", "第一财经", "证券时报", "新出行", "Reuters",
+    "财联社", "人民日报", "第一财经", "证券时报", "新出行", "Reuters",
     "Financial Times", "Electrek", "InsideEVs", "Automotive News", "TechCrunch",
 )
 
@@ -65,8 +65,10 @@ def lead_score(story: dict) -> int:
 def cover_title(story: dict) -> str:
     """Keep publisher attribution in the article, never in the visual cover."""
     title = str(story.get("title", "")).strip()
-    title = re.sub(r"\s+[-—]\s+[^-—]{2,20}$", "", title).strip()
-    for brand in MEDIA_BRANDS:
+    title = re.sub(r"\s+[-—]\s+[^-—]+$", "", title).strip()
+    source = str(story.get("source", "")).strip()
+    brands = (*MEDIA_BRANDS, source) if source else MEDIA_BRANDS
+    for brand in brands:
         title = title.replace(brand, "").strip(" -—｜|·")
     return re.sub(r"\s{2,}", " ", title)
 
