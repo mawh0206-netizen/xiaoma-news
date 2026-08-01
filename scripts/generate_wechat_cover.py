@@ -39,7 +39,7 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
 def metric_values(story: dict) -> list[str]:
     text = f"{story.get('title', '')} {story.get('summary', '')}"
     values = re.findall(
-        r"(?:约|超|近|达|增长|下降)?\s*\d+(?:\.\d+)?\s*"
+        r"(?:约|超|近|达|增长|下降)?\s*(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?\s*"
         r"(?:%|万亿元|亿元|万美元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
         text,
         flags=re.I,
