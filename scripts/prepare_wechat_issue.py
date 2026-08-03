@@ -229,7 +229,17 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         )
         watch = ["工厂产能利用率", "在手订单", "零部件缺口", "新品认证与投产节点"]
     elif any(term in text for term in ("销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额", "registrations")):
-        if "出口" in text or any(term in text for term in ("欧洲", "海外", "全球", "加拿大", "美国", "北美", "英国", "德国")):
+        if (
+            any(term in text for term in ("暴跌", "下滑", "遇冷", "下降"))
+            and any(term in text for term in ("欧洲", "海外", "全球", "加拿大", "美国", "北美", "英国", "德国", "意大利", "法国", "俄罗斯", "巴西"))
+        ):
+            judgment = (
+                f"“{subject}”反映的是海外单一区域的收缩风险，不能与出口总量增长混为一谈。"
+                f"{data_anchor}应先核对当地注册量、渠道去库存、汇率和政策变化，"
+                "再判断下滑来自需求转弱、供给中断还是上一年高基数；单月降幅不能直接代表全球竞争力。"
+            )
+            watch = ["当地终端注册量", "经销商库存天数", "汇率与售价变化", "连续三月市场份额"]
+        elif "出口" in text or any(term in text for term in ("欧洲", "海外", "全球", "加拿大", "美国", "北美", "英国", "德国")):
             judgment = (
                 f"“{subject}”显示中国汽车的增长空间正进一步转向海外，但出口量不等于海外零售。"
                 f"{data_anchor}需要拆分整车实际注册、渠道库存和区域价格，"
