@@ -4,6 +4,8 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from datetime import date, timedelta
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -11,6 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "runtime" / "wechat_news.json"
 OUTPUT = ROOT / "runtime" / "wechat_cover.png"
+HISTORY = ROOT / "runtime" / "wechat_cover_history.json"
 WIDTH, HEIGHT = 1200, 511
 
 PALETTES = [
@@ -62,6 +65,106 @@ def lead_score(story: dict) -> int:
     return score
 
 
+def normalized_topic(story: dict) -> str:
+    return re.sub(r"[^0-9a-z\u4e00-\u9fff]+", "", cover_title(story).lower())
+
+
+def same_cover_topic(left: dict, right: dict) -> bool:
+    """Treat rewritten coverage of the same event as one cover topic."""
+    left_url = str(left.get("url", "")).strip()
+    right_url = str(right.get("url", "")).strip()
+    if left_url and left_url == right_url:
+        return True
+    left_topic, right_topic = normalized_topic(left), normalized_topic(right)
+    if not left_topic or not right_topic:
+        return False
+    similarity = SequenceMatcher(None, left_topic, right_topic).ratio()
+    if similarity >= 0.62:
+        return True
+    shared_metrics = set(metric_values(left)) & set(metric_values(right))
+    return bool(shared_metrics) and similarity >= 0.35
+
+
+def issue_date(data: dict) -> date | None:
+    match = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", str(data.get("dateLabel", "")))
+    return date(*map(int, match.groups())) if match else None
+
+
+def recent_cover_topics(data: dict, days: int = 3) -> list[dict]:
+    current = issue_date(data)
+    if current is None:
+        return []
+    topics: dict[str, dict] = {}
+    if HISTORY.exists():
+        try:
+            for item in json.loads(HISTORY.read_text(encoding="utf-8")):
+                if item.get("date") != current.isoformat():
+                    topics[str(item.get("date", ""))] = item
+        except (OSError, json.JSONDecodeError, TypeError):
+            pass
+    for offset in range(1, days + 1):
+        prior = current - timedelta(days=offset)
+        key = prior.isoformat()
+        if key in topics:
+            continue
+        archive = ROOT / "data" / "wechat" / f"{key}.json"
+        if not archive.exists():
+            continue
+        try:
+            prior_data = json.loads(archive.read_text(encoding="utf-8"))
+            prior_lead = max(prior_data.get("stories", []), key=lead_score)
+        except (OSError, json.JSONDecodeError, ValueError):
+            continue
+        topics[key] = {
+            "date": key,
+            "headline": cover_title(prior_lead),
+            "title": prior_lead.get("title", ""),
+            "summary": prior_lead.get("summary", ""),
+            "url": prior_lead.get("url", ""),
+        }
+    cutoff = current - timedelta(days=days)
+    recent: list[dict] = []
+    for key, item in sorted(topics.items()):
+        try:
+            topic_date = date.fromisoformat(key)
+        except ValueError:
+            continue
+        if topic_date >= cutoff:
+            recent.append(item)
+    return recent
+
+
+def select_lead(data: dict) -> tuple[dict, list[dict]]:
+    recent = recent_cover_topics(data)
+    ranked = sorted(data["stories"], key=lead_score, reverse=True)
+    for story in ranked:
+        if not any(same_cover_topic(story, previous) for previous in recent):
+            return story, recent
+    return ranked[0], recent
+
+
+def record_cover(data: dict, lead: dict, headline: str) -> None:
+    current = issue_date(data)
+    if current is None:
+        return
+    history: list[dict] = []
+    if HISTORY.exists():
+        try:
+            history = list(json.loads(HISTORY.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError, TypeError):
+            history = []
+    entry = {
+        "date": current.isoformat(),
+        "headline": headline,
+        "title": lead.get("title", ""),
+        "summary": lead.get("summary", ""),
+        "url": lead.get("url", ""),
+    }
+    history = [item for item in history if item.get("date") != entry["date"]]
+    history.append(entry)
+    HISTORY.write_text(json.dumps(history[-14:], ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def cover_title(story: dict) -> str:
     """Keep publisher attribution in the article, never in the visual cover."""
     title = str(story.get("title", "")).strip()
@@ -110,8 +213,7 @@ def wrap(draw: ImageDraw.ImageDraw, text: str, face: ImageFont.FreeTypeFont, max
 
 
 def render_cover(data: dict, output: Path = OUTPUT) -> dict:
-    stories = data["stories"]
-    lead = max(stories, key=lead_score)
+    lead, recent = select_lead(data)
     headline = cover_title(lead)
     seed = hashlib.sha256(f"{data['dateLabel']}|{headline}".encode("utf-8")).digest()
     bg, accent, signal, paper = PALETTES[seed[0] % len(PALETTES)]
@@ -159,7 +261,11 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output, "PNG", optimize=True)
     digest = hashlib.sha256(output.read_bytes()).hexdigest()
-    return {"output": str(output), "sha256": digest, "lead": headline, "size": [WIDTH, HEIGHT]}
+    record_cover(data, lead, headline)
+    return {
+        "output": str(output), "sha256": digest, "lead": headline,
+        "recent_topics_checked": len(recent), "size": [WIDTH, HEIGHT],
+    }
 
 
 def main() -> None:
