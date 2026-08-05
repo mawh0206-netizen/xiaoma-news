@@ -50,6 +50,44 @@ def metric_values(story: dict) -> list[str]:
     return list(dict.fromkeys(re.sub(r"\s+", "", value) for value in values))[:3]
 
 
+def engagement_score(story: dict) -> int:
+    """Reward useful curiosity and reader relevance without manufacturing clickbait."""
+    headline = cover_title(story)
+    text = f"{headline} {story.get('summary', '')}".lower()
+    score = 0
+    score += sum(
+        weight
+        for term, weight in {
+            "为何": 7, "为什么": 7, "怎么": 5, "谁在": 6, "谁将": 6,
+            "洗牌": 8, "困局": 6, "危机": 7, "争夺": 6, "反转": 7,
+            "破局": 5, "考验": 6, "承压": 5, "下滑": 5, "下降": 5,
+            "暴跌": 7, "首次": 6, "首个": 5, "突破": 6, "新高": 6,
+            "召回": 8, "事故": 8, "停产": 8, "裁员": 7, "降价": 7,
+            "涨价": 7, "亏损": 7, "盈利": 5, "利润率": 6,
+        }.items()
+        if term in text
+    )
+    score += sum(
+        weight
+        for term, weight in {
+            "车主": 6, "消费者": 5, "用户": 4, "经销商": 5, "4s店": 6,
+            "价格": 5, "成本": 4, "续航": 5, "安全": 6, "保险": 5,
+            "车贷": 5, "贷款": 4, "二手车": 5, "保值率": 5, "现金流": 5,
+        }.items()
+        if term in text
+    )
+    if "?" in headline or "？" in headline:
+        score += 5
+    length = len(headline)
+    if 18 <= length <= 36:
+        score += 5
+    elif length > 46:
+        score -= 6
+    if not metric_values(story) and any(term in text for term in ("重磅", "震惊", "炸裂", "必看", "速看")):
+        score -= 12
+    return score
+
+
 def lead_score(story: dict) -> int:
     text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
     score = len(metric_values(story)) * 8
@@ -62,7 +100,7 @@ def lead_score(story: dict) -> int:
         }.items()
         if term in text
     )
-    return score
+    return score + engagement_score(story)
 
 
 def normalized_topic(story: dict) -> str:
@@ -264,6 +302,7 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     record_cover(data, lead, headline)
     return {
         "output": str(output), "sha256": digest, "lead": headline,
+        "lead_score": lead_score(lead), "engagement_score": engagement_score(lead),
         "recent_topics_checked": len(recent), "size": [WIDTH, HEIGHT],
     }
 
