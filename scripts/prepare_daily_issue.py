@@ -26,7 +26,7 @@ QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 
 # survives the quality and deduplication gates. The missing slots are filled
 # from the editorial fallback categories below; stale finance news is never
 # used merely to satisfy a quota.
-FLEXIBLE_MINIMUMS = {"汽车金融": 0}
+FLEXIBLE_MINIMUMS = {"房地产": 2, "汽车金融": 0}
 FALLBACK_CATEGORIES = ("汽车产业", "企业商业", "科技", "财经")
 PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "Electrek": 8, "InsideEVs": 8, "Automotive News": 8, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8, "工信部": 10, "中国汽车工业协会": 9, "乘联会": 9, "懂车帝": 8, "新出行": 8, "亿欧汽车": 8, "汽车商业评论": 8}
 KEYWORDS = ("AI", "人工智能", "汽车", "智能", "芯片", "算力", "科技", "财报", "利润", "订单", "股票", "市场", "融资", "房地产", "房价", "供应链", "金融", "车贷", "电池", "自动驾驶", "云", "能源")
@@ -125,15 +125,85 @@ def score(item: dict) -> tuple:
     return (PREFERRED.get(item.get("sourceHint"), 1) + relevance + quality, item.get("publishedAt", ""))
 
 
-def select(candidates: list[dict], old_urls: set[str]) -> list[dict]:
-    current_year = datetime.now(CN_TZ).year
-    current_month = datetime.now(CN_TZ).month
+def published_datetime(item: dict) -> datetime | None:
+    value = str(item.get("publishedAt", "")).strip()
+    if not value:
+        return None
+    try:
+        published = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if published.tzinfo is None:
+        published = published.replace(tzinfo=timezone.utc)
+    return published.astimezone(CN_TZ)
+
+
+def freshness_limit(item: dict) -> timedelta:
+    return timedelta(days=7) if item.get("categoryHint") == "汽车金融" else timedelta(hours=48)
+
+
+def fresh_for_website(item: dict, now: datetime) -> bool:
+    published = published_datetime(item)
+    if published is None:
+        return False
+    age = now - published
+    return -timedelta(minutes=10) <= age <= freshness_limit(item)
+
+
+def published_label(item: dict, now: datetime) -> str:
+    published = published_datetime(item)
+    if published is None:
+        raise ValueError(f"missing or invalid publishedAt: {item.get('titleOriginal', '')}")
+    if published.date() == now.date():
+        return f"今日 {published:%H:%M}"
+    if published.date() == (now - timedelta(days=1)).date():
+        return f"昨日 {published:%H:%M}"
+    return f"{published.month}月{published.day}日 {published:%H:%M}"
+
+
+def archived_urls_before(cutoff: datetime) -> set[str]:
+    urls: set[str] = set()
+    for archive_path in sorted(ARCHIVE.glob("*.json")):
+        if archive_path.name == "index.json":
+            continue
+        try:
+            archive_date = datetime.strptime(archive_path.stem, "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if archive_date >= cutoff.date():
+            continue
+        try:
+            archive = json.loads(archive_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for story in archive.get("stories", []):
+            urls.update(
+                url
+                for url in (story.get("url"), story.get("aggregatorUrl"))
+                if url
+            )
+    return urls
+
+
+def select(candidates: list[dict], old_urls: set[str], now: datetime | None = None) -> list[dict]:
+    now = now or datetime.now(CN_TZ)
+    current_year = now.year
+    current_month = now.month
     allowed_months = {current_month, 12 if current_month == 1 else current_month - 1}
     stale_year = re.compile(r"(?:201\d|202[0-5])年?") if current_year == 2026 else re.compile(r"$^")
     def stale_month(item: dict) -> bool:
         months = {int(value) for value in re.findall(r"(?<!\d)(1[0-2]|[1-9])月", item.get("titleOriginal", ""))}
         return bool(months and not months & allowed_months)
-    pool = [x for x in candidates if x.get("url") not in old_urls and x.get("sourceHint") in FOREIGN | DOMESTIC and x.get("categoryHint") in QUOTAS and not stale_year.search(x.get("titleOriginal", "")) and not stale_month(x) and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))]
+    pool = [
+        x for x in candidates
+        if x.get("url") not in old_urls
+        and x.get("sourceHint") in FOREIGN | DOMESTIC
+        and x.get("categoryHint") in QUOTAS
+        and fresh_for_website(x, now)
+        and not stale_year.search(x.get("titleOriginal", ""))
+        and not stale_month(x)
+        and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))
+    ]
     picked, used = [], set()
     for category, quota in QUOTAS.items():
         choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
@@ -489,7 +559,8 @@ def detail_body(story: dict, deep: bool = False) -> str:
     return text[:1000]
 
 
-def make_story(item: dict, index: int) -> dict:
+def make_story(item: dict, index: int, now: datetime | None = None) -> dict:
+    now = now or datetime.now(CN_TZ)
     source = item["sourceHint"]
     original_title = clean_title(item.get("titleOriginal", ""), source)
     if source == "重点车企":
@@ -516,7 +587,8 @@ def make_story(item: dict, index: int) -> dict:
     story = {
         "title": title, "summary": summary,
         "source": source, "category": item["categoryHint"], "url": item["url"],
-        "publishedLabel": "今日", "isTop": index < 20,
+        "publishedAt": published_datetime(item).isoformat(),
+        "publishedLabel": published_label(item, now), "isTop": index < 20,
     }
     story["whyItMatters"] = decision_note(story)
     why = story["whyItMatters"]
@@ -525,7 +597,7 @@ def make_story(item: dict, index: int) -> dict:
     story["detailBody"] = detail_body(story, index < 20)
     story["keyFacts"] = [
         f"信息来源为{source}，报道主题为“{title}”。", summary,
-        f"本条归入“{story['category']}”栏目，发布时间按今日候选池记录。", why,
+        f"本条归入“{story['category']}”栏目，发布时间为{story['publishedLabel']}。", why,
     ]
     if index < 20:
         story["keyFacts"] += ["报道原文入口已保留，可用于核对最新进展。", "尚未披露或未经权威确认的内容不作为既定事实。"]
@@ -557,13 +629,24 @@ def main() -> None:
     yesterday = now.date() - timedelta(days=1)
     previous_path = ARCHIVE / f"{yesterday:%Y-%m-%d}.json"
     previous = json.loads(previous_path.read_text(encoding="utf-8")) if previous_path.exists() else {"stories": []}
-    old_urls = {
-        url
-        for item in previous["stories"]
-        for url in (item.get("url"), item.get("aggregatorUrl"))
-        if url
-    }
-    selected = select(candidates, old_urls)
+    old_urls = archived_urls_before(now)
+    resolved_urls: dict[str, str] = {}
+    for _ in range(6):
+        selected = select(candidates, old_urls, now)
+        resolved_urls = resolve_urls([item["url"] for item in selected])
+        repeated_aggregators = {
+            item["url"]
+            for item in selected
+            if resolved_urls.get(item["url"], item["url"]) in old_urls
+        }
+        if not repeated_aggregators:
+            break
+        # A Google News wrapper can change while resolving to a publisher URL
+        # already present in the archive. Block that wrapper and reselect so a
+        # fresh alternative is used instead of failing the whole edition.
+        old_urls.update(repeated_aggregators)
+    else:
+        raise ValueError("unable to select an edition without archived publisher URLs")
     top_foreign = sorted((x for x in selected if x["sourceHint"] in FOREIGN), key=score, reverse=True)[:10]
     top_domestic = sorted((x for x in selected if x["sourceHint"] in DOMESTIC), key=score, reverse=True)[:10]
     top_urls = {x["url"] for x in top_foreign + top_domestic}
@@ -574,8 +657,7 @@ def main() -> None:
     backup.write_text(json.dumps(current, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     same_day = str(current.get("dateLabel", "")).startswith(f"{now.year}年{now.month}月{now.day}日")
     issue = int(current.get("issue", 0)) if same_day else int(current.get("issue", 0)) + 1
-    stories = [make_story(item, i) for i, item in enumerate(selected)]
-    resolved_urls = resolve_urls([item["url"] for item in selected])
+    stories = [make_story(item, i, now) for i, item in enumerate(selected)]
     for story, item in zip(stories, selected):
         aggregator_url = item["url"]
         direct_url = resolved_urls.get(aggregator_url, aggregator_url)
