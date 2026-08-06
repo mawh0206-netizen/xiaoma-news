@@ -77,6 +77,16 @@ def published_label(item: dict, now: datetime) -> str:
 
 def editorial_topic(item: dict) -> str:
     text = f"{item.get('titleOriginal', '')} {item.get('summaryOriginal', '')}".lower()
+    sales_terms = (
+        "销量", "销售", "售出", "交付", "零售", "市场份额",
+        "sales", "registrations", "deliveries",
+    )
+    decline_terms = (
+        "下降", "下滑", "暴跌", "遇冷", "同比降",
+        "down", "fell", "drop", "decline",
+    )
+    if any(term in text for term in sales_terms) and any(term in text for term in decline_terms):
+        return "sales-decline"
     if "电池" in text and any(term in text for term in ("消费税", "电池税", "征税")):
         return "battery-tax"
     if "渗透率" in text:

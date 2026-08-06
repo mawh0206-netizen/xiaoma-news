@@ -22,7 +22,11 @@ CN_TZ = timezone(timedelta(hours=8))
 FOREIGN = {"Reuters", "BBC", "Financial Times", "The Guardian", "TechCrunch", "Electrek", "InsideEVs", "Automotive News"}
 DOMESTIC = {"第一财经", "财联社", "证券时报", "36氪", "澎湃新闻", "盖世汽车", "中国汽车报", "中国汽车流通协会", "汽车之家", "经济观察报", "界面新闻", "中国房地产报", "克而瑞", "国内汽车综合", "国内房地产综合", "汽车金融", "工信部", "中国汽车工业协会", "乘联会", "懂车帝", "新出行", "亿欧汽车", "汽车商业评论", "中国银行业协会", "零壹智库", "重点车企"}
 QUOTAS = {"AI": 6, "科技": 5, "企业商业": 5, "财经": 5, "投资市场": 12, "房地产": 4, "汽车产业": 5, "汽车金融": 3}
-FLEXIBLE_MINIMUMS = {"汽车金融": 1}
+# Do not block the entire edition when no genuinely fresh auto-finance story
+# survives the quality and deduplication gates. The missing slots are filled
+# from the editorial fallback categories below; stale finance news is never
+# used merely to satisfy a quota.
+FLEXIBLE_MINIMUMS = {"汽车金融": 0}
 FALLBACK_CATEGORIES = ("汽车产业", "企业商业", "科技", "财经")
 PREFERRED = {"Reuters": 9, "BBC": 8, "Financial Times": 8, "TechCrunch": 8, "The Guardian": 7, "Electrek": 8, "InsideEVs": 8, "Automotive News": 8, "第一财经": 9, "财联社": 9, "证券时报": 8, "36氪": 8, "澎湃新闻": 7, "盖世汽车": 9, "中国汽车报": 9, "中国汽车流通协会": 8, "工信部": 10, "中国汽车工业协会": 9, "乘联会": 9, "懂车帝": 8, "新出行": 8, "亿欧汽车": 8, "汽车商业评论": 8}
 KEYWORDS = ("AI", "人工智能", "汽车", "智能", "芯片", "算力", "科技", "财报", "利润", "订单", "股票", "市场", "融资", "房地产", "房价", "供应链", "金融", "车贷", "电池", "自动驾驶", "云", "能源")
