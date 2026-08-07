@@ -4,6 +4,7 @@ from __future__ import annotations
 import html
 import json
 import re
+from difflib import SequenceMatcher
 from pathlib import Path
 
 from generate_wechat_cover import render_cover
@@ -34,9 +35,22 @@ def detail_url(index: int) -> str:
     return f"{SITE}/detail.html?date={ARCHIVE_DATE}&story={index}"
 
 
+def redundant_summary(story: dict) -> bool:
+    """Hide feed snippets that merely repeat the headline with punctuation changes."""
+    def normalized(value: object) -> str:
+        return re.sub(r"[^0-9a-z\u4e00-\u9fff]+", "", str(value or "").casefold())
+
+    title = normalized(story.get("title"))
+    summary = normalized(story.get("summary"))
+    if not summary:
+        return True
+    return bool(title) and SequenceMatcher(None, title, summary).ratio() >= 0.82
+
+
 def story_block(story: dict, index: int, section_number: str, number: int) -> str:
     metrics = extract_metrics(story)
     data_line = f'<p style="margin:0 0 10px;padding:8px 12px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.65;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
+    summary_line = "" if redundant_summary(story) else f'<p style="margin:0 0 10px;color:#343936;font-size:16px;line-height:1.75;">{esc(story["summary"])}</p>'
     observation = esc(story["whyItMatters"])
     observation = observation.replace(
         "判断：",
@@ -51,7 +65,7 @@ def story_block(story: dict, index: int, section_number: str, number: int) -> st
     <section style="margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid #e9e5dc;">
       <p style="margin:0 0 7px;line-height:1.5;"><span style="display:inline-block;margin-right:8px;padding:2px 7px;background:#d94f36;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;">{section_number}-{number:02d}</span><span style="color:#8a5146;font-size:12px;font-weight:700;letter-spacing:.04em;">{esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</span></p>
       <h3 style="margin:0 0 9px;color:#171a19;font-size:20px;line-height:1.45;font-weight:700;">{esc(story['title'])}</h3>
-      <p style="margin:0 0 10px;color:#343936;font-size:16px;line-height:1.75;">{esc(story['summary'])}</p>
+      {summary_line}
       {data_line}
       <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">产品经理观察</strong><br>{observation}</p>
       <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
@@ -162,8 +176,8 @@ def main() -> None:
         raise ValueError("公众号汽车专刊缺少足够的汽车热点或汽车金融内容")
     lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
     lead_title = lead_items[0][1]["title"]
-    lead_body = "；".join(item[1]["summary"] for item in lead_items)
     lead_heading = "今日重点速览"
+    lead_body = f"本期收录{len(selected)}条汽车产业与汽车金融动态，覆盖" + "、".join(title for _, title, _, _ in groups) + "。以下按主题呈现事实、数据线索与验证重点。"
     heading_titles = [lead_heading]
     heading_titles.extend(title for _, title, _, _ in groups)
     heading_titles.extend(story["title"] for _, _, _, items in groups for _, story in items)
