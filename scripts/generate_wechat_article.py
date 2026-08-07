@@ -163,6 +163,13 @@ def main() -> None:
     lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
     lead_title = lead_items[0][1]["title"]
     lead_body = "；".join(item[1]["summary"] for item in lead_items)
+    lead_heading = "今日重点速览"
+    heading_titles = [lead_heading]
+    heading_titles.extend(title for _, title, _, _ in groups)
+    heading_titles.extend(story["title"] for _, _, _, items in groups for _, story in items)
+    normalized_headings = [re.sub(r"\s+", " ", title).strip().casefold() for title in heading_titles]
+    if len(normalized_headings) != len(set(normalized_headings)):
+        raise ValueError("公众号正文存在重复标题")
     cover_result = render_cover(data)
 
     body: list[str] = []
@@ -174,7 +181,7 @@ def main() -> None:
       </header>
       <section style="margin:0;padding:26px 24px;background:#f5f3ee;border-bottom:1px solid #ddd8cc;">
         <p style="margin:0 0 8px;color:#d94f36;font-size:13px;font-weight:700;">今日汽车产业观察</p>
-        <h2 style="margin:0 0 12px;color:#171a19;font-size:23px;line-height:1.45;">{esc(lead_title)}</h2>
+        <h2 style="margin:0 0 12px;color:#171a19;font-size:23px;line-height:1.45;">{esc(lead_heading)}</h2>
         <p style="margin:0;color:#454b47;font-size:15px;line-height:1.9;">{esc(lead_body)}</p>
       </section>""")
 
