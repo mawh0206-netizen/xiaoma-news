@@ -126,6 +126,15 @@ def score(item: dict) -> tuple:
     return (PREFERRED.get(item.get("sourceHint"), 1) + relevance + quality, item.get("publishedAt", ""))
 
 
+def has_sufficient_foreign_source(item: dict) -> bool:
+    """Reject foreign candidates whose source snippet cannot support bilingual copy."""
+    if item.get("sourceHint") not in FOREIGN:
+        return True
+    source_text = str(item.get("snippetOriginal") or "").strip()
+    source_words = re.findall(r"[A-Za-z0-9]+(?:['’-][A-Za-z0-9]+)*", source_text)
+    return len(source_words) >= 8
+
+
 def published_datetime(item: dict) -> datetime | None:
     value = str(item.get("publishedAt", "")).strip()
     if not value:
@@ -201,6 +210,7 @@ def select(candidates: list[dict], old_urls: set[str], now: datetime | None = No
         and x.get("sourceHint") in FOREIGN | DOMESTIC
         and x.get("categoryHint") in QUOTAS
         and fresh_for_website(x, now)
+        and has_sufficient_foreign_source(x)
         and not stale_year.search(x.get("titleOriginal", ""))
         and not stale_month(x)
         and (x.get("categoryHint") not in {"汽车产业", "汽车金融"} or automotive_relevant(x))
