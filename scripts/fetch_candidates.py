@@ -16,6 +16,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "runtime" / "candidates.json"
 UA = "XiaomaNews/1.0 personal RSS reader"
+BAIDU_HOT_URL = "https://top.baidu.com/board?tab=realtime"
+BAIDU_AUTO_TERMS = (
+    "汽车", "车企", "新能源车", "电动车", "小车", "轿车", "微型车",
+    "代步车", "SUV", "特斯拉", "比亚迪", "蔚来", "小鹏", "理想",
+    "小米汽车", "充电", "智驾", "自动驾驶", "车贷", "购车",
+)
 
 DIRECT_FEEDS = [
     ("BBC", "国际要闻", "https://feeds.bbci.co.uk/news/world/rss.xml"),
@@ -86,6 +92,31 @@ def clean(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
+def normalize_publisher(value: str) -> str:
+    publisher = clean(value)
+    aliases = {
+        "sina.cn": "新浪新闻",
+        "新浪网": "新浪新闻",
+        "bitauto.com": "易车",
+        "autohome.com.cn": "汽车之家",
+        "gasgoo.com": "盖世汽车",
+    }
+    return aliases.get(publisher.casefold(), aliases.get(publisher, publisher))
+
+
+def candidate_quality(item: dict) -> bool:
+    """Block obvious gaming, download and directory-page pollution globally."""
+    title = str(item.get("titleOriginal", "")).lower()
+    url = str(item.get("url", "")).lower()
+    blocked_text = (
+        "电子游戏", "博彩", "彩票网站", "体育投注", "开户链接",
+        "官网版下载", "app下载官网", "pg电子", "电玩巴士", "配套采购/供应商",
+        "汽车社区】", "互动平台-盖世汽车", "供应商_互动平台",
+    )
+    blocked_domains = ("tgbus.com",)
+    return not any(term in title for term in blocked_text) and not any(domain in url for domain in blocked_domains)
+
+
 def fetch(url: str) -> bytes:
     req = urllib.request.Request(url, headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=25) as response:
@@ -102,7 +133,7 @@ def parse_date(value: str) -> str:
         return ""
 
 
-def parse_feed(source: str, category: str, url: str) -> list[dict]:
+def parse_feed(source: str, category: str, url: str, publisher_from_feed: bool = False) -> list[dict]:
     root = ET.fromstring(fetch(url))
     items = []
     for node in root.findall(".//item")[:30]:
@@ -111,7 +142,7 @@ def parse_feed(source: str, category: str, url: str) -> list[dict]:
         if not title or not link:
             continue
         desc = clean(node.findtext("description", ""))
-        items.append({
+        item = {
             "id": hashlib.sha1(f"{title}|{link}".encode()).hexdigest()[:16],
             "titleOriginal": title,
             "snippetOriginal": desc[:700],
@@ -119,7 +150,12 @@ def parse_feed(source: str, category: str, url: str) -> list[dict]:
             "sourceHint": source,
             "categoryHint": category,
             "publishedAt": parse_date(node.findtext("pubDate", "")),
-        })
+        }
+        if publisher_from_feed:
+            publisher = normalize_publisher(node.findtext("source", ""))
+            if publisher:
+                item["publisherHint"] = publisher
+        items.append(item)
     return items
 
 
@@ -129,8 +165,46 @@ def google_news_url(query: str, locale: str) -> str:
     return "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": query, "hl": "en-US", "gl": "US", "ceid": "US:en"})
 
 
+def fetch_baidu_hot_automotive() -> list[dict]:
+    """Use Baidu Hot Search for discovery, then source stories from publishers."""
+    page = fetch(BAIDU_HOT_URL).decode("utf-8", errors="replace")
+    match = re.search(r"<!--s-data:(.*?)-->", page, re.S)
+    if not match:
+        raise ValueError("Baidu Hot Search data payload not found")
+    payload = json.loads(match.group(1))
+    cards = payload.get("data", {}).get("cards", [])
+    hot_items = next((card.get("content", []) for card in cards if card.get("component") == "hotList"), [])
+    discovered: list[dict] = []
+    for position, hot_item in enumerate(hot_items[:50], 1):
+        topic = clean(hot_item.get("word") or hot_item.get("query") or "")
+        context = clean(hot_item.get("desc", ""))
+        searchable = f"{topic} {context}".lower()
+        if not topic or not any(term.lower() in searchable for term in BAIDU_AUTO_TERMS):
+            continue
+        results = parse_feed(
+            "百度热搜",
+            "汽车产业",
+            google_news_url(f'"{topic}" when:2d', "zh"),
+            publisher_from_feed=True,
+        )
+        for item in results[:5]:
+            item.update({
+                "discoverySource": "百度热搜",
+                "hotRank": position,
+                "hotScore": str(hot_item.get("hotScore", "")),
+                "trendTitle": topic,
+                "trendDescription": context[:500],
+            })
+            discovered.append(item)
+    return discovered
+
+
 def main() -> int:
     candidates, errors = [], []
+    try:
+        candidates.extend(fetch_baidu_hot_automotive())
+    except Exception as exc:
+        errors.append(f"百度热搜/汽车产业: {type(exc).__name__}: {exc}")
     for source, category, url in DIRECT_FEEDS:
         try:
             candidates.extend(parse_feed(source, category, url))
@@ -149,6 +223,8 @@ def main() -> int:
 
     unique = {}
     for item in candidates:
+        if not candidate_quality(item):
+            continue
         key = re.sub(r"\W+", "", item["titleOriginal"].lower())[:100]
         unique.setdefault(key, item)
     payload = {

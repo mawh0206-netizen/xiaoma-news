@@ -3,8 +3,12 @@ from __future__ import annotations
 
 import json
 import re
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
+from html import unescape
+from html.parser import HTMLParser
 from pathlib import Path
 
 import prepare_daily_issue as daily
@@ -23,6 +27,124 @@ OBSERVATION_FINAL_LIMIT = 0.78
 # summary than the candidate preview. Without a buffer, a pair just below the
 # preview threshold can cross the hard final threshold and abort the edition.
 OBSERVATION_SELECTION_LIMIT = 0.74
+ARTICLE_UA = "Mozilla/5.0 (compatible; XiaomaNews/1.0; +https://mawh0206-netizen.github.io/xiaoma-news/)"
+
+
+class ArticleMetadataParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.descriptions: list[str] = []
+        self.paragraphs: list[str] = []
+        self._paragraph_parts: list[str] | None = None
+        self._ignored_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
+        if tag in {"script", "style", "noscript"}:
+            self._ignored_depth += 1
+            return
+        if tag == "p" and not self._ignored_depth:
+            self._paragraph_parts = []
+        if tag != "meta":
+            return
+        values = {str(key).lower(): str(value or "") for key, value in attrs}
+        name = (values.get("name") or values.get("property") or "").lower()
+        if name in {"description", "og:description", "twitter:description"} and values.get("content"):
+            self.descriptions.append(values["content"])
+
+    def handle_endtag(self, tag: str) -> None:
+        tag = tag.lower()
+        if tag in {"script", "style", "noscript"} and self._ignored_depth:
+            self._ignored_depth -= 1
+            return
+        if tag == "p" and self._paragraph_parts is not None:
+            paragraph = clean_news_text(" ".join(self._paragraph_parts))
+            if paragraph:
+                self.paragraphs.append(paragraph)
+            self._paragraph_parts = None
+
+    def handle_data(self, data: str) -> None:
+        if self._paragraph_parts is not None and not self._ignored_depth:
+            self._paragraph_parts.append(data)
+
+
+def clean_news_text(value: object) -> str:
+    text = unescape(str(value or ""))
+    text = re.sub(r"<<<(?:SUMMARY|总结|摘要)>>>", " ", text, flags=re.I)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"#[^#]{2,50}#", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"(?:继续阅读|阅读全文|点击查看详情)\s*[.…]*$", "", text).strip()
+    return text
+
+
+def article_excerpt(url: str) -> str:
+    if not re.match(r"^https?://", url, re.I):
+        return ""
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": ARTICLE_UA})
+        with urllib.request.urlopen(request, timeout=18) as response:
+            raw = response.read(1_500_000)
+            charset = response.headers.get_content_charset() or "utf-8"
+        page = raw.decode(charset, errors="replace")
+        parser = ArticleMetadataParser()
+        parser.feed(page)
+        candidates = [clean_news_text(value) for value in parser.descriptions]
+        for block in re.findall(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', page, re.I | re.S):
+            try:
+                payload = json.loads(unescape(block))
+            except (json.JSONDecodeError, TypeError):
+                continue
+            queue = payload if isinstance(payload, list) else [payload]
+            for node in queue:
+                if isinstance(node, dict):
+                    candidates.extend(clean_news_text(node.get(key)) for key in ("description", "articleBody"))
+        paragraph_blockers = ("登录", "注册", "扫码", "下载客户端", "责任编辑", "版权声明", "违法和不良信息")
+        paragraphs = [
+            text for text in parser.paragraphs
+            if 45 <= len(text) <= 600 and not any(blocker in text for blocker in paragraph_blockers)
+        ]
+        if paragraphs:
+            candidates.append(" ".join(paragraphs[:3])[:600])
+        candidates = [text for text in candidates if 45 <= len(text) <= 1200]
+        return max(candidates, key=len)[:420] if candidates else ""
+    except Exception:
+        return ""
+
+
+def reader_news_brief(story: dict, item: dict, excerpt: str) -> tuple[str, str]:
+    title = clean_news_text(story.get("title"))
+    title_core = re.sub(r"\s+[-—]\s+[^-—]{2,24}$", "", title).strip()
+    candidates = [(excerpt, "原文页面摘要"), (item.get("snippetOriginal", ""), "新闻聚合摘要")]
+    for raw, origin in candidates:
+        text = clean_news_text(raw)
+        if title_core and text.startswith(title_core):
+            text = text[len(title_core):].lstrip(" -—｜|：:，,。").strip()
+        normalized_title = re.sub(r"\W+", "", title_core).casefold()
+        normalized_text = re.sub(r"\W+", "", text).casefold()
+        similarity = SequenceMatcher(None, normalized_title, normalized_text).ratio() if normalized_title and normalized_text else 0
+        if len(text) >= 55 and similarity < 0.82:
+            return text[:360], origin
+    fallback = (
+        f"公开报道显示，{title_core.rstrip('。！？!?')}。"
+        "当前能够确认的信息主要来自报道标题及已公开数据；具体统计口径、适用范围和后续进展，"
+        "仍需以企业公告、监管披露或原媒体更新为准。"
+    )
+    return fallback[:360], "公开标题与已披露信息"
+
+
+def fetch_excerpts(urls: list[str]) -> dict[str, str]:
+    unique = list(dict.fromkeys(urls))
+    results: dict[str, str] = {}
+    with ThreadPoolExecutor(max_workers=min(6, len(unique) or 1)) as executor:
+        futures = {executor.submit(article_excerpt, url): url for url in unique}
+        for future in as_completed(futures):
+            url = futures[future]
+            try:
+                results[url] = future.result()
+            except Exception:
+                results[url] = ""
+    return results
 
 
 def fresh(item: dict, now: datetime) -> bool:
@@ -113,6 +235,14 @@ def substantive_title(item: dict) -> bool:
 def acceptable_publisher(item: dict) -> bool:
     url = str(item.get("url", "")).lower()
     title = str(item.get("titleOriginal", ""))
+    blocked_text = (
+        "电子游戏", "博彩", "彩票网站", "体育投注", "开户链接",
+        "官网版下载", "app下载官网", "pg电子", "电玩巴士", "配套采购/供应商",
+        "汽车社区】", "互动平台-盖世汽车", "供应商_互动平台",
+    )
+    blocked_domains = ("tgbus.com",)
+    if any(term in title.lower() for term in blocked_text) or any(domain in url for domain in blocked_domains):
+        return False
     if item.get("sourceHint") == "国内汽车综合" and (
         "163.com/" in url or "手机网易网" in title
     ):
@@ -174,7 +304,7 @@ def choose(
 
 
 def metrics_from(story: dict) -> list[str]:
-    text = f"{story.get('title', '')} {story.get('summary', '')}"
+    text = f"{story.get('title', '')} {story.get('newsBrief', '')} {story.get('summary', '')}"
     values: list[str] = []
     for value in METRIC_RE.findall(text):
         cleaned = re.sub(r"\s+", "", value)
@@ -190,7 +320,7 @@ def short_subject(story: dict) -> str:
 
 
 def professional_observation(story: dict) -> tuple[str, list[str]]:
-    text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+    text = f"{story.get('title', '')} {story.get('newsBrief', '')} {story.get('summary', '')}".lower()
     subject = short_subject(story)
     metrics = metrics_from(story)
     data_anchor = f"报道中的{'、'.join(metrics)}需要放回统计口径和时间周期中看，" if metrics else ""
@@ -416,7 +546,7 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         )
         watch = ["后续正式公告", "终端用户反馈", "商业化进度", "经营数据兑现"]
 
-    fact_anchor = re.sub(r"\s+", " ", str(story.get("summary", ""))).strip()
+    fact_anchor = clean_news_text(story.get("newsBrief") or story.get("summary", ""))
     if len(fact_anchor) > 48:
         fact_anchor = fact_anchor[:48] + "…"
     evidence = f" 事实锚点：{fact_anchor}。" if fact_anchor else ""
@@ -491,6 +621,8 @@ def main() -> None:
         raise ValueError(f"WeChat domestic source ratio outside target range: {domestic_count}/{len(selected)}")
     stories = [daily.make_story(item, index + 30) for index, item in enumerate(selected)]
     resolved_urls = resolve_urls([item["url"] for item in selected])
+    direct_urls = [resolved_urls.get(item["url"], item["url"]) for item in selected]
+    excerpts = fetch_excerpts([url for url in direct_urls if not is_google_news_url(url)])
     for story, item in zip(stories, selected):
         story["publishedAt"] = item["publishedAt"]
         story["publishedLabel"] = published_label(item, now)
@@ -501,6 +633,11 @@ def main() -> None:
         if direct_url != original_url:
             story["aggregatorUrl"] = original_url
         story["url"] = direct_url
+        story["newsBrief"], story["newsBriefSource"] = reader_news_brief(
+            story,
+            item,
+            excerpts.get(direct_url, ""),
+        )
         observation, watch = professional_observation(story)
         story["whyItMatters"] = observation
         story["watchMetrics"] = watch
@@ -508,6 +645,9 @@ def main() -> None:
         maximum = timedelta(days=7) if item["categoryHint"] == "汽车金融" else timedelta(hours=48)
         if not within_age(item, now, maximum):
             raise ValueError(f"WeChat freshness validation failed: {story['title']}")
+        brief = str(story.get("newsBrief", "")).strip()
+        if not 55 <= len(brief) <= 360 or "<<<" in brief:
+            raise ValueError(f"WeChat reader news brief quality check failed: {story['title']}")
     observations = [story["whyItMatters"] for story in stories]
     if len(set(observations)) != len(observations):
         raise ValueError("WeChat professional observations must be unique")

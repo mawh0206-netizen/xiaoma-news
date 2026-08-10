@@ -50,7 +50,20 @@ def redundant_summary(story: dict) -> bool:
 def story_block(story: dict, index: int, section_number: str, number: int) -> str:
     metrics = extract_metrics(story)
     data_line = f'<p style="margin:0 0 10px;padding:8px 12px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.65;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
-    summary_line = "" if redundant_summary(story) else f'<p style="margin:0 0 10px;color:#343936;font-size:16px;line-height:1.75;">{esc(story["summary"])}</p>'
+    news_brief = str(story.get("newsBrief") or "").strip()
+    if len(news_brief) < 55:
+        raise ValueError(f"公众号新闻事实不足：{story.get('title', '')}")
+    brief_origin = esc(story.get("newsBriefSource") or "公开信息")
+    summary_line = (
+        '<div style="margin:0 0 12px;padding:12px 14px;background:#fff;border:1px solid #e9e5dc;">'
+        f'<p style="margin:0 0 6px;color:#d94f36;font-size:12px;font-weight:700;letter-spacing:.06em;">新闻事实 · {brief_origin}</p>'
+        f'<p style="margin:0;color:#343936;font-size:16px;line-height:1.82;">{esc(news_brief)}</p>'
+        '</div>'
+    )
+    trend_line = ""
+    if story.get("discoverySource") == "百度热搜":
+        rank = esc(story.get("hotRank") or "-")
+        trend_line = f'<p style="margin:0 0 8px;color:#d94f36;font-size:12px;font-weight:700;">百度热搜第{rank}位发现 · 已回溯媒体原文</p>'
     observation = esc(story["whyItMatters"])
     observation = observation.replace(
         "判断：",
@@ -61,14 +74,19 @@ def story_block(story: dict, index: int, section_number: str, number: int) -> st
         '<br><strong style="color:#1d6a55;">验证重点：</strong>',
         1,
     )
+    source_note = f"资料来源：{story['source']}"
+    if story.get("discoverySource") == "百度热搜":
+        source_note += "；百度热搜仅用于议题发现"
+    source_note += "；详细资料与原文入口见文末“阅读原文”。"
     return f"""
     <section style="margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid #e9e5dc;">
       <p style="margin:0 0 7px;line-height:1.5;"><span style="display:inline-block;margin-right:8px;padding:2px 7px;background:#d94f36;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;">{section_number}-{number:02d}</span><span style="color:#8a5146;font-size:12px;font-weight:700;letter-spacing:.04em;">{esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</span></p>
+      {trend_line}
       <h3 style="margin:0 0 9px;color:#171a19;font-size:20px;line-height:1.45;font-weight:700;">{esc(story['title'])}</h3>
       {summary_line}
       {data_line}
-      <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">产品经理观察</strong><br>{observation}</p>
-      <p style="margin:0;color:#8a8f8b;font-size:12px;">资料来源：{esc(story['source'])}；详细资料与原文入口见文末“阅读原文”。</p>
+      <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">产品经理解读</strong><br>{observation}</p>
+      <p style="margin:0;color:#8a8f8b;font-size:12px;">{esc(source_note)}</p>
     </section>"""
 
 
