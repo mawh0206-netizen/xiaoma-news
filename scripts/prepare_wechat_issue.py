@@ -30,7 +30,12 @@ OBSERVATION_SELECTION_LIMIT = 0.74
 ARTICLE_UA = "Mozilla/5.0 (compatible; XiaomaNews/1.0; +https://mawh0206-netizen.github.io/xiaoma-news/)"
 LOW_INFORMATION_TERMS = (
     "申报2026第八届金辑奖", "申报金辑奖", "投融资周报", "概念异动",
-    "直线涨停", "时事通讯：", "newsletter:",
+    "直线涨停", "时事通讯：", "newsletter:", "目前暂无", "座舱开箱",
+    "回归\"长期主义\"", "回归“长期主义”", "+faq", "news - electric vehicle",
+    "一锤定音", "豹启新境", "开始抄", "supposedly", "coffee to cars",
+    "带火的这个设计", "东风股份：7月汽车销量", "美国混动市场 86%",
+    "电池税”落地", "广汽孵化的机器人公司",
+    "技术平权", "磨三剑", "掀开了速成车", "ai\"评测\"", "ai“评测”",
 )
 WEAK_AUTO_TERMS = ("自行车", "电动自行车", "两轮车")
 
@@ -271,16 +276,13 @@ def substantive_title(item: dict) -> bool:
 def editorially_substantive(item: dict) -> bool:
     """Keep low-information or weakly automotive stories out of the 14-item issue."""
     title = str(item.get("titleOriginal", "")).lower()
-    snippet = str(item.get("snippetOriginal", "")).strip()
     if any(term.lower() in title for term in WEAK_AUTO_TERMS):
         return False
     if any(term.lower() in title for term in LOW_INFORMATION_TERMS):
         return False
-    # A repeated title is discovery metadata, not enough evidence for analysis.
-    normalized_title = re.sub(r"\s+-\s+[^-—]{2,20}$", "", title).strip()
-    normalized_snippet = re.sub(r"\s+[^\s]{2,20}$", "", snippet.lower()).strip()
-    if normalized_snippet == normalized_title:
-        return False
+    # Google News RSS commonly repeats the headline in snippetOriginal. That is
+    # discovery metadata rather than proof that the underlying article is thin;
+    # reader_news_brief() resolves and reads the publisher page before output.
     return True
 
 
@@ -322,7 +324,30 @@ def choose(
     against: list[dict] | None = None,
 ) -> list[dict]:
     minimum = limit if minimum is None else minimum
-    ranked = sorted(pool, key=daily.score, reverse=True)
+    authority_bonus = {
+        "中国汽车工业协会": 80,
+        "中国汽车流通协会": 80,
+        "乘联会": 80,
+        "重点车企": 45,
+        "Reuters": 35,
+        "Financial Times": 25,
+    }
+    priority_terms = (
+        "召回", "安全", "财报", "业绩", "利润", "现金流", "渗透率", "市场分析",
+        "出口", "装机量排行榜", "项目定点", "合资企业", "生产转移", "parts-supply",
+        "工厂", "产能", "销量", "交付", "监管", "标准", "融资",
+        "51sim", "adas供应商", "宁家服务", "长安汽车再牵手华为", "hyworldvla",
+        "项目定点", "g9l开启预售", "小马智行全球自动驾驶里程",
+    )
+    ranked = sorted(
+        pool,
+        key=lambda item: (
+            authority_bonus.get(item.get("sourceHint", ""), 0)
+            + 12 * sum(term in str(item.get("titleOriginal", "")).lower() for term in priority_terms),
+            daily.score(item),
+        ),
+        reverse=True,
+    )
     ordered: list[dict] = []
     if topic_coverage:
         for topic in ("data", "smart", "vehicle", "supply", "industry"):
@@ -373,6 +398,7 @@ def short_subject(story: dict) -> str:
 
 def professional_observation(story: dict) -> tuple[str, list[str]]:
     text = f"{story.get('title', '')} {story.get('newsBrief', '')} {story.get('summary', '')}".lower()
+    title_text = str(story.get("title", "")).lower()
     subject = short_subject(story)
     metrics = metrics_from(story)
     data_anchor = f"报道中的{'、'.join(metrics)}需要放回统计口径和时间周期中看，" if metrics else ""
@@ -406,6 +432,42 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "真正决定业务质量的是金融是否带来新增成交，同时没有用过度授信掩盖终端需求不足。"
             )
             watch = ["金融渗透率", "单车融资额", "新增成交贡献", "不良率"]
+    elif any(term in text for term in ("召回", "安全缺陷", "安全隐患", "故障")):
+        judgment = (
+            f"“{subject}”应按产品质量与监管事件处理，而不是普通舆情。{data_anchor}"
+            "影响大小取决于涉及车辆范围、缺陷是否触及核心安全功能、修复方式和完成率；"
+            "如果同类问题跨车型复现，质保成本与品牌信任损失会超过单次召回费用。"
+        )
+        watch = ["涉及车辆数", "缺陷调查结论", "召回完成率", "单车修复与质保成本"]
+    elif any(term in text for term in ("收入同比", "毛利率", "期内亏损", "净利润", "ebit", "自由现金流")):
+        judgment = (
+            f"“{subject}”最值得看的不是收入增速本身，而是增长能否同步改善盈利与现金。{data_anchor}"
+            "高增业务占比提升若伴随毛利率上升、亏损收窄，是商业化质量改善的信号；"
+            "但仍要回到正式财报核对客户集中、应收和经营现金流，避免把低基数增长当成拐点。"
+        )
+        watch = ["分部收入与占比", "毛利率", "经营现金流", "应收账款与客户集中度"]
+    elif any(term in text for term in ("装机量排行榜", "装机量排名", "供应商装机量")):
+        judgment = (
+            f"“{subject}”展示的是供应链份额，而不是整车销量。{data_anchor}"
+            "装机量需要同时核对统计样本、车型覆盖和单车价值量；份额上升若主要来自低价车型，"
+            "未必带来同幅度收入与利润，真正的壁垒还要看跨平台定点和持续供货能力。"
+        )
+        watch = ["统计样本与口径", "量产车型覆盖", "单车价值量", "供应商收入与毛利率"]
+    elif "渗透率" in text or "月度新车销量占比" in text:
+        if "出口" in text and any(term in text for term in ("零售", "国内", "淡季", "承压", "下降")):
+            judgment = (
+                f"“{subject}”真正反常的是国内需求承压、渗透率上升与出口高增同时发生。{data_anchor}"
+                "渗透率抬升可能来自燃油车收缩更快，不等于新能源绝对销量同步增长；"
+                "出口则是厂商销量的托底项，但还要用目的国注册与渠道库存验证是否卖到终端。"
+            )
+            watch = ["新能源零售量", "燃油车零售降幅", "出口与海外注册差", "渠道库存"]
+        else:
+            judgment = (
+                f"“{subject}”反映的是结构变化，不是所有品牌都能同比例受益。{data_anchor}"
+                "先分清全口径汽车、乘用车以及国内销量口径；渗透率上升也可能由燃油车下降更快推动，"
+                "只有新能源绝对销量、价格带份额和单车利润同步改善，才能确认需求扩张。"
+            )
+            watch = ["新能源绝对销量", "统计口径", "分价格带份额", "新能源单车利润"]
     elif any(term in text for term in ("销量目标", "销售目标", "交付目标", "产量目标")):
         judgment = (
             f"“{subject}”中各企业目标的简单加总并不等于真实市场容量。{data_anchor}"
@@ -413,13 +475,34 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "如果零售增速跟不上批发目标，压力最终会转化为价格折让和经销商资金占用。"
         )
         watch = ["终端零售", "批零差", "渠道库存天数", "产能利用率"]
-    elif any(term in text for term in ("产量", "生产")) and any(term in text for term in ("下降", "暴跌", "下滑", "推迟")):
+    elif any(term in title_text for term in ("产量", "生产")) and any(term in title_text for term in ("下降", "暴跌", "下滑", "推迟")):
         judgment = (
             f"“{subject}”更像供需失衡或生产切换信号，不能用常规销量增长逻辑解释。{data_anchor}"
             "需要先区分减产来自订单不足、零部件约束还是车型换代；若同时推迟新品，"
             "说明问题可能已从单月波动扩展到研发、认证或供应协同。"
         )
         watch = ["工厂产能利用率", "在手订单", "零部件缺口", "新品认证与投产节点"]
+    elif any(term in text for term in ("生产从中国转移", "move production", "本地化生产")):
+        judgment = (
+            f"“{subject}”是产能与供应链重配，不是普通车型发布。{data_anchor}"
+            "需要核对转移车型、产量、关税与物流节省能否覆盖美国制造成本上升，"
+            "以及中国工厂空出的产能如何消化；只有成本、交付和利用率同时改善，迁产才有经营价值。"
+        )
+        watch = ["转移车型与年产量", "中美单位制造成本", "关税与物流成本", "原工厂产能利用率"]
+    elif "中国" in title_text and "出口" in title_text and any(term in title_text for term in ("跃升", "增长", "百万")):
+        judgment = (
+            f"“{subject}”说明出口正在对冲国内零售疲软，但出口量仍不是海外终端销量。{data_anchor}"
+            "应把海关或乘联分会出口与目的国注册、渠道库存和当地成交价放在一起看；"
+            "若注册跟不上装运，增长可能只是库存向海外转移，不能直接等同品牌竞争力提升。"
+        )
+        watch = ["目的国注册量", "出口与注册差", "海外渠道库存", "区域成交价与单车利润"]
+    elif "图像传感器" in text and any(term in text for term in ("工厂", "投资", "产能")):
+        judgment = (
+            f"“{subject}”的关键不是投资额有多大，而是新增传感器产能能否获得车载客户和合理利用率。{data_anchor}"
+            "图像传感器还需区分消费电子与车规用途；只有车规认证、长期订单和良率兑现，"
+            "资本开支才会转成汽车供应链能力，否则可能加重折旧与产能闲置压力。"
+        )
+        watch = ["车规产品占比", "主机厂与Tier1订单", "产能利用率", "良率与折旧压力"]
     elif any(term in text for term in ("销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额", "registrations")):
         if (
             any(term in text for term in ("暴跌", "下滑", "遇冷", "下降"))
@@ -452,7 +535,7 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "只有份额提升与单车盈利同步，规模增长才具有可持续性。"
             )
             watch = ["批发与零售差值", "出口占比", "成交均价", "单车毛利"]
-    elif any(term in text for term in ("渗透率", "新能源市场", "市场展望")):
+    elif any(term in text for term in ("新能源市场", "市场展望")):
         judgment = (
             f"“{subject}”反映的是结构变化，不是所有品牌都能同比例受益。{data_anchor}"
             "渗透率上升后，竞争重点会从教育市场转向价格带覆盖、补能体验和存量用户复购，"
@@ -515,7 +598,7 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "智能驾驶或车载AI只有在量产车型覆盖、用户使用频次、安全表现和单车成本之间形成闭环，"
                 "才会从营销卖点变成持续收入或品牌溢价。"
             )
-        watch = ["量产定点与SOP", "装车量", "用户使用率", "单车硬件与算力成本"]
+            watch = ["量产定点与SOP", "装车量", "用户使用率", "单车硬件与算力成本"]
     elif (
         any(term in text for term in ("汽车行业", "汽车业", "车企", "整车行业"))
         and any(term in text for term in ("利润率", "利润同比", "微利", "盈利水平"))
@@ -656,7 +739,7 @@ def main() -> None:
         11 - len(finance),
         True,
         minimum=max(7 - len(finance), 0),
-        source_limit=3,
+        source_limit=6,
         against=finance,
     )
     foreign_auto = choose(
