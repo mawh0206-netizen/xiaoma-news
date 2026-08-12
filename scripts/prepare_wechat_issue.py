@@ -28,6 +28,11 @@ OBSERVATION_FINAL_LIMIT = 0.78
 # preview threshold can cross the hard final threshold and abort the edition.
 OBSERVATION_SELECTION_LIMIT = 0.74
 ARTICLE_UA = "Mozilla/5.0 (compatible; XiaomaNews/1.0; +https://mawh0206-netizen.github.io/xiaoma-news/)"
+LOW_INFORMATION_TERMS = (
+    "申报2026第八届金辑奖", "申报金辑奖", "投融资周报", "概念异动",
+    "直线涨停", "时事通讯：", "newsletter:",
+)
+WEAK_AUTO_TERMS = ("自行车", "电动自行车", "两轮车")
 
 
 class ArticleMetadataParser(HTMLParser):
@@ -261,6 +266,22 @@ def substantive_title(item: dict) -> bool:
         and "产业日报" not in title
         and not ("快讯" in title and "；" in title)
     )
+
+
+def editorially_substantive(item: dict) -> bool:
+    """Keep low-information or weakly automotive stories out of the 14-item issue."""
+    title = str(item.get("titleOriginal", "")).lower()
+    snippet = str(item.get("snippetOriginal", "")).strip()
+    if any(term.lower() in title for term in WEAK_AUTO_TERMS):
+        return False
+    if any(term.lower() in title for term in LOW_INFORMATION_TERMS):
+        return False
+    # A repeated title is discovery metadata, not enough evidence for analysis.
+    normalized_title = re.sub(r"\s+-\s+[^-—]{2,20}$", "", title).strip()
+    normalized_snippet = re.sub(r"\s+[^\s]{2,20}$", "", snippet.lower()).strip()
+    if normalized_snippet == normalized_title:
+        return False
+    return True
 
 
 def acceptable_publisher(item: dict) -> bool:
@@ -606,6 +627,7 @@ def main() -> None:
         and daily.automotive_relevant(item)
         and fresh(item, now)
         and substantive_title(item)
+        and editorially_substantive(item)
         and acceptable_publisher(item)
     ]
     auto_pool = [

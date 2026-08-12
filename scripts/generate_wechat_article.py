@@ -116,7 +116,7 @@ def select(stories: list[dict], categories: set[str], limit: int) -> list[tuple[
 
 
 def focus_score(story: dict) -> int:
-    text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
+    text = f"{story.get('title', '')} {story.get('summary', '')} {story.get('newsBrief', '')}".lower()
     terms = {
         "新车": 8, "上市": 8, "首发": 7, "发布": 5, "车型": 6,
         "智能网联": 10, "车载ai": 10, "智能驾驶": 9, "自动驾驶": 9,
@@ -134,6 +134,20 @@ def focus_score(story: dict) -> int:
         score += 8
         if any(event in text for event in major_events):
             score += 24
+    source = story.get("source", "")
+    if source in {"工信部", "中国汽车工业协会", "中国汽车流通协会", "乘联会"} or any(
+        term in text for term in ("工信部", "中汽协", "中国汽车工业协会", "中国汽车流通协会", "乘联分会", "乘联会")
+    ):
+        score += 24
+    if any(term in text for term in ("新规", "国标", "监管", "召回", "安全要求", "消费税")):
+        score += 16
+    if any(term in text for term in ("申报2026第八届金辑奖", "投融资周报", "概念异动", "直线涨停")):
+        score -= 45
+    brief = str(story.get("newsBrief", ""))
+    if story.get("newsBriefSource") == "公开标题与已披露信息" or len(brief) < 90:
+        score -= 24
+    if any(term in text for term in ("自行车", "电动自行车")):
+        score -= 50
     return score
 
 
@@ -149,36 +163,17 @@ def extract_metrics(story: dict) -> list[str]:
 
 
 def topic_groups(auto_items: list[tuple[int, dict]], finance_items: list[tuple[int, dict]]) -> list[tuple[str, str, str, list[tuple[int, dict]]]]:
-    buckets: dict[str, list[tuple[int, dict]]] = {"数据与市场": [], "整车与品牌": [], "智能网联与车载AI": [], "供应链与产业经营": [], "汽车金融": []}
-    subtitles = {
-        "数据与市场": "销量、交付、渗透率、价格、库存与经营数据",
-        "整车与品牌": "重磅产品、重点车企与整车经营变化",
-        "智能网联与车载AI": "智能驾驶、车载软件、芯片与智能座舱",
-        "供应链与产业经营": "电池、零部件、产能、成本与全球供应链",
-        "汽车金融": "车贷、库存融资、经销商资金与风险管理",
-    }
-    for item in auto_items:
-        story = item[1]
-        text = f"{story.get('title', '')} {story.get('summary', '')}".lower()
-        scores = {
-            "数据与市场": len(extract_metrics(story)) * 5 + sum(term in text for term in ("销量", "交付", "产量", "零售", "出口", "渗透率", "库存", "利润", "同比", "环比")) * 4,
-            "整车与品牌": sum(term in text for term in ("新车", "上市", "首发", "车型", "车企", "特斯拉", "理想", "蔚来", "小鹏", "小米", "比亚迪", "launch", "model")) * 4,
-            "智能网联与车载AI": sum(term in text for term in ("智能网联", "车载ai", "智能驾驶", "自动驾驶", "座舱", "芯片", "robotaxi", "adas", "软件")) * 4,
-            "供应链与产业经营": sum(term in text for term in ("供应链", "电池", "充电", "零部件", "产能", "工厂", "成本", "出口", "关税")) * 4,
-        }
-        topic = max(scores, key=scores.get)
-        buckets[topic].append(item)
-    buckets["汽车金融"] = finance_items
-    limits = {"汽车金融": 4}
-    ranked_groups = []
-    for title, items in buckets.items():
-        items = sorted(items, key=lambda item: focus_score(item[1]), reverse=True)[:limits.get(title, 10)]
-        if items:
-            group_score = max(focus_score(item[1]) for item in items)
-            ranked_groups.append((group_score, title, subtitles[title], items))
-    fixed_order = {"整车与品牌": 0, "数据与市场": 1, "智能网联与车载AI": 2, "汽车金融": 3, "供应链与产业经营": 4}
-    ranked_groups.sort(key=lambda group: fixed_order.get(group[1], 99))
-    return [(f"{index:02d}", title, subtitle, items) for index, (_, title, subtitle, items) in enumerate(ranked_groups, 1)]
+    ranked = sorted(auto_items + finance_items, key=lambda item: focus_score(item[1]), reverse=True)
+    bands = (
+        ("今日重点", "政策、安全、行业拐点与最有决策价值的数据", ranked[:5]),
+        ("行业追踪", "重要经营、技术量产与市场结构变化", ranked[5:10]),
+        ("补充观察", "值得留意但影响范围或信息完整度相对有限的动态", ranked[10:]),
+    )
+    return [
+        (f"{index:02d}", title, subtitle, items)
+        for index, (title, subtitle, items) in enumerate(bands, 1)
+        if items
+    ]
 
 
 def main() -> None:
