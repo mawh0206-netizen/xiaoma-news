@@ -36,6 +36,11 @@ AUTO_ENGLISH = re.compile(r"\b(?:car|cars|vehicle|vehicles|automotive|automaker|
 AUTO_BLOCKERS = re.compile(r"\b(?:aircraft|airline|aviation|airport|ship|shipping|nike)\b", re.I)
 AUTO_FOCUS_TERMS = ("上市", "发布", "首发", "亮相", "新车", "车型", "智能网联", "智能驾驶", "自动驾驶", "车载AI", "座舱", "芯片", "电池", "充电", "供应链", "零部件", "汽车金融", "车贷", "经销商", "robotaxi", "ADAS", "launch", "debut", "connected-car")
 AUTO_DATA_TERMS = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "现金流", "同比", "环比", "万辆", "%", "sales", "deliveries", "revenue", "margin", "inventory")
+AUTO_FINANCIAL_TERMS = (
+    "财报", "年报", "半年报", "季报", "业绩", "营收", "毛利率", "净利润",
+    "税前利润", "经营现金流", "自由现金流", "单车收入", "ebit", "ebt",
+    "operating profit", "gross margin", "free cash flow", "financial results",
+)
 DECISION_METRIC_RE = re.compile(
     r"(?:约|超|近|达|增长|下降|上涨|下跌)?\s*\d+(?:\.\d+)?\s*"
     r"(?:%|万亿元|亿元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
@@ -121,6 +126,8 @@ def score(item: dict) -> tuple:
     if item.get("categoryHint") in {"汽车产业", "汽车金融"}:
         relevance += sum(4 for word in AUTO_FOCUS_TERMS if word.lower() in text.lower())
         relevance += sum(6 for word in AUTO_DATA_TERMS if word.lower() in text.lower())
+        financial_hits = sum(1 for word in AUTO_FINANCIAL_TERMS if word.lower() in text.lower())
+        relevance += min(32, financial_hits * 8)
     snippet = item.get("snippetOriginal", "")
     quality = min(len(snippet), 500) / 100
     if item.get("discoverySource") == "百度热搜":

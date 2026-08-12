@@ -125,7 +125,7 @@ def focus_score(story: dict) -> int:
         "robotaxi": 9, "adas": 9, "connected-car": 9,
     }
     score = sum(weight for term, weight in terms.items() if term in text)
-    data_terms = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "现金流", "同比", "环比", "sales", "deliveries", "revenue", "margin", "inventory")
+    data_terms = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "毛利率", "净利润", "税前利润", "经营现金流", "自由现金流", "单车收入", "同比", "环比", "财报", "半年报", "季报", "ebit", "ebt", "sales", "deliveries", "revenue", "margin", "inventory", "free cash flow")
     score += min(36, sum(6 for term in data_terms if term in text))
     score += min(24, len(extract_metrics(story)) * 6)
     major_brands = ("特斯拉", "理想", "蔚来", "小鹏", "小米", "比亚迪", "tesla", "nio", "xpeng", "li auto", "xiaomi", "byd")
@@ -141,6 +141,9 @@ def focus_score(story: dict) -> int:
         score += 24
     if any(term in text for term in ("新规", "国标", "监管", "召回", "安全要求", "消费税")):
         score += 16
+    financial_hits = sum(term in text for term in ("财报", "半年报", "季报", "营收", "毛利率", "净利润", "经营现金流", "自由现金流", "ebit", "ebt", "financial results"))
+    if financial_hits >= 2:
+        score += 24
     if any(term in text for term in ("申报2026第八届金辑奖", "投融资周报", "概念异动", "直线涨停")):
         score -= 45
     brief = str(story.get("newsBrief", ""))
