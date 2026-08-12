@@ -272,7 +272,7 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
 
     draw.rectangle((0, 0, 24, HEIGHT), fill=signal)
     draw.text((70, 54), "小马儿YOUNG  ·  AUTOMOTIVE INTELLIGENCE", font=font(24, True), fill=signal)
-    draw.text((70, 102), "汽车行业晨报", font=font(68, True), fill=paper)
+    draw.text((70, 102), "每日汽车透视", font=font(68, True), fill=paper)
 
     title_face = font(35, True)
     title_lines = wrap(draw, headline, title_face, 680, 2)
@@ -294,7 +294,7 @@ def render_cover(data: dict, output: Path = OUTPUT) -> dict:
     date_match = re.search(r"(\d{4})年(\d{1,2})月(\d{1,2})日", data["dateLabel"])
     date_text = f"{date_match.group(1)}.{int(date_match.group(2)):02d}.{int(date_match.group(3)):02d}" if date_match else data["dateLabel"]
     draw.text((72, 438), date_text, font=font(25, True), fill=signal)
-    draw.text((285, 438), "HEADLINE · INDUSTRY BRIEF", font=font(22), fill=paper)
+    draw.text((285, 438), "DATA · FINANCE · POLICY · TREND", font=font(20), fill=paper)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output, "PNG", optimize=True)

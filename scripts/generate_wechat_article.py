@@ -208,7 +208,7 @@ def main() -> None:
     body.append(f"""
       <header style="padding:34px 24px;background:#171a19;color:#fff;">
         <p style="margin:0 0 12px;color:#ef7059;font-size:13px;font-weight:700;letter-spacing:.14em;">小马儿YOUNG · 汽车产业观察</p>
-        <h1 style="margin:0 0 14px;font-size:30px;line-height:1.3;">{esc(data['dateLabel'])} 汽车行业晨报</h1>
+        <h1 style="margin:0 0 14px;font-size:30px;line-height:1.3;">{esc(data['dateLabel'])} 每日汽车透视</h1>
         <p style="margin:0;color:#c9ceca;font-size:15px;line-height:1.8;">聚焦智能网联、车载AI、整车与供应链、汽车金融，记录汽车产业每天值得关注的变化。</p>
       </header>
       <section style="margin:0;padding:26px 24px;background:#f5f3ee;border-bottom:1px solid #ddd8cc;">
@@ -231,7 +231,7 @@ def main() -> None:
     article = "".join(body)
     document = f"""<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{esc(data['dateLabel'])} · 小马儿Young汽车行业晨报</title>
+<title>{esc(data['dateLabel'])} · 小马儿Young每日汽车透视</title>
 <style>body{{margin:0;background:#ecebe7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif}}.toolbar{{position:sticky;top:0;z-index:5;padding:12px;text-align:center;background:#fff;border-bottom:1px solid #ddd}}button{{padding:10px 18px;border:0;border-radius:4px;background:#1d6a55;color:#fff;font-size:14px;cursor:pointer}}#wechat-article{{width:min(677px,100%);margin:24px auto;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.08)}}@media(max-width:700px){{#wechat-article{{margin:0 auto}}}}</style></head>
 <body><div class="toolbar"><button id="copyButton">复制公众号正文</button> <span id="copyStatus"></span></div>
 <main id="wechat-article">{article}</main>
@@ -239,7 +239,7 @@ def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(document, encoding="utf-8")
     payload = {
-        "title": f"{data['dateLabel']}｜汽车行业晨报",
+        "title": f"{data['dateLabel']}｜每日汽车透视",
         "author": "小马儿Young",
         "digest": f"聚焦智能网联、车载AI、整车供应链与汽车金融。今日关注：{lead_title}"[:120],
         "content": article,
