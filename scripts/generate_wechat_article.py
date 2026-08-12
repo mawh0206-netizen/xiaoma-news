@@ -32,7 +32,7 @@ def date_key(label: str) -> str:
 
 
 def detail_url(index: int) -> str:
-    return f"{SITE}/detail.html?date={ARCHIVE_DATE}&story={index}"
+    return f"{SITE}/detail.html?edition=wechat&date={ARCHIVE_DATE}&story={index}"
 
 
 def redundant_summary(story: dict) -> bool:
@@ -183,6 +183,8 @@ def main() -> None:
     global ARCHIVE_DATE
     data = json.loads(DATA.read_text(encoding="utf-8"))
     ARCHIVE_DATE = date_key(data["dateLabel"])
+    data["stories"] = sorted(data["stories"], key=focus_score, reverse=True)
+    DATA.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     stories = data["stories"]
     auto_industry = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车产业"]
     auto_finance = [(i, s) for i, s in enumerate(stories) if s.get("category") == "汽车金融"]
