@@ -85,7 +85,7 @@ def story_block(story: dict, index: int, section_number: str, number: int) -> st
       <h3 style="margin:0 0 9px;color:#171a19;font-size:20px;line-height:1.45;font-weight:700;">{esc(story['title'])}</h3>
       {summary_line}
       {data_line}
-      <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">产品经理解读</strong><br>{observation}</p>
+      <p style="margin:0 0 10px;padding:10px 13px;background:#f5f3ee;border-left:3px solid #1d6a55;color:#4e5551;font-size:14px;line-height:1.7;"><strong style="color:#1d6a55;">小马观察</strong><br>{observation}</p>
       <p style="margin:0;color:#8a8f8b;font-size:12px;">{esc(source_note)}</p>
     </section>"""
 
@@ -195,7 +195,7 @@ def main() -> None:
     lead_items = sorted(selected, key=lambda item: focus_score(item[1]), reverse=True)[:3]
     lead_title = lead_items[0][1]["title"]
     lead_heading = "今日重点速览"
-    lead_body = f"本期收录{len(selected)}条汽车产业与汽车金融动态，覆盖" + "、".join(title for _, title, _, _ in groups) + "。以下按主题呈现事实、数据线索与验证重点。"
+    lead_body = f"本期收录{len(selected)}条汽车产业与汽车金融动态，覆盖" + "、".join(title for _, title, _, _ in groups) + "。以下按主题呈现新闻事实、关键数据与小马观察。"
     heading_titles = [lead_heading]
     heading_titles.extend(title for _, title, _, _ in groups)
     heading_titles.extend(story["title"] for _, _, _, items in groups for _, story in items)
