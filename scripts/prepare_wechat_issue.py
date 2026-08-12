@@ -78,6 +78,32 @@ def clean_news_text(value: object) -> str:
     return text
 
 
+def decode_article_html(raw: bytes, header_charset: str | None = None) -> str:
+    """Decode publisher HTML using HTTP metadata plus the document's own charset."""
+    prefix = raw[:8192].decode("ascii", errors="ignore")
+    meta_match = re.search(
+        r"<meta[^>]+charset\s*=\s*[\"']?\s*([a-zA-Z0-9._-]+)",
+        prefix,
+        flags=re.I,
+    )
+    charsets = [meta_match.group(1) if meta_match else "", header_charset or "", "utf-8", "gb18030"]
+    for charset in dict.fromkeys(value.strip() for value in charsets if value and value.strip()):
+        try:
+            return raw.decode(charset)
+        except (LookupError, UnicodeDecodeError):
+            continue
+    return raw.decode("utf-8", errors="replace")
+
+
+def corrupted_news_text(value: object) -> bool:
+    text = clean_news_text(value)
+    if not text:
+        return False
+    replacement_count = text.count("\ufffd")
+    suspicious_count = sum(text.count(marker) for marker in ("锟斤拷", "烫烫烫", "屯屯屯"))
+    return replacement_count >= 2 or replacement_count / len(text) > 0.01 or suspicious_count > 0
+
+
 def article_excerpt(url: str) -> str:
     if not re.match(r"^https?://", url, re.I):
         return ""
@@ -85,8 +111,8 @@ def article_excerpt(url: str) -> str:
         request = urllib.request.Request(url, headers={"User-Agent": ARTICLE_UA})
         with urllib.request.urlopen(request, timeout=18) as response:
             raw = response.read(1_500_000)
-            charset = response.headers.get_content_charset() or "utf-8"
-        page = raw.decode(charset, errors="replace")
+            charset = response.headers.get_content_charset()
+        page = decode_article_html(raw, charset)
         parser = ArticleMetadataParser()
         parser.feed(page)
         candidates = [clean_news_text(value) for value in parser.descriptions]
@@ -106,7 +132,10 @@ def article_excerpt(url: str) -> str:
         ]
         if paragraphs:
             candidates.append(" ".join(paragraphs[:3])[:600])
-        candidates = [text for text in candidates if 45 <= len(text) <= 1200]
+        candidates = [
+            text for text in candidates
+            if 45 <= len(text) <= 1200 and not corrupted_news_text(text)
+        ]
         return max(candidates, key=len)[:420] if candidates else ""
     except Exception:
         return ""
@@ -118,6 +147,8 @@ def reader_news_brief(story: dict, item: dict, excerpt: str) -> tuple[str, str]:
     candidates = [(excerpt, "原文页面摘要"), (item.get("snippetOriginal", ""), "新闻聚合摘要")]
     for raw, origin in candidates:
         text = clean_news_text(raw)
+        if corrupted_news_text(text):
+            continue
         if title_core and text.startswith(title_core):
             text = text[len(title_core):].lstrip(" -—｜|：:，,。").strip()
         normalized_title = re.sub(r"\W+", "", title_core).casefold()
@@ -646,7 +677,7 @@ def main() -> None:
         if not within_age(item, now, maximum):
             raise ValueError(f"WeChat freshness validation failed: {story['title']}")
         brief = str(story.get("newsBrief", "")).strip()
-        if not 55 <= len(brief) <= 360 or "<<<" in brief:
+        if not 55 <= len(brief) <= 360 or "<<<" in brief or corrupted_news_text(brief):
             raise ValueError(f"WeChat reader news brief quality check failed: {story['title']}")
     observations = [story["whyItMatters"] for story in stories]
     if len(set(observations)) != len(observations):
