@@ -174,7 +174,15 @@ def recent_cover_topics(data: dict, days: int = 3) -> list[dict]:
 
 def select_lead(data: dict) -> tuple[dict, list[dict]]:
     recent = recent_cover_topics(data)
-    ranked = sorted(data["stories"], key=lead_score, reverse=True)
+    grade_rank = {"S": 4, "A": 3, "B": 2, "C": 1}
+    ranked = sorted(
+        data["stories"],
+        key=lambda story: (
+            grade_rank.get(str(story.get("editorialGrade") or "").upper(), 0),
+            lead_score(story),
+        ),
+        reverse=True,
+    )
     for story in ranked:
         if not any(same_cover_topic(story, previous) for previous in recent):
             return story, recent

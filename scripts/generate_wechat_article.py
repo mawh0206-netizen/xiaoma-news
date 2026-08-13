@@ -116,6 +116,12 @@ def select(stories: list[dict], categories: set[str], limit: int) -> list[tuple[
 
 
 def focus_score(story: dict) -> int:
+    # A completed human/editorial review outranks heuristic keyword scoring.
+    # Keep wide gaps so a lower-grade promotional item cannot become the lead
+    # merely because its headline contains more numeric or product keywords.
+    grade_bonus = {"S": 400, "A": 300, "B": 200, "C": 100}.get(
+        str(story.get("editorialGrade") or "").upper(), 0
+    )
     text = f"{story.get('title', '')} {story.get('summary', '')} {story.get('newsBrief', '')}".lower()
     terms = {
         "新车": 8, "上市": 8, "首发": 7, "发布": 5, "车型": 6,
@@ -124,7 +130,7 @@ def focus_score(story: dict) -> int:
         "零部件": 6, "汽车金融": 8, "车贷": 8, "经销商": 6,
         "robotaxi": 9, "adas": 9, "connected-car": 9,
     }
-    score = sum(weight for term, weight in terms.items() if term in text)
+    score = grade_bonus + sum(weight for term, weight in terms.items() if term in text)
     data_terms = ("销量", "交付", "产量", "零售", "批发", "出口", "渗透率", "市场份额", "库存", "价格", "营收", "利润", "利润率", "毛利率", "净利润", "税前利润", "经营现金流", "自由现金流", "单车收入", "同比", "环比", "财报", "半年报", "季报", "ebit", "ebt", "sales", "deliveries", "revenue", "margin", "inventory", "free cash flow")
     score += min(36, sum(6 for term in data_terms if term in text))
     score += min(24, len(extract_metrics(story)) * 6)
