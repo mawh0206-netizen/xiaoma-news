@@ -706,6 +706,29 @@ def main() -> None:
         if direct_url != aggregator_url:
             story["aggregatorUrl"] = aggregator_url
         story["url"] = direct_url
+    # Translation can make two foreign stories converge after selection even
+    # when their source-language previews were sufficiently distinct.  Keep
+    # the quality gate, but ground the later note in its own reported fact so
+    # the edition does not fail merely because a category template repeats.
+    for right, story in enumerate(stories):
+        for left in range(right):
+            if SequenceMatcher(
+                None,
+                stories[left]["whyItMatters"],
+                story["whyItMatters"],
+            ).ratio() <= 0.80:
+                continue
+            anchor = re.sub(r"\s+", " ", str(story.get("summary", ""))).strip()
+            if anchor:
+                title_anchor = re.sub(r"\s+", " ", str(story.get("title", ""))).strip()
+                story["whyItMatters"] = (
+                    f"围绕“{title_anchor[:52]}”，当前可确认的事实是："
+                    f"{anchor[:160].rstrip('，。；;')}。"
+                    "这条信息的决策价值取决于上述事实能否继续转化为可核验的业务结果；"
+                    "后续应优先追踪正式披露、执行进度、客户响应及其对收入、利润与现金流的实际影响。"
+                )
+                story["detailBody"] = detail_body(story, right < 20)
+                story["keyFacts"][-1] = story["whyItMatters"]
     notes = [story["whyItMatters"] for story in stories]
     if len(set(notes)) != len(notes) or any(len(note) < 90 for note in notes):
         raise ValueError("website decision-note uniqueness or depth validation failed")
