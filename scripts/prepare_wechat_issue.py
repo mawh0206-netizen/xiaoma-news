@@ -38,6 +38,10 @@ LOW_INFORMATION_TERMS = (
     "技术平权", "磨三剑", "掀开了速成车", "ai\"评测\"", "ai“评测”",
 )
 WEAK_AUTO_TERMS = ("自行车", "电动自行车", "两轮车")
+BOILERPLATE_CONTACT_TERMS = (
+    "联系邮箱", "求职应聘", "简历投递", "客服微信", "新闻热线",
+    "商务合作", "市场合作", "项目咨询", "zhaopin@", "info@gasgoo",
+)
 
 
 class ArticleMetadataParser(HTMLParser):
@@ -114,6 +118,12 @@ def corrupted_news_text(value: object) -> bool:
     return replacement_count >= 2 or replacement_count / len(text) > 0.01 or suspicious_count > 0
 
 
+def boilerplate_contact_text(value: object) -> bool:
+    text = clean_news_text(value).casefold()
+    matches = sum(term.casefold() in text for term in BOILERPLATE_CONTACT_TERMS)
+    return matches >= 2 or ("@" in text and matches >= 1)
+
+
 def article_excerpt(url: str) -> str:
     if not re.match(r"^https?://", url, re.I):
         return ""
@@ -144,7 +154,9 @@ def article_excerpt(url: str) -> str:
             candidates.append(" ".join(paragraphs[:3])[:600])
         candidates = [
             text for text in candidates
-            if 45 <= len(text) <= 1200 and not corrupted_news_text(text)
+            if 45 <= len(text) <= 1200
+            and not corrupted_news_text(text)
+            and not boilerplate_contact_text(text)
         ]
         return max(candidates, key=len)[:420] if candidates else ""
     except Exception:
@@ -157,7 +169,7 @@ def reader_news_brief(story: dict, item: dict, excerpt: str) -> tuple[str, str]:
     candidates = [(excerpt, "原文页面摘要"), (item.get("snippetOriginal", ""), "新闻聚合摘要")]
     for raw, origin in candidates:
         text = clean_news_text(raw)
-        if corrupted_news_text(text):
+        if corrupted_news_text(text) or boilerplate_contact_text(text):
             continue
         if title_core and text.startswith(title_core):
             text = text[len(title_core):].lstrip(" -—｜|：:，,。").strip()
@@ -782,7 +794,12 @@ def main() -> None:
         if not within_age(item, now, maximum):
             raise ValueError(f"WeChat freshness validation failed: {story['title']}")
         brief = str(story.get("newsBrief", "")).strip()
-        if not 55 <= len(brief) <= 360 or "<<<" in brief or corrupted_news_text(brief):
+        if (
+            not 55 <= len(brief) <= 360
+            or "<<<" in brief
+            or corrupted_news_text(brief)
+            or boilerplate_contact_text(brief)
+        ):
             raise ValueError(f"WeChat reader news brief quality check failed: {story['title']}")
     observations = [story["whyItMatters"] for story in stories]
     if len(set(observations)) != len(observations):
