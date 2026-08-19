@@ -14,7 +14,7 @@ $powershell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $today = (Get-Date).Date
 $dateKey = $today.ToString("yyyy-MM-dd")
 $expectedDatePattern = "^{0}\D+{1}\D+{2}\D+" -f $today.Year, $today.Month, $today.Day
-$alertTime = $today.AddHours(7).AddMinutes(50)
+$alertTime = $today.AddHours(8).AddMinutes(25)
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 
 New-Item -ItemType Directory -Force -Path $runtime | Out-Null
@@ -106,20 +106,20 @@ try {
 
     if ((Get-Date) -ge $alertTime -and -not (Test-AlertAlreadySent)) {
         $body = (
-            "The daily briefing has not passed the 07:50 SLA checkpoint.`r`n`r`n" +
+            "The daily briefing has not passed the 08:25 SLA checkpoint.`r`n`r`n" +
             "Date: $dateKey`r`nFailures: $($failures -join '; ')`r`n" +
             "The Windows watchdog has started or retained the recovery task.`r`n" +
             "Log: $logPath"
         )
         & $powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "send_alert.ps1") `
-            -Subject "[Xiaoma News] 07:50 SLA warning" -Body $body
+            -Subject "[Xiaoma News] 08:25 SLA warning" -Body $body
         $marker = @{
             date = $dateKey
             sent_at = (Get-Date).ToString("o")
             failures = $failures
         } | ConvertTo-Json -Depth 4
         [System.IO.File]::WriteAllText($alertMarkerPath, $marker + [Environment]::NewLine, $utf8)
-        Write-WatchdogLog "07:50 SLA alert sent"
+        Write-WatchdogLog "08:25 SLA alert sent"
     }
     exit 1
 }

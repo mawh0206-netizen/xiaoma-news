@@ -17,8 +17,8 @@ $python = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\depende
 $git = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\git\cmd\git.exe"
 $powershell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $dateKey = $TargetDate.ToString("yyyy-MM-dd")
-$deadline = $TargetDate.Date.AddHours(8)
-$alertAt = $TargetDate.Date.AddHours(7).AddMinutes(50)
+$deadline = $TargetDate.Date.AddHours(8).AddMinutes(30)
+$alertAt = $TargetDate.Date.AddHours(8).AddMinutes(25)
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $script:currentStage = "startup"
 $script:lateAlertSent = $false
@@ -64,8 +64,8 @@ function Assert-BeforeAlertThreshold {
     if ($CheckOnly -or $DryRun) { return }
     if ((Get-Date) -ge $alertAt -and -not $script:lateAlertSent) {
         $script:lateAlertSent = $true
-        Send-FailureAlert -Subject "[Xiaoma News] 07:50 deadline warning" -Body (
-            "The daily briefing has not completed by 07:50.`r`n`r`n" +
+        Send-FailureAlert -Subject "[Xiaoma News] 08:25 deadline warning" -Body (
+            "The daily briefing has not completed by 08:25.`r`n`r`n" +
             "Date: $dateKey`r`nStage: $script:currentStage`r`n" +
             "The runner is still retrying. Check $logPath."
         )
@@ -230,7 +230,7 @@ try {
         date = $dateKey
         started_by = "Windows Task Scheduler"
         completed_at = $completedAt.ToString("o")
-        before_08_00 = ($completedAt -lt $deadline)
+        before_08_30 = ($completedAt -lt $deadline)
         website_stories = @($news.stories).Count
         wechat_stories = @($wechat.stories).Count
         commit = $head
@@ -241,8 +241,8 @@ try {
     Write-RunLog "daily run succeeded website=$($state.website_stories) wechat=$($state.wechat_stories) commit=$head"
 
     if ($completedAt -ge $deadline) {
-        Send-FailureAlert -Subject "[Xiaoma News] Published after 08:00" -Body (
-            "The daily briefing was published after the 08:00 SLA.`r`n`r`n" +
+        Send-FailureAlert -Subject "[Xiaoma News] Published after 08:30" -Body (
+            "The daily briefing was published after the 08:30 SLA.`r`n`r`n" +
             "Date: $dateKey`r`nCompleted: $($completedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
             "Check $logPath."
         )
@@ -268,7 +268,7 @@ catch {
         )
     }
     else {
-        Write-RunLog "early failure recorded; SMTP deferred to watchdog recovery and 07:50 SLA check"
+        Write-RunLog "early failure recorded; SMTP deferred to watchdog recovery and 08:25 SLA check"
     }
     exit 1
 }
