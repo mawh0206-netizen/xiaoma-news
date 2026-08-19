@@ -80,7 +80,7 @@ def story_block(story: dict, index: int, section_number: str, number: int) -> st
     source_note += "；详细资料与原文入口见文末“阅读原文”。"
     return f"""
     <section style="margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid #e9e5dc;">
-      <p style="margin:0 0 7px;line-height:1.5;"><span style="display:inline-block;margin-right:8px;padding:2px 7px;background:#d94f36;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;">{section_number}-{number:02d}</span><span style="color:#8a5146;font-size:12px;font-weight:700;letter-spacing:.04em;">{esc(story['source'])} · {esc(story.get('publishedLabel', '今日'))}</span></p>
+      <p style="margin:0 0 7px;line-height:1.5;"><span style="display:inline-block;margin-right:8px;padding:2px 7px;background:#d94f36;color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em;">{section_number}-{number:02d}</span><span style="color:#8a5146;font-size:12px;font-weight:700;letter-spacing:.04em;">{esc(story['source'])}</span></p>
       {trend_line}
       <h3 style="margin:0 0 9px;color:#171a19;font-size:20px;line-height:1.45;font-weight:700;">{esc(story['title'])}</h3>
       {summary_line}

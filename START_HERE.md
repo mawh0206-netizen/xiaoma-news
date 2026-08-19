@@ -67,6 +67,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 ```
 
 - 补救完成后重新核对本地和线上日期、公众号草稿、封面品牌规则。
+- 公众号正文每条新闻只展示来源，不展示“今日/昨日”和具体发布时间；内部JSON仍须保留`publishedAt`与`publishedLabel`用于时效校验。
 - 08:25仍未成功视为SLA风险，必须通过 `scripts\send_alert.ps1` 发送SMTP告警。
 - 补救仍失败时保留上一版线上内容、失败状态和全部日志；不得为了“看起来成功”覆盖成功标记。
 - 不发送成功邮件。
