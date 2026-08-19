@@ -231,12 +231,12 @@ def published_at(item: dict) -> datetime | None:
     return value.astimezone(daily.CN_TZ)
 
 
-def within_age(item: dict, now: datetime, maximum: timedelta) -> bool:
+def within_current_or_previous_day(item: dict, now: datetime) -> bool:
+    """Accept only stories published today or yesterday in Beijing time."""
     published = published_at(item)
     if published is None:
         return False
-    age = now - published
-    return -timedelta(hours=6) <= age <= maximum
+    return published.date() in {now.date(), (now - timedelta(days=1)).date()}
 
 
 def published_label(item: dict, now: datetime) -> str:
@@ -728,13 +728,13 @@ def main() -> None:
     auto_pool = [
         item for item in base_pool
         if item["categoryHint"] == "汽车产业"
-        and within_age(item, now, timedelta(hours=48))
+        and within_current_or_previous_day(item, now)
     ]
     finance_pool = [
         item for item in base_pool
         if item["categoryHint"] == "汽车金融"
         and automotive_finance_relevant(item)
-        and within_age(item, now, timedelta(days=7))
+        and within_current_or_previous_day(item, now)
     ]
     finance = choose(
         [item for item in finance_pool if item["sourceHint"] not in daily.FOREIGN],
@@ -790,8 +790,7 @@ def main() -> None:
         story["whyItMatters"] = observation
         story["watchMetrics"] = watch
     for story, item in zip(stories, selected):
-        maximum = timedelta(days=7) if item["categoryHint"] == "汽车金融" else timedelta(hours=48)
-        if not within_age(item, now, maximum):
+        if not within_current_or_previous_day(item, now):
             raise ValueError(f"WeChat freshness validation failed: {story['title']}")
         brief = str(story.get("newsBrief", "")).strip()
         if (
