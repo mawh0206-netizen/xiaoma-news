@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-08-19",
+      "dateLabel": "2026年8月19日 星期三",
+      "issue": 30,
+      "statusLabel": "本次内容完成 · 09:27",
+      "storyCount": 45,
+      "insightTitle": "AI能力扩张同步抬高治理成本，汽车智能化进入量产与成本验证"
+    },
+    {
       "date": "2026-08-18",
       "dateLabel": "2026年8月18日 星期二",
       "issue": 29,
