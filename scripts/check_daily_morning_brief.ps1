@@ -113,6 +113,9 @@ try {
         )
         & $powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "send_alert.ps1") `
             -Subject "[Xiaoma News] 08:25 SLA warning" -Body $body
+        if ($LASTEXITCODE -ne 0) {
+            throw "send_alert.ps1 exited with code $LASTEXITCODE"
+        }
         $marker = @{
             date = $dateKey
             sent_at = (Get-Date).ToString("o")

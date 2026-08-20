@@ -42,6 +42,9 @@ function Send-FailureAlert {
     param([string]$Subject, [string]$Body)
     try {
         & $powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "send_alert.ps1") -Subject $Subject -Body $Body
+        if ($LASTEXITCODE -ne 0) {
+            throw "send_alert.ps1 exited with code $LASTEXITCODE"
+        }
         Write-RunLog "SMTP alert sent: $Subject"
     }
     catch {
