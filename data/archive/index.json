@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-08-22",
+      "dateLabel": "2026年8月22日 星期六",
+      "issue": 33,
+      "statusLabel": "本次内容完成 · 08:16",
+      "storyCount": 45,
+      "insightTitle": "汽车智能化进入量产与成本验证，汽车规模扩张与单车利润重新校准"
+    },
+    {
       "date": "2026-08-21",
       "dateLabel": "2026年8月21日 星期五",
       "issue": 32,
