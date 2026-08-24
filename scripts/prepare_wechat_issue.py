@@ -444,14 +444,17 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "真正决定业务质量的是金融是否带来新增成交，同时没有用过度授信掩盖终端需求不足。"
             )
             watch = ["金融渗透率", "单车融资额", "新增成交贡献", "不良率"]
-    elif any(term in text for term in ("召回", "安全缺陷", "安全隐患", "故障")):
+    elif any(term in text for term in ("召回", "安全缺陷", "安全隐患", "故障", "recall", "defect")):
         judgment = (
             f"“{subject}”应按产品质量与监管事件处理，而不是普通舆情。{data_anchor}"
             "影响大小取决于涉及车辆范围、缺陷是否触及核心安全功能、修复方式和完成率；"
             "如果同类问题跨车型复现，质保成本与品牌信任损失会超过单次召回费用。"
         )
         watch = ["涉及车辆数", "缺陷调查结论", "召回完成率", "单车修复与质保成本"]
-    elif any(term in text for term in ("收入同比", "毛利率", "期内亏损", "净利润", "ebit", "自由现金流")):
+    elif any(term in text for term in (
+        "收入同比", "毛利率", "期内亏损", "净利润", "ebit", "自由现金流",
+        "earnings", "revenue", "profit", "margin", "cash flow",
+    )):
         judgment = (
             f"“{subject}”最值得看的不是收入增速本身，而是增长能否同步改善盈利与现金。{data_anchor}"
             "高增业务占比提升若伴随毛利率上升、亏损收窄，是商业化质量改善的信号；"
@@ -515,7 +518,10 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "资本开支才会转成汽车供应链能力，否则可能加重折旧与产能闲置压力。"
         )
         watch = ["车规产品占比", "主机厂与Tier1订单", "产能利用率", "良率与折旧压力"]
-    elif any(term in text for term in ("销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额", "registrations")):
+    elif any(term in text for term in (
+        "销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额",
+        "registrations", "sales", "deliveries", "market share",
+    )):
         if (
             any(term in text for term in ("暴跌", "下滑", "遇冷", "下降"))
             and any(term in text for term in ("欧洲", "海外", "全球", "加拿大", "美国", "北美", "英国", "德国", "意大利", "法国", "俄罗斯", "巴西"))
@@ -561,7 +567,10 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "若多数用户仍频繁用油，所谓纯电体验就没有形成产品闭环。"
         )
         watch = ["真实纯电使用占比", "馈电油耗", "增程器介入噪声", "电池与油箱成本"]
-    elif any(term in text for term in ("智能驾驶", "自动驾驶", "智能网联", "机器人出租车", "行泊一体", "域控制器", "北斗", "线控", "座舱", "车载ai", "fsd", "adas", "robotaxi")):
+    elif any(term in text for term in (
+        "智能驾驶", "自动驾驶", "智能网联", "机器人出租车", "行泊一体", "域控制器", "北斗", "线控", "座舱", "车载ai",
+        "fsd", "adas", "robotaxi", "autonomous", "hands-free driving", "driver assistance", "voice assistant",
+    )):
         if any(term in text for term in ("robotaxi", "机器人出租车")):
             judgment = (
                 f"“{subject}”应按运营业务而非自动驾驶演示来评估。{data_anchor}"
@@ -621,14 +630,35 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "需要拆分整车厂、零部件和电池环节的利润分配，判断压力来自短期价格战还是商业模式失衡。"
         )
         watch = ["行业利润率口径", "单车毛利", "终端折扣", "经营现金流"]
-    elif any(term in text for term in ("充电设施", "充电桩", "充电站", "补能网络", "换电站", "超充")):
-        judgment = (
-            f"“{subject}”衡量的是补能网络能否跟上电动车保有量，而不只是累计设施数量。"
-            f"{data_anchor}需要拆分公共与私人设施、快充与慢充，以及城市和高速场景，"
-            "并用实际利用率、故障率和高峰等待时间判断新增供给是否落在真实缺口上。"
-        )
-        watch = ["车桩比", "公共桩利用率", "设备在线率", "高峰平均等待时间"]
-    elif any(term in text for term in ("供应链", "电池", "芯片", "零部件", "工厂", "产能", "关税", "硬件")):
+    elif any(term in text for term in (
+        "充电设施", "充电桩", "充电站", "补能网络", "换电站", "超充",
+        "charging", "charger", "nacs", "energy pass",
+    )):
+        if any(term in text for term in ("nacs", "energy pass", "标准", "接口")):
+            judgment = (
+                f"“{subject}”的价值在于降低跨网络补能摩擦，而不是简单增加一个充电入口。{data_anchor}"
+                "接口统一仍要接受站点覆盖、鉴权成功率和价格透明度检验；若车主仍需多账户或频繁遇到兼容故障，"
+                "标准迁移不会自动转化为更好的补能体验。"
+            )
+            watch = ["兼容站点覆盖", "即插即充成功率", "跨网结算价格", "故障与投诉率"]
+        elif any(term in text for term in ("fast-charging", "快充", "充电功率", "10-80")):
+            judgment = (
+                f"“{subject}”应看整车快充曲线而非峰值功率。{data_anchor}"
+                "平台升级只有在低温、连续补能和不同充电网络下仍能缩短10%—80%时间，"
+                "且没有明显增加电池衰减与热管理成本，才构成稳定的产品优势。"
+            )
+            watch = ["10%—80%实测时间", "平均充电功率", "低温与连续快充表现", "电池质保与衰减"]
+        else:
+            judgment = (
+                f"“{subject}”衡量的是补能网络能否跟上电动车保有量，而不只是累计设施数量。"
+                f"{data_anchor}需要拆分公共与私人设施、快充与慢充，以及城市和高速场景，"
+                "并用实际利用率、故障率和高峰等待时间判断新增供给是否落在真实缺口上。"
+            )
+            watch = ["车桩比", "公共桩利用率", "设备在线率", "高峰平均等待时间"]
+    elif any(term in text for term in (
+        "供应链", "电池", "芯片", "零部件", "工厂", "产能", "关税", "硬件",
+        "supply chain", "battery", "chip", "parts", "factory", "capacity", "tariff",
+    )):
         if "芯片" in text:
             judgment = (
                 f"“{subject}”的门槛不只是算力参数，而是车规可靠性、工具链和长期供货承诺。"
@@ -657,7 +687,14 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "处理速度会直接影响用户信任与后续车型转化。"
         )
         watch = ["涉及车辆数", "单车修复成本", "到店完成率", "后续投诉率"]
-    elif any(term in text for term in ("新车", "首发", "上市", "车型", "suv", "轿车")):
+    elif any(term in text for term in ("工会", "劳资", "罢工", "union", "tentative agreement", "collective agreement")):
+        judgment = (
+            f"“{subject}”首先影响的是生产连续性和单位人工成本，而不是一则普通劳资新闻。{data_anchor}"
+            "临时协议只有在会员表决通过后才形成稳定预期；若工资、福利或排班成本上升，"
+            "还要看产量恢复能否摊薄新增成本，以及车企是否调整北美工厂的车型与投资安排。"
+        )
+        watch = ["会员表决结果", "停产与复产时长", "单位人工成本", "工厂产量与车型安排"]
+    elif any(term in text for term in ("新车", "首发", "上市", "车型", "suv", "轿车", "model", "launch", "debut")):
         if any(term in text for term in ("转型", "东风日产", "合资")):
             judgment = (
                 f"“{subject}”承担的不只是单车销量任务，也是传统品牌新能源转型的渠道验证。"
