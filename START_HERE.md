@@ -47,15 +47,15 @@
 - Windows 计划任务 `Xiaoma News Daily Morning Brief` 每天北京时间08:00运行。
 - 主脚本：`scripts\run_daily_morning_brief.ps1`。
 - 主流程：采集候选 → 网站选题 → 严格校验 → 网站归档 → 公众号选题 → 公众号正文和封面 → 微信草稿 → 公众号归档 → Git提交 → 网站发布 → 成功标记。
-- 08:30是硬截止时间。
+- 09:00是硬截止时间，任务从08:00开始，完整处理窗口为1小时。
 
 ### 08:15巡检与补救
 
-- Windows 计划任务 `Xiaoma News Morning Brief Watchdog` 在08:15和08:25检查。
+- Windows 计划任务 `Xiaoma News Morning Brief Watchdog` 在08:15和09:00检查。
 - 成功必须同时满足：
   - `runtime/daily_success.json` 的 `date` 是北京时间当天；
   - `status=success`；
-  - `before_08_30=true`；
+  - `before_09_00=true`；
   - `data/news.json` 是当天；
   - `runtime/wechat_news.json` 是当天；
   - 线上 `data/news.json` 是当天。
@@ -68,7 +68,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 
 - 补救完成后重新核对本地和线上日期、公众号草稿、封面品牌规则。
 - 公众号正文每条新闻只展示来源，不展示“今日/昨日”和具体发布时间；内部JSON仍须保留`publishedAt`与`publishedLabel`用于时效校验。
-- 08:25仍未成功视为SLA风险，必须通过 `scripts\send_alert.ps1` 发送SMTP告警。
+- 09:00仍未完全成功视为超时，必须通过 `scripts\send_alert.ps1` 发送中文SMTP提醒；08:00—09:00之间不发送超时邮件。
 - 所有晨报SMTP告警的主题和正文统一使用中文；底层异常信息可保留原始技术文本，便于排查。
 - 补救仍失败时保留上一版线上内容、失败状态和全部日志；不得为了“看起来成功”覆盖成功标记。
 - 公众号发布采用“成功邮件放行”机制：只有编辑复核、微信草稿回读和线上阅读原文逐条完全一致后，才运行 `scripts\send_wechat_publish_ready.ps1` 发送中文成功邮件。该邮件是人工发布的唯一放行信号；收到前不得发布。
@@ -191,7 +191,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 | `START_HERE.md` | 本规则手册，新电脑/新会话首读 |
 | `EDITORIAL_DATA_GUIDE.md` | 权威数据源、口径和编辑细则 |
 | `scripts/run_daily_morning_brief.ps1` | 08:00完整生产入口 |
-| `scripts/check_daily_morning_brief.ps1` | 08:15/08:25巡检和补救 |
+| `scripts/check_daily_morning_brief.ps1` | 08:15巡检补救，并在09:00检查完整成功状态和发送超时提醒 |
 | `scripts/prepare_daily_issue.py` | 网站45条选题与内容生成 |
 | `scripts/prepare_wechat_issue.py` | 公众号14条选题、事实和解读 |
 | `scripts/generate_wechat_article.py` | 公众号正文、payload和封面编排 |
@@ -230,7 +230,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 3. 检查脚本中的绝对路径，尤其是Python、Git、项目目录和SMTP文件路径；换电脑后必须修改为实际路径。
 4. 安全恢复微信和SMTP凭据，不写入仓库。
 5. 在项目目录运行一次仅校验或DryRun，先不上传、不发布。
-6. 运行 `scripts\install_daily_task.ps1` 重新安装08:00主任务和08:15/08:25守门任务。
+6. 运行 `scripts\install_daily_task.ps1` 重新安装08:00主任务和08:15/09:00守门任务。
 7. 检查计划任务的 `WakeToRun`、`StartWhenAvailable`、工作目录、运行账号和下次运行时间。
 8. 手动执行一次完整生产，确认网站、微信草稿、阅读原文、Git推送和告警链路。
 9. 目视检查封面，并确认草稿箱当天只有一篇。
@@ -255,7 +255,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\install_daily_
 
 换电脑或新开会话时，可以直接发送：
 
-> 项目位于 `D:\Codex\xiaoma-news`。请先完整阅读 `START_HERE.md` 和 `EDITORIAL_DATA_GUIDE.md`，再检查Git状态与当天运行状态。公众号栏目固定为“每日汽车透视”，观点栏目为“小马观察”。严格遵守选题排序、权威数据口径、活人感解读、封面第三方媒体禁用、同日只更新一篇草稿且不得群发、08:30硬截止和08:25告警规则。不要读取或提交任何凭据内容。
+> 项目位于 `D:\Codex\xiaoma-news`。请先完整阅读 `START_HERE.md` 和 `EDITORIAL_DATA_GUIDE.md`，再检查Git状态与当天运行状态。公众号栏目固定为“每日汽车透视”，观点栏目为“小马观察”。严格遵守选题排序、权威数据口径、活人感解读、封面第三方媒体禁用、同日只更新一篇草稿且不得群发、09:00硬截止和超时邮件规则。不要读取或提交任何凭据内容。
 
 如果项目目录改变，把提示词中的路径替换为新目录即可。
 

@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$TaskName = "Xiaoma News Daily Morning Brief",
     [string]$WatchdogTaskName = "Xiaoma News Morning Brief Watchdog",
     [string]$StartTime = "08:00"
@@ -41,7 +41,7 @@ $task = New-ScheduledTask `
     -Trigger $trigger `
     -Settings $settings `
     -Principal $principal `
-    -Description "Generate, validate, archive, draft, commit, and publish Xiaoma News before 08:30."
+    -Description "Generate, validate, archive, draft, commit, and publish Xiaoma News between 08:00 and 09:00."
 
 Register-ScheduledTask -TaskName $TaskName -InputObject $task -Force | Out-Null
 
@@ -52,7 +52,7 @@ $watchdogAction = New-ScheduledTaskAction `
 
 $watchdogTriggers = @(
     (New-ScheduledTaskTrigger -Daily -At "08:15"),
-    (New-ScheduledTaskTrigger -Daily -At "08:25")
+    (New-ScheduledTaskTrigger -Daily -At "09:00")
 )
 $watchdogSettings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
@@ -65,7 +65,7 @@ $watchdogTask = New-ScheduledTask `
     -Trigger $watchdogTriggers `
     -Settings $watchdogSettings `
     -Principal $principal `
-    -Description "Check Xiaoma News at 08:15, recover if needed, and alert at 08:25."
+    -Description "Check Xiaoma News at 08:15, recover if needed, and alert at 09:00."
 
 Register-ScheduledTask -TaskName $WatchdogTaskName -InputObject $watchdogTask -Force | Out-Null
 

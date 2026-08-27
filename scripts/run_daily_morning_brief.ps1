@@ -17,8 +17,8 @@ $python = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\depende
 $git = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\git\cmd\git.exe"
 $powershell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $dateKey = $TargetDate.ToString("yyyy-MM-dd")
-$deadline = $TargetDate.Date.AddHours(8).AddMinutes(30)
-$alertAt = $TargetDate.Date.AddHours(8).AddMinutes(25)
+$deadline = $TargetDate.Date.AddHours(9)
+$alertAt = $deadline
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $script:currentStage = "startup"
 $script:lateAlertSent = $false
@@ -67,8 +67,8 @@ function Assert-BeforeAlertThreshold {
     if ($CheckOnly -or $DryRun) { return }
     if ((Get-Date) -ge $alertAt -and -not $script:lateAlertSent) {
         $script:lateAlertSent = $true
-        Send-FailureAlert -Subject "【小马看世界】08:25晨报处理超时提醒" -Body (
-            "小马看世界每日晨报在08:25仍未处理完成。`r`n`r`n" +
+        Send-FailureAlert -Subject "【小马看世界】09:00晨报处理超时提醒" -Body (
+            "小马看世界每日晨报从08:00开始执行，到09:00仍未处理完成。`r`n`r`n" +
             "日期：$dateKey`r`n当前阶段：$script:currentStage`r`n" +
             "系统仍在自动重试，请查看日志：$logPath"
         )
@@ -233,7 +233,7 @@ try {
         date = $dateKey
         started_by = "Windows Task Scheduler"
         completed_at = $completedAt.ToString("o")
-        before_08_30 = ($completedAt -lt $deadline)
+        before_09_00 = ($completedAt -lt $deadline)
         website_stories = @($news.stories).Count
         wechat_stories = @($wechat.stories).Count
         commit = $head
@@ -244,8 +244,8 @@ try {
     Write-RunLog "daily run succeeded website=$($state.website_stories) wechat=$($state.wechat_stories) commit=$head"
 
     if ($completedAt -ge $deadline) {
-        Send-FailureAlert -Subject "【小马看世界】晨报超过08:30发布" -Body (
-            "小马看世界每日晨报已完成发布，但超过08:30硬截止时间。`r`n`r`n" +
+        Send-FailureAlert -Subject "【小马看世界】晨报超过09:00完成" -Body (
+            "小马看世界每日晨报已完成处理，但超过09:00硬截止时间。`r`n`r`n" +
             "日期：$dateKey`r`n完成时间：$($completedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
             "请查看日志：$logPath"
         )
@@ -271,7 +271,7 @@ catch {
         )
     }
     else {
-        Write-RunLog "early failure recorded; SMTP deferred to watchdog recovery and 08:25 SLA check"
+        Write-RunLog "early failure recorded; SMTP deferred to watchdog recovery and 09:00 timeout check"
     }
     exit 1
 }

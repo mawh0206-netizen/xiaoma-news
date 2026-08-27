@@ -86,7 +86,7 @@ def main() -> None:
 
     if local.get("editorialReview", {}).get("status") != "passed":
         raise ValueError("公众号编辑复核尚未通过")
-    if success.get("date") != date_key or success.get("status") != "success" or not success.get("before_08_30"):
+    if success.get("date") != date_key or success.get("status") != "success" or not success.get("before_09_00"):
         raise ValueError("当天生产成功标记未通过")
 
     local_stories = canonical_stories(local)

@@ -10,11 +10,12 @@ $runtime = Join-Path $root "runtime"
 $statePath = Join-Path $runtime "daily_success.json"
 $logPath = Join-Path $runtime "daily_watchdog.log"
 $alertMarkerPath = Join-Path $runtime "daily_watchdog_alert.json"
+$publishReadyPath = Join-Path $runtime "wechat_publish_ready.json"
 $powershell = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
 $today = (Get-Date).Date
 $dateKey = $today.ToString("yyyy-MM-dd")
 $expectedDatePattern = "^{0}\D+{1}\D+{2}\D+" -f $today.Year, $today.Month, $today.Day
-$alertTime = $today.AddHours(8).AddMinutes(25)
+$alertTime = $today.AddHours(9)
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 
 New-Item -ItemType Directory -Force -Path $runtime | Out-Null
@@ -73,6 +74,23 @@ function Get-HealthFailures {
         $failures.Add("线上网站检查失败")
     }
 
+    if ((Get-Date) -ge $alertTime) {
+        try {
+            if (-not (Test-Path -LiteralPath $publishReadyPath)) {
+                $failures.Add("公众号发布放行状态缺失")
+            }
+            else {
+                $ready = Get-Content -LiteralPath $publishReadyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+                if ($ready.date -ne $dateKey -or $ready.status -ne "ready" -or -not $ready.email_sent) {
+                    $failures.Add("公众号完整校验或成功邮件尚未完成")
+                }
+            }
+        }
+        catch {
+            $failures.Add("公众号发布放行状态无法读取")
+        }
+    }
+
     return $failures
 }
 
@@ -95,24 +113,30 @@ try {
     }
 
     Write-WatchdogLog "health check failed reasons=$($failures -join '; ')"
-    $primary = Get-ScheduledTask -TaskName $PrimaryTaskName -ErrorAction Stop
-    if ($primary.State -ne "Running") {
-        Start-ScheduledTask -TaskName $PrimaryTaskName
-        Write-WatchdogLog "primary task started for recovery"
+    $productionFailures = @($failures | Where-Object { $_ -notlike "公众号发布放行状态*" -and $_ -ne "公众号完整校验或成功邮件尚未完成" })
+    if ($productionFailures.Count -gt 0) {
+        $primary = Get-ScheduledTask -TaskName $PrimaryTaskName -ErrorAction Stop
+        if ($primary.State -ne "Running") {
+            Start-ScheduledTask -TaskName $PrimaryTaskName
+            Write-WatchdogLog "primary task started for recovery"
+        }
+        else {
+            Write-WatchdogLog "primary task is already running"
+        }
     }
     else {
-        Write-WatchdogLog "primary task is already running"
+        Write-WatchdogLog "production passed; waiting for editorial publish readiness"
     }
 
     if ((Get-Date) -ge $alertTime -and -not (Test-AlertAlreadySent)) {
         $body = (
-            "小马看世界每日晨报在08:25仍未通过发布巡检。`r`n`r`n" +
+            "小马看世界每日晨报从08:00开始执行，到09:00仍未达到完整发布条件。`r`n`r`n" +
             "日期：$dateKey`r`n未通过项目：$($failures -join '；')`r`n" +
             "Windows守门任务已启动或保留补救流程，请关注后续结果。`r`n" +
             "日志：$logPath"
         )
         & $powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "send_alert.ps1") `
-            -Subject "【小马看世界】08:25晨报发布风险提醒" -Body $body
+            -Subject "【小马看世界】09:00晨报超时提醒" -Body $body
         if ($LASTEXITCODE -ne 0) {
             throw "send_alert.ps1 exited with code $LASTEXITCODE"
         }
@@ -122,7 +146,7 @@ try {
             failures = $failures
         } | ConvertTo-Json -Depth 4
         [System.IO.File]::WriteAllText($alertMarkerPath, $marker + [Environment]::NewLine, $utf8)
-        Write-WatchdogLog "08:25 SLA alert sent"
+        Write-WatchdogLog "09:00 timeout alert sent"
     }
     exit 1
 }
