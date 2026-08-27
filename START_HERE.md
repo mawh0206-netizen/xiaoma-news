@@ -59,7 +59,7 @@
   - `data/news.json` 是当天；
   - `runtime/wechat_news.json` 是当天；
   - 线上 `data/news.json` 是当天。
-- 全部通过：只记录巡检成功，不重新生成，不发成功邮件。
+- 基础发布状态全部通过时不重新生成；继续完成强制编辑复核和公众号发布放行校验。
 - 任一失败：立即执行：
 
 ```powershell
@@ -71,7 +71,9 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 - 08:25仍未成功视为SLA风险，必须通过 `scripts\send_alert.ps1` 发送SMTP告警。
 - 所有晨报SMTP告警的主题和正文统一使用中文；底层异常信息可保留原始技术文本，便于排查。
 - 补救仍失败时保留上一版线上内容、失败状态和全部日志；不得为了“看起来成功”覆盖成功标记。
-- 不发送成功邮件。
+- 公众号发布采用“成功邮件放行”机制：只有编辑复核、微信草稿回读和线上阅读原文逐条完全一致后，才运行 `scripts\send_wechat_publish_ready.ps1` 发送中文成功邮件。该邮件是人工发布的唯一放行信号；收到前不得发布。
+- 成功邮件必须包含当天第一条标题和内容版本短码。发布前应刷新或重新打开公众号编辑器，核对第一条与邮件一致，避免旧页面缓存发布初版。
+- 成功邮件发出后冻结当天公众号归档和草稿内容；如确需修改，必须重新校验、生成新版本码并再次发送放行邮件。
 
 ## 4. 选题门槛与排序
 
@@ -198,6 +200,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 | `scripts/archive_wechat_issue.py` | 生成“阅读原文”公众号归档 |
 | `scripts/validate_news.py` | 网站严格质量校验 |
 | `scripts/send_alert.ps1` | SMTP失败和SLA告警 |
+| `scripts/verify_wechat_publish_ready.py` | 对比本地、微信草稿与线上阅读原文的14条完整内容和顺序 |
+| `scripts/send_wechat_publish_ready.ps1` | 校验通过后发送中文公众号发布放行邮件，同版本只发一次 |
 | `runtime/daily_success.json` | 当日成功标记 |
 | `runtime/wechat_article.html` | 本地公众号正文预览 |
 | `runtime/wechat_cover.png` | 当日公众号封面 |
