@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$PythonPath = "C:\Users\maweihua\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe",
     [switch]$SkipEmail
 )
@@ -17,9 +17,9 @@ try {
     "[$(Get-Date -Format o)] pipeline checks completed" | Add-Content -LiteralPath $logPath
 }
 catch {
-    $detail = "Xiaoma News daily update failed.`r`n`r`nTime: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')`r`nStage: collection or validation`r`nError: $($_.Exception.Message)`r`nWebsite: the last successful edition remains online."
+    $detail = "小马看世界每日更新失败。`r`n`r`n时间：$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')`r`n失败阶段：采集或校验`r`n错误信息：$($_.Exception.Message)`r`n网站继续显示上一版成功内容。"
     if (-not $SkipEmail) {
-        & (Join-Path $PSScriptRoot "send_alert.ps1") -Subject "[Xiaoma News] Daily update failed" -Body $detail
+        & (Join-Path $PSScriptRoot "send_alert.ps1") -Subject "【小马看世界】每日更新失败" -Body $detail
     }
     $detail | Add-Content -LiteralPath $logPath
     throw

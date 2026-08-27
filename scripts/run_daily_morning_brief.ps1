@@ -1,4 +1,4 @@
-param(
+﻿param(
     [switch]$Force,
     [switch]$DryRun,
     [switch]$CheckOnly,
@@ -67,10 +67,10 @@ function Assert-BeforeAlertThreshold {
     if ($CheckOnly -or $DryRun) { return }
     if ((Get-Date) -ge $alertAt -and -not $script:lateAlertSent) {
         $script:lateAlertSent = $true
-        Send-FailureAlert -Subject "[Xiaoma News] 08:25 deadline warning" -Body (
-            "The daily briefing has not completed by 08:25.`r`n`r`n" +
-            "Date: $dateKey`r`nStage: $script:currentStage`r`n" +
-            "The runner is still retrying. Check $logPath."
+        Send-FailureAlert -Subject "【小马看世界】08:25晨报处理超时提醒" -Body (
+            "小马看世界每日晨报在08:25仍未处理完成。`r`n`r`n" +
+            "日期：$dateKey`r`n当前阶段：$script:currentStage`r`n" +
+            "系统仍在自动重试，请查看日志：$logPath"
         )
     }
 }
@@ -244,10 +244,10 @@ try {
     Write-RunLog "daily run succeeded website=$($state.website_stories) wechat=$($state.wechat_stories) commit=$head"
 
     if ($completedAt -ge $deadline) {
-        Send-FailureAlert -Subject "[Xiaoma News] Published after 08:30" -Body (
-            "The daily briefing was published after the 08:30 SLA.`r`n`r`n" +
-            "Date: $dateKey`r`nCompleted: $($completedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
-            "Check $logPath."
+        Send-FailureAlert -Subject "【小马看世界】晨报超过08:30发布" -Body (
+            "小马看世界每日晨报已完成发布，但超过08:30硬截止时间。`r`n`r`n" +
+            "日期：$dateKey`r`n完成时间：$($completedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
+            "请查看日志：$logPath"
         )
     }
 }
@@ -263,11 +263,11 @@ catch {
     Write-State -Path $failurePath -State $failure
     Write-RunLog "daily run failed stage=$script:currentStage error=$($_.Exception.Message)"
     if ($failedAt -ge $alertAt) {
-        Send-FailureAlert -Subject "[Xiaoma News] Daily briefing failed" -Body (
-            "The daily briefing automation failed.`r`n`r`n" +
-            "Date: $dateKey`r`nTime: $($failedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
-            "Stage: $script:currentStage`r`nError: $($_.Exception.Message)`r`n" +
-            "The last successful website edition remains online.`r`nLog: $logPath"
+        Send-FailureAlert -Subject "【小马看世界】每日晨报处理失败" -Body (
+            "小马看世界每日晨报自动处理失败。`r`n`r`n" +
+            "日期：$dateKey`r`n失败时间：$($failedAt.ToString('yyyy-MM-dd HH:mm:ss zzz'))`r`n" +
+            "失败阶段：$script:currentStage`r`n错误信息：$($_.Exception.Message)`r`n" +
+            "线上仍保留上一版成功内容。`r`n日志：$logPath"
         )
     }
     else {

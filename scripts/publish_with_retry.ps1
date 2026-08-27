@@ -1,4 +1,4 @@
-param(
+﻿param(
     [int]$MaxPushAttempts = 8,
     [int]$RetrySeconds = 20,
     [int]$DeployWaitSeconds = 300,
@@ -60,10 +60,10 @@ try {
     "[$(Get-Date -Format o)] publish verified online against exact news.json content" | Add-Content -LiteralPath $logPath
 }
 catch {
-    $detail = "Xiaoma News publish failed.`r`n`r`nTime: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')`r`nError: $($_.Exception.Message)`r`nLocal changes are preserved and the last successful website edition remains online."
+    $detail = "小马看世界网站发布失败。`r`n`r`n时间：$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss zzz')`r`n错误信息：$($_.Exception.Message)`r`n本地修改已保留，线上继续显示上一版成功内容。"
     $detail | Add-Content -LiteralPath $logPath
     if (-not $SkipEmail) {
-        & (Join-Path $PSScriptRoot "send_alert.ps1") -Subject "[Xiaoma News] Publish failed" -Body $detail
+        & (Join-Path $PSScriptRoot "send_alert.ps1") -Subject "【小马看世界】网站发布失败" -Body $detail
     }
     throw
 }

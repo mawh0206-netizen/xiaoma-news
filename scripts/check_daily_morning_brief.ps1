@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$PrimaryTaskName = "Xiaoma News Daily Morning Brief"
 )
 
@@ -31,17 +31,17 @@ function Get-HealthFailures {
 
     try {
         if (-not (Test-Path -LiteralPath $statePath)) {
-            $failures.Add("success marker missing")
+            $failures.Add("成功标记缺失")
         }
         else {
             $state = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
             if ($state.date -ne $dateKey -or $state.status -ne "success") {
-                $failures.Add("success marker is stale or failed")
+                $failures.Add("成功标记已过期或状态失败")
             }
         }
     }
     catch {
-        $failures.Add("success marker is unreadable")
+        $failures.Add("成功标记无法读取")
     }
 
     foreach ($item in @(
@@ -52,11 +52,11 @@ function Get-HealthFailures {
             $data = Get-Content -LiteralPath $item.Path -Raw -Encoding UTF8 | ConvertFrom-Json
             $label = [string]$data.dateLabel
             if ($label -notmatch $expectedDatePattern) {
-                $failures.Add("$($item.Name) local date is stale")
+                $failures.Add("$($item.Name) 本地日期不是当天")
             }
         }
         catch {
-            $failures.Add("$($item.Name) local data is unreadable")
+            $failures.Add("$($item.Name) 本地数据无法读取")
         }
     }
 
@@ -66,11 +66,11 @@ function Get-HealthFailures {
         $online = $response.Content | ConvertFrom-Json
         $onlineLabel = [string]$online.dateLabel
         if ($onlineLabel -notmatch $expectedDatePattern) {
-            $failures.Add("website online date is stale")
+            $failures.Add("线上网站日期不是当天")
         }
     }
     catch {
-        $failures.Add("website online check failed")
+        $failures.Add("线上网站检查失败")
     }
 
     return $failures
@@ -106,13 +106,13 @@ try {
 
     if ((Get-Date) -ge $alertTime -and -not (Test-AlertAlreadySent)) {
         $body = (
-            "The daily briefing has not passed the 08:25 SLA checkpoint.`r`n`r`n" +
-            "Date: $dateKey`r`nFailures: $($failures -join '; ')`r`n" +
-            "The Windows watchdog has started or retained the recovery task.`r`n" +
-            "Log: $logPath"
+            "小马看世界每日晨报在08:25仍未通过发布巡检。`r`n`r`n" +
+            "日期：$dateKey`r`n未通过项目：$($failures -join '；')`r`n" +
+            "Windows守门任务已启动或保留补救流程，请关注后续结果。`r`n" +
+            "日志：$logPath"
         )
         & $powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "send_alert.ps1") `
-            -Subject "[Xiaoma News] 08:25 SLA warning" -Body $body
+            -Subject "【小马看世界】08:25晨报发布风险提醒" -Body $body
         if ($LASTEXITCODE -ne 0) {
             throw "send_alert.ps1 exited with code $LASTEXITCODE"
         }
