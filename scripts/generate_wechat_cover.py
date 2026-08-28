@@ -47,7 +47,15 @@ def metric_values(story: dict) -> list[str]:
         text,
         flags=re.I,
     )
-    return list(dict.fromkeys(re.sub(r"\s+", "", value) for value in values))[:3]
+    unique: list[str] = []
+    normalized: set[str] = set()
+    for value in values:
+        cleaned = re.sub(r"\s+", "", value)
+        key = re.sub(r"^(?:约|超|近|达|增长|下降)", "", cleaned)
+        if key not in normalized:
+            unique.append(cleaned)
+            normalized.add(key)
+    return unique[:3]
 
 
 def engagement_score(story: dict) -> int:

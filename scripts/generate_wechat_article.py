@@ -164,10 +164,13 @@ def extract_metrics(story: dict) -> list[str]:
     text = f"{story.get('title', '')} {story.get('summary', '')}"
     values = re.findall(r"(?:约|超|近|达|增长|下降)?\s*\d+(?:\.\d+)?\s*(?:%|万亿元|亿元|万美元|亿美元|万元|万辆|万台|万套|万|亿元|美元|元|辆|台|家|倍)", text, flags=re.I)
     unique = []
+    normalized = set()
     for value in values:
         cleaned = re.sub(r"\s+", "", value)
-        if cleaned not in unique:
+        key = re.sub(r"^(?:约|超|近|达|增长|下降)", "", cleaned)
+        if key not in normalized:
             unique.append(cleaned)
+            normalized.add(key)
     return unique[:4]
 
 

@@ -679,6 +679,17 @@ def main() -> None:
             for item in selected
             if resolved_urls.get(item["url"], item["url"]) in old_urls
         }
+        # Different feed entries (or a publisher entry plus a Google News
+        # wrapper) can resolve to the same article. Keep the first selected
+        # occurrence and block later wrappers so the next selection fills the
+        # vacated slots with genuinely distinct stories.
+        seen_direct_urls: set[str] = set()
+        for item in selected:
+            direct_url = resolved_urls.get(item["url"], item["url"])
+            if direct_url in seen_direct_urls:
+                repeated_aggregators.add(item["url"])
+            else:
+                seen_direct_urls.add(direct_url)
         if not repeated_aggregators:
             break
         # A Google News wrapper can change while resolving to a publisher URL
