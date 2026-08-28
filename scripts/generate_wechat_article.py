@@ -48,8 +48,10 @@ def redundant_summary(story: dict) -> bool:
 
 
 def story_block(story: dict, index: int, section_number: str, number: int) -> str:
-    metrics = extract_metrics(story)
-    data_line = f'<p style="margin:0 0 10px;padding:8px 12px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.65;"><strong>数据线索：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
+    metrics = [str(value).strip() for value in story.get("watchMetrics", []) if str(value).strip()]
+    if not metrics:
+        metrics = extract_metrics(story)
+    data_line = f'<p style="margin:0 0 10px;padding:8px 12px;background:#eef4f1;color:#1d6a55;font-size:14px;line-height:1.65;"><strong>跟踪指标：</strong>{esc(" · ".join(metrics))}</p>' if metrics else ""
     news_brief = str(story.get("newsBrief") or "").strip()
     if len(news_brief) < 55:
         raise ValueError(f"公众号新闻事实不足：{story.get('title', '')}")
