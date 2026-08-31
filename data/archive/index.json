@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-08-31",
+      "dateLabel": "2026年8月31日 星期一",
+      "issue": 42,
+      "statusLabel": "本次内容完成 · 08:32",
+      "storyCount": 45,
+      "insightTitle": "AI就业争论回到真实人效，汽车智能化进入量产与成本验证"
+    },
+    {
       "date": "2026-08-30",
       "dateLabel": "2026年8月30日 星期日",
       "issue": 41,
