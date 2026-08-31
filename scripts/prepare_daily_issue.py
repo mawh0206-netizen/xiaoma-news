@@ -239,7 +239,23 @@ def select(candidates: list[dict], old_urls: set[str], now: datetime | None = No
     ]
     picked, used = [], set()
     for category, quota in QUOTAS.items():
-        choices = sorted((x for x in pool if x["categoryHint"] == category), key=score, reverse=True)
+        category_pool = [x for x in pool if x["categoryHint"] == category]
+        if category == "投资市场":
+            market_terms = re.compile(
+                r"(?i)\b(stock|shares?|equity|bond|yield|fed|rate|investor|earnings?|profit|loss|merger|acquisition|bank)\b"
+            )
+            # A source may classify a market-moving foreign report under
+            # finance or business.  Permit only clearly market-related items
+            # to fill the investment column's foreign-source quota, while
+            # retaining the same freshness, archive and source-quality gates.
+            category_pool.extend(
+                {**x, "categoryHint": category}
+                for x in pool
+                if x["sourceHint"] in FOREIGN
+                and x["categoryHint"] in {"财经", "企业商业"}
+                and market_terms.search(str(x.get("titleOriginal") or ""))
+            )
+        choices = sorted(category_pool, key=score, reverse=True)
         foreign_target = quota // 2
         domestic_target = quota - foreign_target
         for group, target in ((FOREIGN, foreign_target), (DOMESTIC, domestic_target)):
@@ -248,7 +264,12 @@ def select(candidates: list[dict], old_urls: set[str], now: datetime | None = No
                 group_choices = diverse_auto_order(group_choices)
             for item in group_choices:
                 category_picked = [x for x in picked if x["categoryHint"] == category]
-                if item["url"] in used or too_similar(item, category_picked) or observation_too_similar(item, picked):
+                # Fill the domestic/foreign quota before applying the global
+                # observation-preview filter.  The generated edition has a
+                # later fact-anchored rewrite plus the final 0.82 similarity
+                # gate, so rejecting previews here can unnecessarily starve a
+                # source group and produce an otherwise invalid split.
+                if item["url"] in used or too_similar(item, category_picked):
                     continue
                 if category in {"汽车产业", "汽车金融"} and sum(x["sourceHint"] == item["sourceHint"] for x in category_picked) >= 2:
                     continue
