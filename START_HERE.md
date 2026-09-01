@@ -35,7 +35,7 @@
 ### 每日汽车透视公众号
 
 - 是汽车行业精选与解读，不是网站内容的机械缩减版。
-- 当前正式产物为14条，运行时数据为 `runtime/wechat_news.json`，线上归档为 `data/wechat/YYYY-MM-DD.json`。
+- 当前目标产物为14条；新鲜且达标的候选不足时，超过10条（至少11条）即可发布。运行时数据为 `runtime/wechat_news.json`，线上归档为 `data/wechat/YYYY-MM-DD.json`。
 - 正文结构是新闻事实、关键数据或事实锚点、小马观察、资料来源。
 - 分组使用“今日重点 / 行业追踪 / 补充观察”，但全篇先按新闻重要性排序，不能让固定栏目压过真正重要的新闻。
 - “阅读原文”指向 `wechat.html?date=YYYY-MM-DD`；公众号详情必须读取 `edition=wechat` 的当天公众号归档，不能误读网站45条综合晨报。
@@ -193,14 +193,14 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 | `scripts/run_daily_morning_brief.ps1` | 08:00完整生产入口 |
 | `scripts/check_daily_morning_brief.ps1` | 08:15巡检补救，并在09:00检查完整成功状态和发送超时提醒 |
 | `scripts/prepare_daily_issue.py` | 网站45条选题与内容生成 |
-| `scripts/prepare_wechat_issue.py` | 公众号14条选题、事实和解读 |
+| `scripts/prepare_wechat_issue.py` | 公众号目标14条、最低11条的选题、事实和解读 |
 | `scripts/generate_wechat_article.py` | 公众号正文、payload和封面编排 |
 | `scripts/generate_wechat_cover.py` | 动态封面和媒体品牌清洗 |
 | `scripts/upload_wechat_draft.py` | 新建或更新微信草稿，不群发 |
 | `scripts/archive_wechat_issue.py` | 生成“阅读原文”公众号归档 |
 | `scripts/validate_news.py` | 网站严格质量校验 |
 | `scripts/send_alert.ps1` | SMTP失败和SLA告警 |
-| `scripts/verify_wechat_publish_ready.py` | 对比本地、微信草稿与线上阅读原文的14条完整内容和顺序 |
+| `scripts/verify_wechat_publish_ready.py` | 对比本地、微信草稿与线上阅读原文全部内容和顺序，并要求至少11条 |
 | `scripts/send_wechat_publish_ready.ps1` | 校验通过后发送中文公众号发布放行邮件，同版本只发一次 |
 | `runtime/daily_success.json` | 当日成功标记 |
 | `runtime/wechat_article.html` | 本地公众号正文预览 |

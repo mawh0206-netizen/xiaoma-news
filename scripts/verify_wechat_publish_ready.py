@@ -11,6 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / "runtime"
 WECHAT = RUNTIME / "wechat_news.json"
+MIN_WECHAT_STORIES = 11
 PAYLOAD = RUNTIME / "wechat_payload.json"
 DRAFT_RESULT = RUNTIME / "wechat_draft_result.json"
 SUCCESS = RUNTIME / "daily_success.json"
@@ -90,8 +91,10 @@ def main() -> None:
         raise ValueError("当天生产成功标记未通过")
 
     local_stories = canonical_stories(local)
-    if len(local_stories) != 14:
-        raise ValueError(f"本地公众号不是14条：{len(local_stories)}")
+    if len(local_stories) < MIN_WECHAT_STORIES:
+        raise ValueError(
+            f"本地公众号少于{MIN_WECHAT_STORIES}条：{len(local_stories)}"
+        )
     version = content_version(local_stories)
 
     online = online_issue(date_key)
@@ -134,7 +137,7 @@ def main() -> None:
         "content_version_short": version[:12],
         "title": payload["title"],
         "lead_title": local_stories[0]["title"],
-        "stories": 14,
+        "stories": len(local_stories),
         "draft_count": 1,
         "online_archive_match": True,
         "draft_full_text_match": True,

@@ -133,8 +133,9 @@ try {
         $checkNews = Get-Content -LiteralPath (Join-Path $root "data\news.json") -Raw -Encoding UTF8 | ConvertFrom-Json
         $checkWechat = Get-Content -LiteralPath (Join-Path $runtime "wechat_news.json") -Raw -Encoding UTF8 | ConvertFrom-Json
         if (@($checkNews.stories).Count -ne 45) { throw "health check expected 45 website stories" }
-        if (@($checkWechat.stories).Count -ne 14) { throw "health check expected 14 WeChat stories" }
-        Write-RunLog "health check passed website=45 wechat=14"
+        $wechatStoryCount = @($checkWechat.stories).Count
+        if ($wechatStoryCount -lt 11) { throw "health check expected at least 11 WeChat stories" }
+        Write-RunLog "health check passed website=45 wechat=$wechatStoryCount"
         return
     }
 

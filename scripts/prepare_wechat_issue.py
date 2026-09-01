@@ -286,7 +286,7 @@ def substantive_title(item: dict) -> bool:
 
 
 def editorially_substantive(item: dict) -> bool:
-    """Keep low-information or weakly automotive stories out of the 14-item issue."""
+    """Keep low-information or weakly automotive stories out of the issue."""
     title = str(item.get("titleOriginal", "")).lower()
     if any(term.lower() in title for term in WEAK_AUTO_TERMS):
         return False
@@ -779,10 +779,10 @@ def main() -> None:
         False,
         minimum=0,
     )
-    # Keep the edition close to the 11 domestic / 3 foreign editorial target.
+    # Aim for the 11 domestic / 3 foreign editorial mix when the fresh pool allows it.
     # Qualified finance stories take domestic slots instead of expanding the
-    # issue beyond 14 items; when finance is unavailable, fresh auto stories
-    # fill those slots.
+    # issue beyond the 14-item target; when finance is unavailable, fresh auto
+    # stories fill those slots. Publication remains valid with at least 11 items.
     domestic_auto = choose(
         [item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN],
         11 - len(finance),
