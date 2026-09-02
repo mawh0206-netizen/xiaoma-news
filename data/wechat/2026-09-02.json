@@ -1,6 +1,6 @@
 {
   "dateLabel": "2026年9月2日 星期三",
-  "statusLabel": "公众号编辑复核通过 · 08:34",
+  "statusLabel": "公众号编辑复核通过 · 08:30",
   "sources": [
     "汽车之家",
     "Sohu",
@@ -256,7 +256,7 @@
   ],
   "editorialReview": {
     "status": "passed",
-    "reviewedAt": "2026-09-02T08:34:00+08:00",
+    "reviewedAt": "2026-09-02T08:30:20+08:00",
     "reviewer": "Codex editorial gate",
     "rules": {
       "eligibleNaturalDates": [

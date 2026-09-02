@@ -77,6 +77,13 @@ def require_in_order(body: str, values: list[str], label: str) -> None:
         last = position
 
 
+def visible_text(body: str) -> str:
+    """Return the text WeChat readers see, without editor-inserted HTML tags."""
+    text = re.sub(r"<br\s*/?>", "", body, flags=re.I)
+    text = re.sub(r"<[^>]+>", "", text)
+    return html.unescape(text)
+
+
 def main() -> None:
     now = datetime.now(CN_TZ)
     date_key = now.strftime("%Y-%m-%d")
@@ -121,12 +128,13 @@ def main() -> None:
     if re.search(r"(?:今日|昨日)\s*\d{1,2}:\d{2}", body):
         raise ValueError("微信草稿正文仍包含逐条时间标签")
 
-    require_in_order(body, [story["title"] for story in local_stories], "标题")
-    require_in_order(body, [story["newsBrief"] for story in local_stories], "新闻事实")
-    require_in_order(body, [story["whyItMatters"] for story in local_stories], "小马观察")
+    rendered_text = visible_text(body)
+    require_in_order(rendered_text, [story["title"] for story in local_stories], "标题")
+    require_in_order(rendered_text, [story["newsBrief"] for story in local_stories], "新闻事实")
+    require_in_order(rendered_text, [story["whyItMatters"] for story in local_stories], "小马观察")
     for index, story in enumerate(local_stories, 1):
         for metric in story["watchMetrics"] or []:
-            if metric not in body:
+            if metric not in rendered_text:
                 raise ValueError(f"微信草稿缺少第{index}条跟踪指标：{metric}")
 
     state = {
