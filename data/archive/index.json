@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-09-09",
+      "dateLabel": "2026年9月9日 星期三",
+      "issue": 51,
+      "statusLabel": "本次内容完成 · 08:38",
+      "storyCount": 45,
+      "insightTitle": "汽车规模扩张与单车利润重新校准，汽车智能化进入量产与成本验证"
+    },
+    {
       "date": "2026-09-08",
       "dateLabel": "2026年9月8日 星期二",
       "issue": 50,

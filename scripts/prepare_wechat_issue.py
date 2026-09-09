@@ -451,6 +451,23 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "如果同类问题跨车型复现，质保成本与品牌信任损失会超过单次召回费用。"
         )
         watch = ["涉及车辆数", "缺陷调查结论", "召回完成率", "单车修复与质保成本"]
+    elif any(term in text for term in ("无方向盘", "方向盘", "steering wheel", "cybercab")):
+        judgment = (
+            f"“{subject}”首先是道路准入与失效安全问题，不是造型或概念领先。{data_anchor}"
+            "测试车出现不代表量产许可已经具备；在取消传统操纵装置前，必须说明冗余转向、"
+            "紧急接管、封闭场地与公开道路测试边界，以及监管批准所依据的安全证据。"
+        )
+        watch = ["测试道路与许可范围", "冗余转向方案", "紧急接管机制", "量产准入进度"]
+    elif any(term in text for term in (
+        "内卷", "产业共荣", "business deals with chinese firms", "chinese suppliers",
+        "trade restriction", "supplier relationship",
+    )):
+        judgment = (
+            f"“{subject}”真正影响的是车企与供应商能否维持可执行的合作边界。{data_anchor}"
+            "口头表态或政治批评都不等于合同已经变化；应区分监管要求、采购关系和技术授权，"
+            "再判断供应连续性、替代成本与项目节点是否受到实质影响。"
+        )
+        watch = ["正式监管文件", "供应合同变化", "替代认证周期", "项目交付节点"]
     elif any(term in text for term in (
         "收入同比", "毛利率", "期内亏损", "净利润", "ebit", "自由现金流",
         "earnings", "revenue", "profit", "margin", "cash flow",
@@ -483,7 +500,10 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
                 "只有新能源绝对销量、价格带份额和单车利润同步改善，才能确认需求扩张。"
             )
             watch = ["新能源绝对销量", "统计口径", "分价格带份额", "新能源单车利润"]
-    elif any(term in text for term in ("销量目标", "销售目标", "交付目标", "产量目标")):
+    elif any(term in text for term in ("销量目标", "销售目标", "交付目标", "产量目标")) or (
+        any(term in text for term in ("target", "targets"))
+        and any(term in text for term in ("sales", "deliveries", "production", "export", "exports"))
+    ):
         judgment = (
             f"“{subject}”中各企业目标的简单加总并不等于真实市场容量。{data_anchor}"
             "目标要成立，必须同时满足终端需求、渠道库存和产能利用率三项约束；"
@@ -504,7 +524,13 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "以及中国工厂空出的产能如何消化；只有成本、交付和利用率同时改善，迁产才有经营价值。"
         )
         watch = ["转移车型与年产量", "中美单位制造成本", "关税与物流成本", "原工厂产能利用率"]
-    elif "中国" in title_text and "出口" in title_text and any(term in title_text for term in ("跃升", "增长", "百万")):
+    elif (
+        "中国" in title_text and "出口" in title_text
+        and any(term in title_text for term in ("跃升", "增长", "百万"))
+    ) or (
+        any(term in title_text for term in ("china", "chinese", "byd"))
+        and any(term in title_text for term in ("export", "exports"))
+    ):
         judgment = (
             f"“{subject}”说明出口正在对冲国内零售疲软，但出口量仍不是海外终端销量。{data_anchor}"
             "应把海关或乘联分会出口与目的国注册、渠道库存和当地成交价放在一起看；"
@@ -520,7 +546,7 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         watch = ["车规产品占比", "主机厂与Tier1订单", "产能利用率", "良率与折旧压力"]
     elif any(term in text for term in (
         "销量", "销售", "售出", "交付", "产量", "零售", "出口", "市场份额",
-        "registrations", "sales", "deliveries", "market share",
+        "registrations", "sales", "deliveries", "exports", "market share",
     )):
         if (
             any(term in text for term in ("暴跌", "下滑", "遇冷", "下降"))
