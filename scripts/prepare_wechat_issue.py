@@ -525,6 +525,34 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
         )
         watch = ["转移车型与年产量", "中美单位制造成本", "关税与物流成本", "原工厂产能利用率"]
     elif (
+        any(term in text for term in ("to build", "will build", "manufacture", "assembly plant", "生产基地"))
+        and any(term in text for term in ("pickup", "vehicle", "car", "ev", "汽车", "车型"))
+        and any(term in text for term in ("argentina", "india", "brazil", "mexico", "south america", "local market"))
+    ):
+        judgment = (
+            f"“{subject}”的核心是区域产能能否换来成本和交付优势，而不只是多一款当地车型。{data_anchor}"
+            "应核对项目投资、投产节奏、本地采购率与目标销量；若产能利用率和当地订单不足，"
+            "关税与物流节省可能覆盖不了新增折旧和渠道投入。"
+        )
+        watch = ["项目投资与年产能", "投产时间", "本地采购率", "当地订单与产能利用率"]
+    elif any(term in text for term in (
+        "india-specific", "market-specific", "region-specific", "tailored for india",
+        "本地专属车型", "区域专属车型",
+    )):
+        judgment = (
+            f"“{subject}”说明企业开始用本地产品定义替代全球车型直接导入。{data_anchor}"
+            "真正的验证点是售价、续航和车身形式能否匹配当地使用与支付能力，"
+            "同时控制重新开发、认证和供应链复杂度；发布规划本身还不能证明需求成立。"
+        )
+        watch = ["目标售价与续航", "本地订单", "认证与上市节点", "本地零部件比例"]
+    elif "distributor" in text and any(term in text for term in ("europe", "overseas", "欧洲", "海外")):
+        judgment = (
+            f"“{subject}”改变的是渠道责任和库存承担方式，不等于终端需求已经增长。{data_anchor}"
+            "共享渠道可能降低新建网络成本，但仍要看经销网点覆盖、售后承接和库存周转；"
+            "若品牌定位与现有产品重叠，内部竞争会抵消渠道协同。"
+        )
+        watch = ["经销网点覆盖", "渠道库存周转", "售后承接能力", "区域注册量"]
+    elif (
         "中国" in title_text and "出口" in title_text
         and any(term in title_text for term in ("跃升", "增长", "百万"))
     ) or (
