@@ -121,7 +121,7 @@ def focus_score(story: dict) -> int:
     # A completed human/editorial review outranks heuristic keyword scoring.
     # Keep wide gaps so a lower-grade promotional item cannot become the lead
     # merely because its headline contains more numeric or product keywords.
-    grade_bonus = {"S": 400, "A": 300, "B": 200, "C": 100}.get(
+    grade_bonus = {"S": 4000, "A": 3000, "B": 2000, "C": 1000}.get(
         str(story.get("editorialGrade") or "").upper(), 0
     )
     text = f"{story.get('title', '')} {story.get('summary', '')} {story.get('newsBrief', '')}".lower()
