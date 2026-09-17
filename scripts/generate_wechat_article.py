@@ -124,6 +124,9 @@ def focus_score(story: dict) -> int:
     grade_bonus = {"S": 4000, "A": 3000, "B": 2000, "C": 1000}.get(
         str(story.get("editorialGrade") or "").upper(), 0
     )
+    editorial_priority = story.get("editorialPriority")
+    if isinstance(editorial_priority, int) and editorial_priority > 0 and grade_bonus:
+        return grade_bonus + max(0, 500 - editorial_priority)
     text = f"{story.get('title', '')} {story.get('summary', '')} {story.get('newsBrief', '')}".lower()
     terms = {
         "新车": 8, "上市": 8, "首发": 7, "发布": 5, "车型": 6,

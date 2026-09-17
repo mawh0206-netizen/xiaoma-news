@@ -1,6 +1,12 @@
 {
   "issues": [
     {
+      "date": "2026-09-17",
+      "dateLabel": "2026年9月17日 星期四",
+      "storyCount": 11,
+      "statusLabel": "公众号编辑复核通过"
+    },
+    {
       "date": "2026-09-16",
       "dateLabel": "2026年9月16日 星期三",
       "storyCount": 11,

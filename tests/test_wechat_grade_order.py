@@ -8,6 +8,14 @@ import generate_wechat_article
 
 
 class WeChatGradeOrderTests(unittest.TestCase):
+    def test_editorial_priority_controls_order_within_grade(self):
+        first = {"editorialGrade": "A", "editorialPriority": 1, "title": "重要财报"}
+        later = {"editorialGrade": "A", "editorialPriority": 2, "title": "新车发布、销量、交付、利润、现金流"}
+        self.assertGreater(
+            generate_wechat_article.focus_score(first),
+            generate_wechat_article.focus_score(later),
+        )
+
     def test_editorial_grade_strictly_outranks_keyword_score(self):
         s_story = {
             "editorialGrade": "S",
