@@ -167,7 +167,9 @@ def fresh_for_website(item: dict, now: datetime) -> bool:
     if published is None:
         return False
     age = now - published
-    return -timedelta(minutes=10) <= age <= freshness_limit(item)
+    # Selection can take several minutes before strict validation runs.
+    # Leave a margin so a borderline story cannot expire mid-pipeline.
+    return -timedelta(minutes=10) <= age <= freshness_limit(item) - timedelta(minutes=30)
 
 
 def published_label(item: dict, now: datetime) -> str:
