@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-09-22",
+      "dateLabel": "2026年9月22日 星期二",
+      "issue": 63,
+      "statusLabel": "本次内容完成 · 09:12",
+      "storyCount": 45,
+      "insightTitle": "汽车智能化进入量产与成本验证，AI算力扩张面对能源与回报约束"
+    },
+    {
       "date": "2026-09-21",
       "dateLabel": "2026年9月21日 星期一",
       "issue": 62,
