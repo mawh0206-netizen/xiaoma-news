@@ -1,7 +1,21 @@
 {
   "dateLabel": "2026年9月23日 星期三",
   "statusLabel": "公众号编辑复核通过 · 09:45",
-  "editorialReview": "passed",
+  "editorialReview": {
+    "status": "passed",
+    "reviewedAt": "2026-09-23T09:54:00+08:00",
+    "reviewer": "Codex editorial gate",
+    "rules": {
+      "eligibleNaturalDates": [
+        "2026-09-22",
+        "2026-09-23"
+      ],
+      "minimumStories": 11,
+      "qualityFirst": true,
+      "visiblePerStoryTimeLabels": false,
+      "officialSourceCrossCheck": true
+    }
+  },
   "sources": [
     "大众汽车集团/保时捷",
     "路透",
