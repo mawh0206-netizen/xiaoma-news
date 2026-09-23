@@ -226,7 +226,14 @@ def cover_title(story: dict) -> str:
     source = str(story.get("source", "")).strip()
     brands = (*MEDIA_BRANDS, source) if source else MEDIA_BRANDS
     for brand in brands:
-        title = title.replace(brand, "").strip(" -—｜|·")
+        # Remove publisher labels only when they are separated as labels.  A
+        # blind substring replacement corrupts legitimate units such as
+        # "60亿欧元" when "亿欧" is in the media-brand denylist.
+        title = re.sub(
+            rf"(^|[\s\-—｜|·:：]){re.escape(brand)}(?=$|[\s\-—｜|·:：])",
+            " ",
+            title,
+        ).strip(" -—｜|·")
     return re.sub(r"\s{2,}", " ", title)
 
 
