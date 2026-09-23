@@ -46,7 +46,8 @@
 
 - Windows 计划任务 `Xiaoma News Daily Morning Brief` 每天北京时间08:00运行。
 - 主脚本：`scripts\run_daily_morning_brief.ps1`。
-- 主流程：采集候选 → 网站选题 → 严格校验 → 网站归档 → 公众号选题 → 公众号正文和封面 → 微信草稿 → 公众号归档 → Git提交 → 网站发布 → 成功标记。
+- 主流程：采集标题候选 → 本地时效/相关性/同事件去重 → 生成最多24条编辑候选池 → 网站选题 → 严格校验 → 网站归档 → 公众号选题 → 仅对入选稿抓取原文摘要 → 公众号正文和封面 → 微信草稿 → 公众号归档 → Git提交 → 网站发布 → 成功标记。
+- `runtime/candidates.json`只用于程序全量筛选；人工或Codex编辑复核优先读取`runtime/editorial_shortlist.json`和`runtime/wechat_news.json`，不得默认展开全部候选。只有候选池不足11条或缺少明确的S/A级题材时，才按主题回查全量候选。
 - 09:00是硬截止时间，任务从08:00开始，完整处理窗口为1小时。
 
 ### 08:15巡检与补救
@@ -194,6 +195,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\Codex\xiaoma-news\scr
 | `scripts/check_daily_morning_brief.ps1` | 08:15巡检补救，并在09:00检查完整成功状态和发送超时提醒 |
 | `scripts/prepare_daily_issue.py` | 网站45条选题与内容生成 |
 | `scripts/prepare_wechat_issue.py` | 公众号目标14条、最低11条的选题、事实和解读 |
+| `runtime/editorial_shortlist.json` | 本地规则生成的最多24条标题级编辑候选池，供低Token复核 |
 | `scripts/generate_wechat_article.py` | 公众号正文、payload和封面编排 |
 | `scripts/generate_wechat_cover.py` | 动态封面和媒体品牌清洗 |
 | `scripts/upload_wechat_draft.py` | 新建或更新微信草稿，不群发 |

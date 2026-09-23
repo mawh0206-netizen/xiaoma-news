@@ -144,6 +144,10 @@ try {
         (Join-Path $PSScriptRoot "run_pipeline.ps1"), "-SkipEmail"
     ) -Attempts 3 -RetrySeconds 30
 
+    Invoke-Step -Name "editorial_shortlist" -FilePath $python -Arguments @(
+        (Join-Path $PSScriptRoot "build_editorial_shortlist.py")
+    )
+
     Invoke-Step -Name "website_selection" -FilePath $python -Arguments @(
         (Join-Path $PSScriptRoot "prepare_daily_issue.py")
     ) -Attempts 2 -RetrySeconds 10

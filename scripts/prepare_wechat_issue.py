@@ -17,6 +17,10 @@ from google_news_url import is_google_news_url, resolve_urls
 ROOT = Path(__file__).resolve().parents[1]
 CANDIDATES = ROOT / "runtime" / "candidates.json"
 OUTPUT = ROOT / "runtime" / "wechat_news.json"
+EDITORIAL_SHORTLIST = ROOT / "runtime" / "editorial_shortlist.json"
+EDITORIAL_SHORTLIST_LIMIT = 24
+EDITORIAL_SHORTLIST_MINIMUM = 11
+EDITORIAL_SHORTLIST_SCORE_FLOOR = 20
 METRIC_RE = re.compile(
     r"(?:约|超|近|达|增长|下降)?\s*\d+(?:\.\d+)?\s*"
     r"(?:%|万亿元|亿元|万美元|亿美元|万元|万辆|万台|万套|万|美元|元|辆|台|家|倍)",
@@ -41,6 +45,37 @@ WEAK_AUTO_TERMS = ("自行车", "电动自行车", "两轮车")
 BOILERPLATE_CONTACT_TERMS = (
     "联系邮箱", "求职应聘", "简历投递", "客服微信", "新闻热线",
     "商务合作", "市场合作", "项目咨询", "zhaopin@", "info@gasgoo",
+)
+EDITORIAL_AUTHORITY_BONUS = {
+    "工信部": 180,
+    "中国汽车工业协会": 170,
+    "中国汽车流通协会": 170,
+    "乘联会": 170,
+    "重点车企": 125,
+    "Reuters": 110,
+    "Financial Times": 90,
+    "第一财经": 65,
+    "证券时报": 60,
+    "中国汽车报": 60,
+}
+EDITORIAL_PRIORITY_TERMS = {
+    "召回": 70, "监管": 65, "处罚": 60, "禁令": 60, "新规": 55,
+    "财报": 70, "年报": 70, "半年报": 70, "季报": 70, "业绩": 55,
+    "利润预警": 75, "减值": 70, "现金流": 65, "毛利率": 60,
+    "ebit": 60, "free cash flow": 60, "销量": 45, "零售": 50,
+    "批发": 45, "出口": 45, "库存": 45, "交付": 40, "产能": 40,
+    "工厂": 35, "量产": 40, "定点": 35, "融资租赁": 45,
+    "recall": 70, "regulator": 65, "earnings": 65, "profit warning": 75,
+    "impairment": 70, "deliveries": 40, "production": 35,
+}
+EDITORIAL_PROMO_TERMS = (
+    "爆单", "必看", "重磅来袭", "再添猛将", "赋能", "深耕", "亮相",
+    "获奖", "申报", "论坛", "峰会", "行业日报", "产业日报", "周报",
+    "概念股", "异动", "涨停", "开箱", "试驾", "购车指南",
+)
+EDITORIAL_SHORTLIST_BLOCK_TERMS = (
+    "daily 5", "newsletter", "review:", "i drove", "conversion",
+    "试驾", "开箱", "购车指南", "行业日报", "产业日报", "投融资周报",
 )
 
 
@@ -316,6 +351,139 @@ def acceptable_publisher(item: dict) -> bool:
     return True
 
 
+def normalized_event_title(item: dict) -> str:
+    title = clean_news_text(item.get("titleOriginal", "")).casefold()
+    title = re.sub(r"\s+[-—]\s+[^-—]{2,24}$", "", title)
+    title = re.sub(r"(?:汽车资讯|手机新浪网|搜狐网|汽车之家|盖世汽车社区)", "", title)
+    return re.sub(r"[^0-9a-z\u4e00-\u9fff]+", "", title)
+
+
+def editorial_candidate_score(item: dict) -> int:
+    """Rank headline metadata before any publisher article body is fetched."""
+    title = clean_news_text(item.get("titleOriginal", ""))
+    text = f"{title} {item.get('snippetOriginal', '')}".casefold()
+    score = EDITORIAL_AUTHORITY_BONUS.get(item.get("sourceHint", ""), 0)
+    score += sum(weight for term, weight in EDITORIAL_PRIORITY_TERMS.items() if term in text)
+    score += min(36, len(METRIC_RE.findall(text)) * 9)
+    score += min(24, len(title) // 8)
+    score -= sum(35 for term in EDITORIAL_PROMO_TERMS if term.casefold() in text)
+    if not clean_news_text(item.get("snippetOriginal", "")):
+        score -= 25
+    if "；" in title and any(term in title for term in ("快讯", "日报", "周报")):
+        score -= 70
+    return score
+
+
+def shortlist_reasons(item: dict) -> list[str]:
+    text = f"{item.get('titleOriginal', '')} {item.get('snippetOriginal', '')}".casefold()
+    reasons: list[str] = []
+    if item.get("sourceHint") in EDITORIAL_AUTHORITY_BONUS:
+        reasons.append("高优先级来源")
+    if any(term in text for term in ("财报", "年报", "半年报", "季报", "业绩", "利润", "现金流", "ebit", "earnings")):
+        reasons.append("财务经营")
+    if any(term in text for term in ("召回", "监管", "处罚", "禁令", "新规", "recall", "regulator")):
+        reasons.append("政策监管安全")
+    if any(term in text for term in ("销量", "零售", "批发", "出口", "库存", "交付", "产能", "量产")):
+        reasons.append("可量化经营事件")
+    return reasons or ["汽车行业动态"]
+
+
+def editorial_shortlist_eligible(item: dict) -> bool:
+    """Reject formats that are rarely worth opening during editorial review."""
+    title = clean_news_text(item.get("titleOriginal", "")).casefold()
+    return not any(term.casefold() in title for term in EDITORIAL_SHORTLIST_BLOCK_TERMS)
+
+
+def build_editorial_shortlist(pool: list[dict], limit: int = EDITORIAL_SHORTLIST_LIMIT) -> list[dict]:
+    """Create a small, headline-only review set with event and source deduplication."""
+    ranked = sorted(
+        [item for item in pool if editorial_shortlist_eligible(item)],
+        key=lambda item: (editorial_candidate_score(item), daily.score(item)),
+        reverse=True,
+    )
+    selected: list[dict] = []
+    normalized_titles: list[str] = []
+    source_counts: dict[str, int] = {}
+    foreign_count = 0
+    foreign_limit = max(4, limit // 3)
+    for item in ranked:
+        source = str(item.get("sourceHint", ""))
+        if source_counts.get(source, 0) >= 4:
+            continue
+        if source in daily.FOREIGN and foreign_count >= foreign_limit:
+            continue
+        normalized = normalized_event_title(item)
+        if not normalized:
+            continue
+        if any(
+            SequenceMatcher(None, normalized, existing).ratio() >= 0.72
+            for existing in normalized_titles
+        ):
+            continue
+        if daily.too_similar(item, selected):
+            continue
+        selected.append(item)
+        normalized_titles.append(normalized)
+        source_counts[source] = source_counts.get(source, 0) + 1
+        foreign_count += int(source in daily.FOREIGN)
+        if len(selected) == limit:
+            break
+    # Prefer a genuinely strong list over filling all 24 slots. If the score
+    # floor leaves fewer than the publication minimum, retain the best 11 so
+    # an editor can decide whether targeted fallback search is necessary.
+    strong = [item for item in selected if editorial_candidate_score(item) >= EDITORIAL_SHORTLIST_SCORE_FLOOR]
+    if len(strong) >= EDITORIAL_SHORTLIST_MINIMUM:
+        selected = strong
+    else:
+        selected = selected[:EDITORIAL_SHORTLIST_MINIMUM]
+    return [
+        {
+            "rank": index,
+            "score": editorial_candidate_score(item),
+            "reasons": shortlist_reasons(item),
+            "id": item.get("id"),
+            "titleOriginal": item.get("titleOriginal"),
+            "snippetOriginal": item.get("snippetOriginal"),
+            "sourceHint": item.get("sourceHint"),
+            "categoryHint": item.get("categoryHint"),
+            "publishedAt": item.get("publishedAt"),
+            "url": item.get("url"),
+        }
+        for index, item in enumerate(selected, 1)
+    ]
+
+
+def write_editorial_shortlist(candidates: list[dict], now: datetime) -> dict:
+    valid_sources = daily.FOREIGN | daily.DOMESTIC | {"重点车企"}
+    base_pool = [
+        item for item in candidates
+        if item.get("sourceHint") in valid_sources
+        and item.get("categoryHint") in {"汽车产业", "汽车金融"}
+        and daily.automotive_relevant(item)
+        and fresh(item, now)
+        and substantive_title(item)
+        and editorially_substantive(item)
+        and acceptable_publisher(item)
+        and within_current_or_previous_day(item, now)
+    ]
+    shortlist = build_editorial_shortlist(base_pool)
+    output = {
+        "generatedAt": now.isoformat(),
+        "date": now.date().isoformat(),
+        "inputCandidates": len(candidates),
+        "eligibleAutomotiveHeadlines": len(base_pool),
+        "limit": EDITORIAL_SHORTLIST_LIMIT,
+        "scoreFloor": EDITORIAL_SHORTLIST_SCORE_FLOOR,
+        "fallbackMinimum": EDITORIAL_SHORTLIST_MINIMUM,
+        "stories": shortlist,
+    }
+    EDITORIAL_SHORTLIST.write_text(
+        json.dumps(output, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return output
+
+
 def automotive_finance_relevant(item: dict) -> bool:
     text = f"{item.get('titleOriginal', '')} {item.get('summaryOriginal', '')}".lower()
     return any(
@@ -354,7 +522,8 @@ def choose(
     ranked = sorted(
         pool,
         key=lambda item: (
-            authority_bonus.get(item.get("sourceHint", ""), 0)
+            editorial_candidate_score(item)
+            + authority_bonus.get(item.get("sourceHint", ""), 0)
             + 12 * sum(term in str(item.get("titleOriginal", "")).lower() for term in priority_terms),
             daily.score(item),
         ),
@@ -827,6 +996,7 @@ def main() -> None:
         and automotive_finance_relevant(item)
         and within_current_or_previous_day(item, now)
     ]
+    write_editorial_shortlist(candidates, now)
     finance = choose(
         [item for item in finance_pool if item["sourceHint"] not in daily.FOREIGN],
         3,
