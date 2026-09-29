@@ -187,6 +187,7 @@ def select_lead(data: dict) -> tuple[dict, list[dict]]:
         data["stories"],
         key=lambda story: (
             grade_rank.get(str(story.get("editorialGrade") or "").upper(), 0),
+            -int(story.get("editorialPriority") or 9999),
             lead_score(story),
         ),
         reverse=True,
