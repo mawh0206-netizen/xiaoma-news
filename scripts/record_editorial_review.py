@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import argparse
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -11,14 +12,22 @@ CN_TZ = timezone(timedelta(hours=8))
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--drop-title", action="append", default=[])
+    args = parser.parse_args()
     data = json.loads(DATA.read_text(encoding="utf-8"))
-    stories = data.get("stories", [])
+    stories = [
+        story for story in data.get("stories", [])
+        if not any(term in str(story.get("title", "")) for term in args.drop_title)
+    ]
     if len(stories) < 11:
         raise ValueError("公众号条目少于11条")
     if any("\ufffd" in json.dumps(story, ensure_ascii=False) for story in stories):
         raise ValueError("公众号内容含乱码替换字符")
     if any(not story.get("newsBrief") or not story.get("whyItMatters") for story in stories):
         raise ValueError("公众号内容缺少事实或观察")
+    data["stories"] = stories
+    data["sources"] = sorted({str(story.get("source", "")) for story in stories})
     data["editorialReview"] = {
         "status": "passed",
         "reviewedAt": datetime.now(CN_TZ).isoformat(),
