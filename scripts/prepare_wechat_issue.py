@@ -40,6 +40,13 @@ LOW_INFORMATION_TERMS = (
     "带火的这个设计", "东风股份：7月汽车销量", "美国混动市场 86%",
     "电池税”落地", "广汽孵化的机器人公司",
     "技术平权", "磨三剑", "掀开了速成车", "ai\"评测\"", "ai“评测”",
+    # Product pages, stock-price recaps and media roundups can be useful
+    # discovery signals, but do not by themselves meet the edition's
+    # verifiable-fact threshold.
+    "基金", "涨近", "汽车早参", "抢夺国外市场", "限时权益价",
+    "如何做到", "robotaxi fleets are the new crypto treasury", "完成回购",
+    "绿色出行", "重塑轿车价值标杆", "存量竞争的信任命题", "价格屠夫",
+    "高增长市场中获胜",
 )
 WEAK_AUTO_TERMS = ("自行车", "电动自行车", "两轮车")
 BOILERPLATE_CONTACT_TERMS = (
@@ -164,7 +171,10 @@ def article_excerpt(url: str) -> str:
         return ""
     try:
         request = urllib.request.Request(url, headers={"User-Agent": ARTICLE_UA})
-        with urllib.request.urlopen(request, timeout=18) as response:
+        # Editorial regeneration runs inside the 08:00--09:00 SLA.  A slow
+        # publisher must fall back to its vetted discovery metadata rather
+        # than blocking the entire edition for 18 seconds per request.
+        with urllib.request.urlopen(request, timeout=4) as response:
             raw = response.read(1_500_000)
             charset = response.headers.get_content_charset()
         page = decode_article_html(raw, charset)
