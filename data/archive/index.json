@@ -1,6 +1,22 @@
 {
   "issues": [
     {
+      "date": "2026-10-08",
+      "dateLabel": "2026年10月8日 星期四",
+      "issue": 79,
+      "statusLabel": "本次内容完成 · 08:05",
+      "storyCount": 45,
+      "insightTitle": "汽车规模扩张与单车利润重新校准，利率预期重新牵动资产定价"
+    },
+    {
+      "date": "2026-10-07",
+      "dateLabel": "2026年10月7日 星期三",
+      "issue": 78,
+      "statusLabel": "本次内容完成 · 09:05",
+      "storyCount": 45,
+      "insightTitle": "AI能力扩张同步抬高治理成本，汽车规模扩张与单车利润重新校准"
+    },
+    {
       "date": "2026-10-06",
       "dateLabel": "2026年10月6日 星期二",
       "issue": 77,
