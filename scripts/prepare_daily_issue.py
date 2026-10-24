@@ -246,6 +246,9 @@ def select(candidates: list[dict], old_urls: set[str], now: datetime | None = No
             market_terms = re.compile(
                 r"(?i)\b(stock|shares?|equity|bond|yield|fed|rate|investor|earnings?|profit|loss|merger|acquisition|bank)\b"
             )
+            domestic_market_terms = re.compile(
+                r"股票|股价|港股|A股|科创板|北交所|融资余额|回购|资本市场|证券|债券|收益率|利率|央行|业绩|财报|利润|亏损|并购|收购|基金|ETF|投资"
+            )
             # A source may classify a market-moving foreign report under
             # finance or business.  Permit only clearly market-related items
             # to fill the investment column's foreign-source quota, while
@@ -256,6 +259,17 @@ def select(candidates: list[dict], old_urls: set[str], now: datetime | None = No
                 if x["sourceHint"] in FOREIGN
                 and x["categoryHint"] in {"财经", "企业商业"}
                 and market_terms.search(str(x.get("titleOriginal") or ""))
+            )
+            # Domestic feeds often classify genuine market stories as
+            # finance or business rather than investment.  Admit only titles
+            # with explicit capital-market terms so the 6/6 source balance can
+            # still be met when the native investment feed is sparse.
+            category_pool.extend(
+                {**x, "categoryHint": category}
+                for x in pool
+                if x["sourceHint"] in DOMESTIC
+                and x["categoryHint"] in {"财经", "企业商业"}
+                and domestic_market_terms.search(str(x.get("titleOriginal") or ""))
             )
         choices = sorted(category_pool, key=score, reverse=True)
         foreign_target = quota // 2
