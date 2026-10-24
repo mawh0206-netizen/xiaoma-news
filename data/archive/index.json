@@ -1,6 +1,14 @@
 {
   "issues": [
     {
+      "date": "2026-10-24",
+      "dateLabel": "2026年10月24日 星期六",
+      "issue": 95,
+      "statusLabel": "本次内容完成 · 08:17",
+      "storyCount": 45,
+      "insightTitle": "AI算力扩张面对能源与回报约束，汽车规模扩张与单车利润重新校准"
+    },
+    {
       "date": "2026-10-23",
       "dateLabel": "2026年10月23日 星期五",
       "issue": 94,
