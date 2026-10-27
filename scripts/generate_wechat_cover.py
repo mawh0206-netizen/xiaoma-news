@@ -242,15 +242,23 @@ def wrap(draw: ImageDraw.ImageDraw, text: str, face: ImageFont.FreeTypeFont, max
     if draw.textbbox((0, 0), text, font=face)[2] <= max_width:
         return [text]
     if lines == 2:
-        candidates: list[tuple[int, int, str, str]] = []
+        candidates: list[tuple[int, int, int, str, str]] = []
         for split in range(2, len(text) - 1):
             left, right = text[:split], text[split:]
             left_width = draw.textbbox((0, 0), left, font=face)[2]
             right_width = draw.textbbox((0, 0), right, font=face)[2]
             if left_width <= max_width and right_width <= max_width:
-                candidates.append((abs(left_width - right_width), -min(len(left), len(right)), left, right))
+                # Never split decimal values or detach their units on the
+                # visual cover (for example ``19.`` / ``9%``).  Prefer a
+                # clause boundary when one is available, then balance lines.
+                bad_numeric_boundary = bool(
+                    re.search(r"\d[.．]?$", left) and re.match(r"^[\d.%％亿万]", right)
+                )
+                clause_boundary = left.endswith(("，", "。", "；", "：", ",", ";", ":"))
+                penalty = (100000 if bad_numeric_boundary else 0) + (0 if clause_boundary else 1000)
+                candidates.append((penalty, abs(left_width - right_width), -min(len(left), len(right)), left, right))
         if candidates:
-            _, _, left, right = min(candidates)
+            _, _, _, left, right = min(candidates)
             return [left, right]
     result: list[str] = []
     current = ""
