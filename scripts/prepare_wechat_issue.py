@@ -82,7 +82,15 @@ EDITORIAL_PROMO_TERMS = (
 )
 EDITORIAL_SHORTLIST_BLOCK_TERMS = (
     "daily 5", "newsletter", "review:", "i drove", "conversion",
-    "试驾", "开箱", "购车指南", "行业日报", "产业日报", "投融资周报",
+    "great to drive", "driven until it died", "put to the test",
+    "听我一句劝", "实测", "评测", "试驾", "开箱", "购车指南",
+    "值不值得", "研究人员发明", "利润转移", "company announcement",
+    "乌镇夜话", "时代给了窗口", "honda pins growth hopes",
+    "全球连线", "车型盘点",
+    "买车人越来越老",
+    "移动智能体",
+    "圆满举行", "论坛", "峰会", "周报", "研报", "机构：",
+    "行业日报", "产业日报", "投融资周报", "高铁座椅",
 )
 
 
@@ -337,6 +345,11 @@ def editorially_substantive(item: dict) -> bool:
         return False
     if any(term.lower() in title for term in LOW_INFORMATION_TERMS):
         return False
+    # Apply the same format gate to the final WeChat candidate pool as to the
+    # editorial shortlist. Otherwise review/test-drive headlines can bypass the
+    # shortlist filter and re-enter during domestic/foreign quota selection.
+    if any(term.casefold() in title for term in EDITORIAL_SHORTLIST_BLOCK_TERMS):
+        return False
     # Google News RSS commonly repeats the headline in snippetOriginal. That is
     # discovery metadata rather than proof that the underlying article is thin;
     # reader_news_brief() resolves and reads the publisher page before output.
@@ -551,9 +564,6 @@ def choose(
         comparison = selected + (against or [])
         if daily.too_similar(item, comparison):
             continue
-        topic = editorial_topic(item)
-        if topic and any(editorial_topic(existing) == topic for existing in comparison):
-            continue
         candidate_observation = observation_preview(item)
         if any(
             SequenceMatcher(None, candidate_observation, observation_preview(existing)).ratio()
@@ -637,6 +647,13 @@ def professional_observation(story: dict) -> tuple[str, list[str]]:
             "紧急接管、封闭场地与公开道路测试边界，以及监管批准所依据的安全证据。"
         )
         watch = ["测试道路与许可范围", "冗余转向方案", "紧急接管机制", "量产准入进度"]
+    elif "定点" in text:
+        judgment = (
+            f"“{subject}”里的定点数量只代表进入客户项目，不等于已经形成装车收入。{data_anchor}"
+            "需要拆分已量产、待SOP和仅获提名的项目，并核对单车价值量、客户车型周期与交付良率；"
+            "只有项目按期转量产且回款正常，累计定点才具有经营含义。"
+        )
+        watch = ["已量产定点占比", "SOP时间", "单车价值量", "交付良率与回款"]
     elif any(term in text for term in (
         "内卷", "产业共荣", "business deals with chinese firms", "chinese suppliers",
         "trade restriction", "supplier relationship",
@@ -980,6 +997,22 @@ def observation_preview(item: dict) -> str:
     return professional_observation(story)[0]
 
 
+def previous_wechat_titles(now: datetime) -> list[str]:
+    """Load yesterday's published titles so a fresh run does not repeat them."""
+    path = ROOT / "data" / "wechat" / f"{(now - timedelta(days=1)):%Y-%m-%d}.json"
+    if not path.exists():
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    return [
+        normalized_event_title({"titleOriginal": story.get("title", "")})
+        for story in payload.get("stories", [])
+        if story.get("title")
+    ]
+
+
 def main() -> None:
     now = datetime.now(daily.CN_TZ)
     payload = json.loads(CANDIDATES.read_text(encoding="utf-8"))
@@ -1000,6 +1033,24 @@ def main() -> None:
         if item["categoryHint"] == "汽车产业"
         and within_current_or_previous_day(item, now)
     ]
+    prior_titles = previous_wechat_titles(now)
+    if prior_titles:
+        auto_pool = [
+            item for item in auto_pool
+            if not any(
+                SequenceMatcher(None, normalized_event_title(item), prior).ratio() >= 0.68
+                for prior in prior_titles
+            )
+            and not any(
+                term in str(item.get("titleOriginal", "")).casefold()
+                for term in (
+                    "waymo vehicles over school bus",
+                    "cybertruck is ev pickup market",
+                    "lucid expands credit line",
+                    "honda to build new $3 billion auto plant",
+                )
+            )
+        ]
     finance_pool = [
         item for item in base_pool
         if item["categoryHint"] == "汽车金融"
@@ -1013,22 +1064,21 @@ def main() -> None:
         False,
         minimum=0,
     )
-    # Aim for the 11 domestic / 3 foreign editorial mix when the fresh pool allows it.
-    # Qualified finance stories take domestic slots instead of expanding the
-    # issue beyond the 14-item target; when finance is unavailable, fresh auto
-    # stories fill those slots. Publication remains valid with at least 11 items.
+    # Aim for eight domestic and up to three foreign stories. Eleven strong items
+    # are preferable to padding the edition to 14 with reviews, event recaps or
+    # low-information product copy; publication remains valid with at least 11.
     domestic_auto = choose(
         [item for item in auto_pool if item["sourceHint"] not in daily.FOREIGN],
-        11 - len(finance),
+        8 - len(finance),
         True,
-        minimum=max(7 - len(finance), 0),
+        minimum=max(8 - len(finance), 0),
         source_limit=6,
         against=finance,
     )
     foreign_auto = choose(
         [item for item in auto_pool if item["sourceHint"] in daily.FOREIGN],
         3,
-        True,
+        False,
         minimum=2,
         against=domestic_auto + finance,
     )
@@ -1036,7 +1086,7 @@ def main() -> None:
     selected = auto + finance
     domestic_count = sum(item["sourceHint"] not in daily.FOREIGN for item in selected)
     domestic_ratio = domestic_count / len(selected)
-    if not 0.75 <= domestic_ratio <= 0.85:
+    if not 0.72 <= domestic_ratio <= 0.85:
         raise ValueError(f"WeChat domestic source ratio outside target range: {domestic_count}/{len(selected)}")
     stories = [daily.make_story(item, index + 30) for index, item in enumerate(selected)]
     resolved_urls = resolve_urls([item["url"] for item in selected])
