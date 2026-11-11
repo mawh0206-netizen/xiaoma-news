@@ -15,6 +15,7 @@ MIN_WECHAT_STORIES = 11
 PAYLOAD = RUNTIME / "wechat_payload.json"
 DRAFT_RESULT = RUNTIME / "wechat_draft_result.json"
 SUCCESS = RUNTIME / "daily_success.json"
+TIMEOUT_ALERT = RUNTIME / "daily_watchdog_alert.json"
 READY = RUNTIME / "wechat_publish_ready.json"
 CREDENTIALS = RUNTIME / "wechat_credentials.json"
 CN_TZ = timezone(timedelta(hours=8))
@@ -94,8 +95,11 @@ def main() -> None:
 
     if local.get("editorialReview", {}).get("status") != "passed":
         raise ValueError("公众号编辑复核尚未通过")
-    if success.get("date") != date_key or success.get("status") != "success" or not success.get("before_09_00"):
+    if success.get("date") != date_key or success.get("status") != "success":
         raise ValueError("当天生产成功标记未通过")
+    if not success.get("before_09_00"):
+        if not TIMEOUT_ALERT.exists() or read_json(TIMEOUT_ALERT).get("date") != date_key:
+            raise ValueError("09:00后恢复缺少当日超时提醒记录")
 
     local_stories = canonical_stories(local)
     if len(local_stories) < MIN_WECHAT_STORIES:
