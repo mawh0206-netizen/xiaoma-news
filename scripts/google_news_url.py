@@ -127,12 +127,16 @@ def resolve_urls(urls: list[str], attempts: int = 3) -> dict[str, str]:
         return result
 
     decoded: dict[str, str] = {}
-    with ThreadPoolExecutor(max_workers=min(5, len(unresolved))) as executor:
+    # Google throttles bursts of article-wrapper requests. Resolve serially so a
+    # single issue does not fan out into repeated HTTP 429 responses.
+    with ThreadPoolExecutor(max_workers=1) as executor:
         futures = {executor.submit(resolve_one, url, attempts): url for url in unresolved}
         for future in as_completed(futures):
             url = futures[future]
             decoded[url] = future.result()
+            # Checkpoint successful resolutions. If a later URL is throttled,
+            # the retry can resume instead of requesting the whole batch again.
+            cache[url] = decoded[url]
+            write_cache(cache)
     result.update(decoded)
-    cache.update(decoded)
-    write_cache(cache)
     return result
