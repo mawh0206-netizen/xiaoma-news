@@ -1,0 +1,244 @@
+{
+  "dateLabel": "2026年11月26日 星期四",
+  "statusLabel": "公众号编辑复核完成",
+  "sources": [
+    "Cox Automotive / Automotive News",
+    "Polestar向SEC提交的业绩公告",
+    "Porsche Newsroom",
+    "上交所公告 / 北汽蓝谷",
+    "乘联分会",
+    "小鹏汽车 / 广州示范运营信息",
+    "欧盟委员会 / Reuters",
+    "理想汽车投资者关系",
+    "美国贸易代表办公室（USTR）",
+    "蔚来管理层 / Reuters",
+    "韩国财政部门 / Reuters"
+  ],
+  "stories": [
+    {
+      "title": "美国拟以产能过剩为由对14个贸易伙伴加征关税，汽车供应链面临再定价",
+      "summary": "USTR公布14项针对结构性产能过剩的301调查结论并提出关税行动，覆盖中国、欧盟、日本、韩国等主要制造经济体。现有汽车、钢铝等232关税另行适用；最终商品清单和实施节奏仍需看正式公告，不能把拟议税率直接当作整车到岸税率。",
+      "source": "美国贸易代表办公室（USTR）",
+      "category": "汽车产业",
+      "url": "https://www.ustr.gov/about/policy-offices/press-office/press-releases/2026/november/ustr-makes-determinations-and-proposes-actions-14-section-301-investigations-relating-structural",
+      "publishedAt": "2026-11-26T06:47:39+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": true,
+      "newsBrief": "USTR公布14项针对结构性产能过剩的301调查结论并提出关税行动，覆盖中国、欧盟、日本、韩国等主要制造经济体。现有汽车、钢铝等232关税另行适用；最终商品清单和实施节奏仍需看正式公告，不能把拟议税率直接当作整车到岸税率。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "汽车并非这轮措施唯一对象，但汽车、钢材、电子和电池供应链同时被点名，成本会沿零部件跨境流动放大。先别把15%或20%的国别上限直接加到每辆车上；真正决定影响的是产品清单、是否叠加既有关税以及企业能否改用北美本地采购。",
+      "watchMetrics": [
+        "最终商品清单与生效日",
+        "与汽车及零部件现有关税的叠加规则",
+        "北美采购和售价调整"
+      ],
+      "editorialGrade": "S",
+      "editorialPriority": 1
+    },
+    {
+      "title": "11月前22日乘用车零售降25%，新能源批发与零售相差26.3万辆",
+      "summary": "乘联分会数据显示，11月1—22日乘用车零售98.4万辆，同比下降25%；厂商批发126万辆，同比下降21%。新能源零售70.2万辆，同比下降13%，批发96.5万辆，同比增长3%，零售和批发渗透率分别为71.3%和76.6%。",
+      "source": "乘联分会",
+      "category": "汽车产业",
+      "url": "https://m.gasgoo.com/news/70479095.html",
+      "publishedAt": "2026-11-25T16:22:05+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": true,
+      "newsBrief": "乘联分会数据显示，11月1—22日乘用车零售98.4万辆，同比下降25%；厂商批发126万辆，同比下降21%。新能源零售70.2万辆，同比下降13%，批发96.5万辆，同比增长3%，零售和批发渗透率分别为71.3%和76.6%。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "新能源渗透率超过七成，却不是需求走强：燃油车收缩更快，且新能源批发比零售多26.3万辆。若月底零售不能追上，批发增长会先落到渠道和出口库存；判断景气度应看全月终端成交，而不是只看渗透率新高。",
+      "watchMetrics": [
+        "全月新能源零售与批发差",
+        "经销商库存和终端折扣",
+        "12月零售修复幅度"
+      ],
+      "editorialGrade": "S",
+      "editorialPriority": 2
+    },
+    {
+      "title": "理想三季度交付增7.2%，车辆毛利率修复至15.3%但仍亏3.1亿元",
+      "summary": "理想汽车三季度交付99964辆，同比增长7.2%；车辆销售收入270.9亿元，同比增长4.7%，车辆毛利率15.3%，较二季度9.4%修复但略低于上年同期15.5%。公司净亏损3.10亿元，经营现金流32.3亿元，自由现金流20亿元。",
+      "source": "理想汽车投资者关系",
+      "category": "汽车产业",
+      "url": "https://ir.lixiang.com/zh-hant/news-releases/news-release-details/li-auto-inc-announces-unaudited-third-quarter-2026-financial",
+      "publishedAt": "2026-11-25T17:13:52+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": true,
+      "newsBrief": "理想汽车三季度交付99964辆，同比增长7.2%；车辆销售收入270.9亿元，同比增长4.7%，车辆毛利率15.3%，较二季度9.4%修复但略低于上年同期15.5%。公司净亏损3.10亿元，经营现金流32.3亿元，自由现金流20亿元。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "这份财报的转折在现金而不在销量：交付同比增长、单车收入却仍承压，但毛利率从二季度低点修复，自由现金流也转正。能否把修复写成盈利拐点，要看四季度新车型放量后车辆毛利率是否守住15%、且不再依赖营运资金波动。",
+      "watchMetrics": [
+        "车辆毛利率与单车收入",
+        "经营现金流和自由现金流",
+        "四季度交付与净利润"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 3
+    },
+    {
+      "title": "Polestar三季度收入降14.3%，净亏损扩大至4.03亿美元",
+      "summary": "Polestar三季度收入6.42亿美元，同比下降14.3%；净亏损4.03亿美元，上年同期为3.65亿美元。公司称价格压力、Polestar 3占比下降、市场结构和北美残值保证调整拖累收入；9月末现金约6.53亿美元，全年销量指引仍为低至中个位数增长。",
+      "source": "Polestar向SEC提交的业绩公告",
+      "category": "汽车产业",
+      "url": "https://www.sec.gov/Archives/edgar/data/1884082/000110465926131840/tm2630564d1_ex99-1.htm",
+      "publishedAt": "2026-11-25T23:04:59+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "Polestar三季度收入6.42亿美元，同比下降14.3%；净亏损4.03亿美元，上年同期为3.65亿美元。公司称价格压力、Polestar 3占比下降、市场结构和北美残值保证调整拖累收入；9月末现金约6.53亿美元，全年销量指引仍为低至中个位数增长。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "销量微增却收入下滑、亏损扩大，说明产品和地区结构比交付数字更关键。9月末现金比二季度末8.88亿美元明显减少；若Polestar 4在韩国投产后不能改善高价车型占比，维持销量指引反而可能继续消耗流动性。",
+      "watchMetrics": [
+        "单车收入与毛利",
+        "现金余额和融资安排",
+        "Polestar 4交付结构"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 4
+    },
+    {
+      "title": "韩国将公布电动车产业支持方案，本土生产税抵免尚未定案",
+      "summary": "韩国财政部门表示将于周五公布电动车产业竞争力支持措施，本土生产并销售电动车的税收抵免仍在讨论、尚未最终决定。韩国汽车与移动出行协会数据显示，2026年前9个月中国制造车型占当地新乘用电动车注册量43.5%，其中包含中国生产的特斯拉。",
+      "source": "韩国财政部门 / Reuters",
+      "category": "汽车产业",
+      "url": "https://www.reuters.com/legal/transactional/south-korea-unveil-ev-industry-support-measures-chinese-competition-grows-2026-11-25/",
+      "publishedAt": "2026-11-25T12:29:00+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "韩国财政部门表示将于周五公布电动车产业竞争力支持措施，本土生产并销售电动车的税收抵免仍在讨论、尚未最终决定。韩国汽车与移动出行协会数据显示，2026年前9个月中国制造车型占当地新乘用电动车注册量43.5%，其中包含中国生产的特斯拉。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "43.5%的份额把政策压力说得很清楚，但税抵免若只奖励本土生产，会同时影响中国品牌、进口特斯拉和韩国车企海外产能安排。最终方案的适用对象、每辆车额度和本地化条件，比“扶持电动车”这个口号更重要。",
+      "watchMetrics": [
+        "税抵免是否落地及单车额度",
+        "本地生产与零部件门槛",
+        "中国制造车型注册份额"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 5
+    },
+    {
+      "title": "欧盟推迟审议Tesla辅助驾驶，12月15日表决仍需双重多数",
+      "summary": "欧盟委员会称，原定审议Tesla Assisted Driving的技术委员会会议推迟至12月15日。该系统由FSD更名而来，属于“可脱手、须注视”的驾驶辅助；欧盟范围批准需要至少15个成员国、且代表65%人口的支持，欧盟层面否决会使既有国家批准失效。",
+      "source": "欧盟委员会 / Reuters",
+      "category": "汽车产业",
+      "url": "https://live.euronext.com/en/financial-news/eu-postpones-discussion-approve-teslas-self-driving-tech",
+      "publishedAt": "2026-11-26T03:36:04+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "欧盟委员会称，原定审议Tesla Assisted Driving的技术委员会会议推迟至12月15日。该系统由FSD更名而来，属于“可脱手、须注视”的驾驶辅助；欧盟范围批准需要至少15个成员国、且代表65%人口的支持，欧盟层面否决会使既有国家批准失效。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "这不是商业上线只差一个日期，而是监管仍在确认监督责任和跨国互认。即使荷兰等国家已先行批准，欧盟双重多数不过关仍可能让部署退回各国试点；用户宣传也必须继续把它写成辅助驾驶，而非无人驾驶。",
+      "watchMetrics": [
+        "12月15日投票结果",
+        "支持国数量和人口占比",
+        "功能边界与事故责任"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 6
+    },
+    {
+      "title": "北汽新能源拟投16.85亿元改造房山工厂，项目仍待股东会审议",
+      "summary": "北汽蓝谷公告称，子公司北汽新能源拟租赁北京长安房山工厂5年，含税租金3.8925亿元，并投资16.85223亿元实施智能乘用车技改。工厂占地1374亩，具备冲压、焊装、涂装和总装工艺；技改议案仍需股东会审议及备案、环保等手续。",
+      "source": "上交所公告 / 北汽蓝谷",
+      "category": "汽车产业",
+      "url": "https://www.sse.com.cn/assortment/stock/list/info/announcement/index.shtml?productId=600733",
+      "publishedAt": "2026-11-26T03:15:30+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "北汽蓝谷公告称，子公司北汽新能源拟租赁北京长安房山工厂5年，含税租金3.8925亿元，并投资16.85223亿元实施智能乘用车技改。工厂占地1374亩，具备冲压、焊装、涂装和总装工艺；技改议案仍需股东会审议及备案、环保等手续。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "租用现成四大工艺能缩短导入周期，但20多亿元租金与技改投入先形成固定成本，车型、产能和投产时间却未完整披露。项目价值要由新增销量和产能利用率验证；在股东会与行政手续完成前，不能写成已经投产。",
+      "watchMetrics": [
+        "股东会和项目备案",
+        "导入车型与规划产能",
+        "投产后产能利用率"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 7
+    },
+    {
+      "title": "小鹏在广州开启主驾无人载客体验，L4示范运营不等于商业收费",
+      "summary": "小鹏Robotaxi在广州合规示范区域开启主驾驶位无安全员的载客体验，车辆配有远程调度和应急保障。公司称其已获L4级智能网联汽车示范运营资质，并计划2027年推出面向个人消费者的定制车型；当前属于示范体验，不代表已获全域商业收费许可。",
+      "source": "小鹏汽车 / 广州示范运营信息",
+      "category": "汽车产业",
+      "url": "https://bbs.xiaopeng.com/article/3988454?tidType=1",
+      "publishedAt": "2026-11-25T20:15:25+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "小鹏Robotaxi在广州合规示范区域开启主驾驶位无安全员的载客体验，车辆配有远程调度和应急保障。公司称其已获L4级智能网联汽车示范运营资质，并计划2027年推出面向个人消费者的定制车型；当前属于示范体验，不代表已获全域商业收费许可。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "拿掉主驾安全员比发布技术路线更接近真实运营，但决定商业化的仍是接管、事故处置和远程协助成本。若只能在限定区域、依赖高强度后台保障，体验规模扩大并不自动等于单车经济性成立。",
+      "watchMetrics": [
+        "无安全员运行里程和事故",
+        "远程协助频次与成本",
+        "商业收费许可和运营范围"
+      ],
+      "editorialGrade": "A",
+      "editorialPriority": 8
+    },
+    {
+      "title": "美国10月二手电动车销量增73%，租赁到期潮压缩新旧车价差",
+      "summary": "Cox Automotive数据被行业报道引用称，美国10月二手电动车销量约48678辆，同比增长73.2%、环比增长4.7%，二手车销量占比升至3.3%。更多2023年前后租赁车辆回流，扩大了可选车型；该数据是美国市场样本，不能外推为全球新能源二手车趋势。",
+      "source": "Cox Automotive / Automotive News",
+      "category": "汽车产业",
+      "url": "https://www.autonews.com/retail/an-manheim-evs-gas-price-1125/",
+      "publishedAt": "2026-11-25T20:00:00+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "Cox Automotive数据被行业报道引用称，美国10月二手电动车销量约48678辆，同比增长73.2%、环比增长4.7%，二手车销量占比升至3.3%。更多2023年前后租赁车辆回流，扩大了可选车型；该数据是美国市场样本，不能外推为全球新能源二手车趋势。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "增长既有需求，也有低基数和租赁到期供给推动。若拍卖价继续下探，消费者会受益，但车企和金融机构的残值保证成本可能上升；真正要看的是零售成交价、在库天数与租赁资产损失是否同时恶化。",
+      "watchMetrics": [
+        "二手电动车成交价与在库天数",
+        "拍卖残值和租赁损失",
+        "新旧电动车价差"
+      ],
+      "editorialGrade": "B",
+      "editorialPriority": 9
+    },
+    {
+      "title": "蔚来称AI长期可抬升毛利率10个百分点，当前仍是管理层目标",
+      "summary": "蔚来CEO李斌表示，长期在各业务单元应用AI提升效率，可能把公司毛利率提高10个百分点。这是管理层对长期效率改善的判断，不是已实现的财务结果；公司二季度集团毛利率为18.4%，需要后续财报拆解AI节省与产品结构、价格和电池成本的贡献。",
+      "source": "蔚来管理层 / Reuters",
+      "category": "汽车产业",
+      "url": "https://new.streetinsider.com/Reuters/Nio%2Bsays%2BAI%2Buse%2Bcould%2Blift%2Bgross%2Bmargin%2Bby%2B10%2Bpercentage%2Bpoints/27399486.html",
+      "publishedAt": "2026-11-25T22:07:45+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "蔚来CEO李斌表示，长期在各业务单元应用AI提升效率，可能把公司毛利率提高10个百分点。这是管理层对长期效率改善的判断，不是已实现的财务结果；公司二季度集团毛利率为18.4%，需要后续财报拆解AI节省与产品结构、价格和电池成本的贡献。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "10个百分点幅度很大，却没有时间表和成本拆分，现阶段更像经营目标。若下一季毛利改善主要来自车型结构或供应链降本，就不能归因于AI；只有研发周期、销售费用和制造良率出现可量化变化，这个说法才有验证基础。",
+      "watchMetrics": [
+        "毛利率变化及原因拆分",
+        "研发和销售费用率",
+        "制造良率与单车成本"
+      ],
+      "editorialGrade": "B",
+      "editorialPriority": 10
+    },
+    {
+      "title": "纯电Porsche 718把电池放在座椅后方，量产竞争力仍看重量与续航",
+      "summary": "Porsche披露纯电718 Boxster开发进入收尾阶段，采用800V架构，并把电池布置在座椅后方以保留中置跑车的低坐姿和约40:60前后配重；车辆提供模拟换挡和水平对置六缸声浪体验。公司尚未在该材料中给出最终售价、认证续航和交付量。",
+      "source": "Porsche Newsroom",
+      "category": "汽车产业",
+      "url": "https://newsroom.porsche.com/en_CA/2026/products/porsche-all-electric-718-boxster-development-43821.html",
+      "publishedAt": "2026-11-25T21:10:00+08:00",
+      "publishedLabel": "内部审计：北京时间当日或前一日",
+      "isTop": false,
+      "newsBrief": "Porsche披露纯电718 Boxster开发进入收尾阶段，采用800V架构，并把电池布置在座椅后方以保留中置跑车的低坐姿和约40:60前后配重；车辆提供模拟换挡和水平对置六缸声浪体验。公司尚未在该材料中给出最终售价、认证续航和交付量。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "whyItMatters": "把电池从地板移到座椅后方解决了跑车姿态问题，却可能牺牲空间、重量和电池容量自由度。模拟换挡只是体验层，量产后能否守住轻量化、赛道热管理和可接受续航，才决定它是不是电动跑车的有效方案。",
+      "watchMetrics": [
+        "整备质量与认证续航",
+        "赛道热衰减和充电曲线",
+        "售价与首年交付"
+      ],
+      "editorialGrade": "B",
+      "editorialPriority": 11
+    }
+  ],
+  "editorialReview": {
+    "status": "passed",
+    "reviewedAt": "2026-11-26T08:29:00+08:00",
+    "method": "短名单质量门槛、定向候选查询、权威材料与口径复核"
+  }
+}
