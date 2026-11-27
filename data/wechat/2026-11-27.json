@@ -1,0 +1,348 @@
+{
+  "dateLabel": "2026年11月27日 星期五",
+  "statusLabel": "编辑复核通过 · 08:28",
+  "sources": [
+    "Equifax Canada / Automotive News",
+    "Infineon Technologies",
+    "Lucid投资者关系 / Nuro / InsideEVs",
+    "Rivian SEC文件 / InsideEVs",
+    "Volkswagen Group / Elli",
+    "乘联分会 / 上汽大众 / 汽车之家",
+    "市场监管总局 / 汽车标准必要专利许可指引 / 汽车之家",
+    "市场监管总局国家标准平台 / 工信部装备工业发展中心 / 汽车之家",
+    "广州国际汽车展览会 / 每日经济新闻",
+    "智界汽车 / 盖世汽车",
+    "韩国贸易产业能源部 / 韩国进口汽车协会"
+  ],
+  "stories": [
+    {
+      "title": "近5000万辆新能源汽车进入运行安全年检时代，电池检测能力成关键",
+      "summary": "近5000万辆新能源车，正在迎来一道新的安全考题 汽车之家",
+      "source": "市场监管总局国家标准平台 / 工信部装备工业发展中心 / 汽车之家",
+      "category": "汽车产业",
+      "url": "https://std.samr.gov.cn/gb/search/gbDetailedCNF?id=208E903AB60279F3E06397BE0A0AB2B9",
+      "publishedAt": "2026-11-26T14:20:11+00:00",
+      "publishedLabel": "昨日 22:20",
+      "isTop": false,
+      "whyItMatters": "新能源汽车进入存量维修期后，真正的难点不是有没有标准，而是检测站设备、人员和车企数据能否识别早期隐患。若电池异常只能在故障码出现后被动发现，年检会停留在形式合规；应观察检出率、复检率和企业召回是否随检测数据上升。",
+      "detailBody": "事实进展：据汽车之家最新公开报道，近5000万辆新能源车，正在迎来一道新的安全考题 汽车之家 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：这条新闻真正要看的不是标题，而是“近5000万辆新能源车，正在迎来一道新的安全考题”会不会改变业务结果。先核对报道中的近5000万辆采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：近5000万辆新能源车，正在迎来一道新的安全考题 汽车之家。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据汽车之家及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为汽车之家，报道主题为“近5000万辆新能源车，正在迎来一道新的安全考题 - 汽车之家”。",
+        "近5000万辆新能源车，正在迎来一道新的安全考题 汽车之家",
+        "本条归入“汽车产业”栏目，发布时间为昨日 22:20。",
+        "这条新闻真正要看的不是标题，而是“近5000万辆新能源车，正在迎来一道新的安全考题”会不会改变业务结果。先核对报道中的近5000万辆采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：近5000万辆新能源车，正在迎来一道新的安全考题 汽车之家。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9jYk1PeHFXTzctd2ZsWFhEUlltamRKQnM4YWMxRGR3T0NLTHlZVUFRdXFWX3lwSGZqSGRmc2tkSFhGLTZvODJENGRlOUhhMnZtNWFoVXVseWNNajA?oc=5",
+      "newsBrief": "GB/T 44500—2024《新能源汽车运行安全性能检验规程》已于2025年3月实施，主管部门为公安部，检验从传统制动、灯光进一步延伸到动力电池、驱动电机和电控系统。工信部2026年安全隐患排查也要求企业检查碰撞、变形、过水及电压、电流、温度和绝缘异常；近5000万辆保有量是市场规模背景，不是问题车辆数。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "动力电池异常检出率",
+        "检测站覆盖与复检率",
+        "安全排查转化的召回数量"
+      ],
+      "editorialPriority": 1,
+      "editorialGrade": "S"
+    },
+    {
+      "title": "加拿大49%二手车贷款期限达84个月以上，40%近年车贷已成负资产",
+      "summary": "Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News",
+      "source": "Equifax Canada / Automotive News",
+      "category": "汽车产业",
+      "url": "https://www.equifax.ca/about-equifax/newsroom/-/intlpress/rising-interest-rates-could-put-nearly-1-in-4-mortgage-holders-at-risk-of-added-financial-stress-as-mortgage-delinquencies-reach-13-year-high",
+      "publishedAt": "2026-11-26T16:28:00+00:00",
+      "publishedLabel": "今日 00:28",
+      "isTop": false,
+      "whyItMatters": "延长期限能压低月供，却把折旧和利息风险推到换车时点。49%与40%同时出现，说明问题已从月供压力变成资产负债表压力；若二手车价格继续回落，金融机构会面对更高的处置损失，消费者也更难通过置换退出旧贷款。",
+      "detailBody": "事实进展：据Automotive News最新公开报道，Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：对决策最有用的信息，是“Automotive News报道：Half of used-ca…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Half of used-car buyers have loans of 84 months or more,…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据Automotive News及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为Automotive News，报道主题为“Automotive News报道：Half of used-car buyers have loans of 84 months or more, nearly double from 2019 - Automotive News”。",
+        "Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News",
+        "本条归入“汽车产业”栏目，发布时间为今日 00:28。",
+        "对决策最有用的信息，是“Automotive News报道：Half of used-ca…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Half of used-car buyers have loans of 84 months or more,…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "originalTitle": "Half of used-car buyers have loans of 84 months or more, nearly double from 2019 - Automotive News",
+      "originalSummary": "The report says that Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
+      "sourceTranslatedSummary": "Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News",
+      "translatedSummary": "报道指出，Half of used-car buyers have loans of 84 months or more, nearly double from 2019 Automotive News。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNMlhaX0UxODZIZFJwTGNmVTM4UmFBX0ZrWXBFQXloMF81UExSbUFDSXpTSmZ5a2RVUGxsWm81Ykt1enpoTXRBY1hkaG5taVI2R3NybWU3WDNkLUlibEdWZXpyaUdYbmNtUGhwSHN5Y0hiUjVtc21scFdUdWJnb1lDYw?oc=5",
+      "newsBrief": "Equifax Canada数据显示，2026年三季度加拿大二手车贷款中49%的期限达到84个月或更长，较2019年同期27%接近翻倍；全部车贷中该比例为54.6%。截至9月，过去四年发放的车贷约40%处于负资产状态，即贷款余额高于车辆价值；这是加拿大征信样本，不能外推为中国或美国水平。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "84个月以上贷款占比",
+        "负资产车贷占比",
+        "汽车贷款90天以上逾期率"
+      ],
+      "editorialPriority": 2,
+      "editorialGrade": "S"
+    },
+    {
+      "title": "大众Elli将在德国推出V2G服务，首年插枪奖励最高720欧元",
+      "summary": "VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power InsideEVs",
+      "source": "Volkswagen Group / Elli",
+      "category": "汽车产业",
+      "url": "https://www.volkswagen-group.com/en/press-releases/launch-of-the-first-vehicle-to-grid-charging-solution-for-the-mass-market-20883",
+      "publishedAt": "2026-11-25T16:15:00+00:00",
+      "publishedLabel": "昨日 00:15",
+      "isTop": false,
+      "whyItMatters": "这套方案先为“可调度时间”付费，而不是只按实际放电量付费，等于用固定奖励换取电池灵活性。用户能否省钱取决于充电器、资费合同和电池损耗后的净收益；若参与率不足或聚合调度很少，720欧元更像市场教育成本，而非成熟能源收入。",
+      "detailBody": "事实进展：据InsideEVs最新公开报道，VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power InsideEVs 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：对决策最有用的信息，是“InsideEVs报道：VW Will Pay German Dr…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：VW Will Pay German Drivers To Plug In Their EVs. Even If…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据InsideEVs及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为InsideEVs，报道主题为“InsideEVs报道：VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power - InsideEVs”。",
+        "VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power InsideEVs",
+        "本条归入“汽车产业”栏目，发布时间为昨日 00:15。",
+        "对决策最有用的信息，是“InsideEVs报道：VW Will Pay German Dr…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：VW Will Pay German Drivers To Plug In Their EVs. Even If…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "originalTitle": "VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power - InsideEVs",
+      "originalSummary": "The report says that VW Will Pay German Drivers To Plug In Their EVs, Even If The Grid Never Uses Their Power InsideEVs. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
+      "sourceTranslatedSummary": "VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power InsideEVs",
+      "translatedSummary": "报道指出，VW Will Pay German Drivers To Plug In Their EVs. Even If The Grid Never Uses Their Power InsideEVs。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiakFVX3lxTE54QmNyTUQwVUU2Zmt3Z0Z3Z25GakVJb2YyeW9hdHU0M19LelpXVWhvSGZ5bkNHa0g0MmVRd2c5clNpeHN1Y3ZXRVgtamxZNUVobEYtTjJPeWNQLUdkSUI5cm5GSGxNSzBoT2c?oc=5",
+      "newsBrief": "大众集团与Elli将于12月在德国推出V2G服务，双向直流充电器含税价1995欧元。车辆每次接入至少3小时可按每小时0.24欧元获得奖励，首个合同年最高720欧元；未来放电拟按每千瓦时0.40欧元补偿，但官方明确不保证一定发生电网回送。首批覆盖大众、商用车、CUPRA和Škoda兼容车型。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "首年实际领取奖励",
+        "参与车辆与在线时长",
+        "实际放电量及电池衰减"
+      ],
+      "editorialPriority": 3,
+      "editorialGrade": "A"
+    },
+    {
+      "title": "比亚迪韩国前9月注册20137辆，同比增578.7%",
+      "summary": "比亚迪韩国销量暴涨九倍 海豚落地价持平现代 汽车之家",
+      "source": "韩国贸易产业能源部 / 韩国进口汽车协会",
+      "category": "汽车产业",
+      "url": "https://www.motir.go.kr/attach/down/e258a4a9a6760923ac9cd310f7a71e4c/22fc4796ebddf856dedbe25338a846ea",
+      "publishedAt": "2026-11-26T13:53:13+00:00",
+      "publishedLabel": "昨日 21:53",
+      "isTop": false,
+      "whyItMatters": "增速惊人但基数很低，真正的信号是绝对注册量已进入韩国进口品牌前列。比亚迪能否把早期价格优势转为稳定份额，要看补贴变化后海豚与海狮7的月度注册，以及门店和售后是否跟上；集中交付不能直接当作长期需求。",
+      "detailBody": "事实进展：据国内汽车综合最新公开报道，比亚迪韩国销量暴涨九倍 海豚落地价持平现代 汽车之家 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：这条新闻真正要看的不是标题，而是“比亚迪韩国销量暴涨九倍 海豚落地价持平现代”会不会改变业务结果。销量增长不等于经营变好，要区分批发、零售、出口和库存转移，还要看是否靠降价换量。报道给出的事实锚点是：比亚迪韩国销量暴涨九倍 海豚落地价持平现代 汽车之家。判断质量时同时看批零差、成交均价、库存天数和单车毛利。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据国内汽车综合及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为国内汽车综合，报道主题为“比亚迪韩国销量暴涨九倍 海豚落地价持平现代 - 汽车之家”。",
+        "比亚迪韩国销量暴涨九倍 海豚落地价持平现代 汽车之家",
+        "本条归入“汽车产业”栏目，发布时间为昨日 21:53。",
+        "这条新闻真正要看的不是标题，而是“比亚迪韩国销量暴涨九倍 海豚落地价持平现代”会不会改变业务结果。销量增长不等于经营变好，要区分批发、零售、出口和库存转移，还要看是否靠降价换量。报道给出的事实锚点是：比亚迪韩国销量暴涨九倍 海豚落地价持平现代 汽车之家。判断质量时同时看批零差、成交均价、库存天数和单车毛利。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE5WbmR4UTlESGNJTGVucWRCOTdXZ3hVNklleDVLZlM0dE53eVZvWWVmU0hiQ184cjhCdHVUYTd1YXFJQTJ1ZFdwbkhibFdiRTlSdmV1bzlZTFh5SzFLRWc?oc=5",
+      "newsBrief": "韩国贸易产业能源部汇总数据显示，比亚迪2026年前9月在韩注册20137辆，同比增长578.7%，上年同期为2967辆；9月单月2614辆。海豚和海狮7分别以8198辆、7109辆进入进口车型前列。这里是韩国新车注册口径，不是中国出口量，也不是“增长九倍”。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "月度新车注册量",
+        "补贴后成交价",
+        "经销与售后网点覆盖"
+      ],
+      "editorialPriority": 4,
+      "editorialGrade": "A"
+    },
+    {
+      "title": "上汽大众10月新能源零售17975辆，同比增253.1%",
+      "summary": "合资新能源增长69% 上汽大众10月交付17975辆 汽车之家",
+      "source": "乘联分会 / 上汽大众 / 汽车之家",
+      "category": "汽车产业",
+      "url": "https://chejiahao.m.autohome.com.cn/info/26914026",
+      "publishedAt": "2026-11-26T02:15:27+00:00",
+      "publishedLabel": "昨日 10:15",
+      "isTop": false,
+      "whyItMatters": "合资新能源高增更像低基数修复，而不是市场普涨：上汽大众单月增速远高于前10月累计增速，全国新能源绝对量仍在下降。若后续增长主要依赖年末折扣，份额改善未必带来利润；需要同时看车型结构、成交价和连续三个月零售。",
+      "detailBody": "事实进展：据国内汽车综合最新公开报道，合资新能源增长69% 上汽大众10月交付17975辆 汽车之家 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：这条新闻真正要看的不是标题，而是“合资新能源增长69% 上汽大众10月交付17975辆”会不会改变业务结果。先核对报道中的增长69%、17975辆采用什么统计口径；销量增长不等于经营变好，要区分批发、零售、出口和库存转移，还要看是否靠降价换量。报道给出的事实锚点是：合资新能源增长69% 上汽大众10月交付17975辆 汽车之家。判断质量时同时看批零差、成交均价、库存天数和单车毛利。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据国内汽车综合及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为国内汽车综合，报道主题为“合资新能源增长69% 上汽大众10月交付17975辆 - 汽车之家”。",
+        "合资新能源增长69% 上汽大众10月交付17975辆 汽车之家",
+        "本条归入“汽车产业”栏目，发布时间为昨日 10:15。",
+        "这条新闻真正要看的不是标题，而是“合资新能源增长69% 上汽大众10月交付17975辆”会不会改变业务结果。先核对报道中的增长69%、17975辆采用什么统计口径；销量增长不等于经营变好，要区分批发、零售、出口和库存转移，还要看是否靠降价换量。报道给出的事实锚点是：合资新能源增长69% 上汽大众10月交付17975辆 汽车之家。判断质量时同时看批零差、成交均价、库存天数和单车毛利。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBPTWdZSFZQUzE0c2xGcDBiSXhCTVR6dGd1aWlibGZSZlNBeHkzWmhMQThLUGNoNFRMUC1xMXBGR2hGOGF2Y2hLb3hKeFc5VkNrYl93MjBadndJTGRxZWc?oc=5",
+      "newsBrief": "乘联分会口径显示，10月主流合资品牌新能源零售同比增长69%；上汽大众当月新能源零售17975辆，同比增长253.1%、环比增长37.1%，前10月累计约7.4万辆，同比增长49.1%。同期全国乘用车零售164.3万辆，同比下降27.1%，新能源零售110.9万辆，同比下降13.7%，渗透率67.5%。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "连续三个月新能源零售",
+        "主力车型成交价",
+        "合资新能源市场份额"
+      ],
+      "editorialPriority": 5,
+      "editorialGrade": "A"
+    },
+    {
+      "title": "智能网联汽车标准必要专利成本上升，许可费与禁令风险需分开评估",
+      "summary": "当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 汽车之家",
+      "source": "市场监管总局 / 汽车标准必要专利许可指引 / 汽车之家",
+      "category": "汽车产业",
+      "url": "https://www.samr.gov.cn/zw/zfxxgk/fdzdgknr/fldzfys/art/2024/art_77e07edb4b7f4b72844a37c9add3e9fe.html",
+      "publishedAt": "2026-11-26T04:32:49+00:00",
+      "publishedLabel": "昨日 12:32",
+      "isTop": false,
+      "whyItMatters": "专利费不是简单按整车售价加税，禁令也不是每次争议都会自动发生。企业真正要管的是专利族有效性、销售地域和累积费率；若只在车型出口后才处理许可，谈判成本会被停产或停售风险放大。公开个案不足以测算统一单车金额，暂不作行业成本外推。",
+      "detailBody": "事实进展：据汽车之家最新公开报道，当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 汽车之家 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：把“当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压”放进经营里看，关键不在声量，而在结果能否兑现。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 汽车之家。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据汽车之家及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为汽车之家，报道主题为“当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 - 汽车之家”。",
+        "当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 汽车之家",
+        "本条归入“汽车产业”栏目，发布时间为昨日 12:32。",
+        "把“当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压”放进经营里看，关键不在声量，而在结果能否兑现。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：当标准必要专利成为准税负:智能网联汽车面临许可费与禁令双压 汽车之家。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE14RkMxMFhELWZtZ3J1dmdpSld6RlF2Q0ZFNDV1T1RFdm5Ca09hNEFZcTVmUGtzVGhJanNNUmF1c3htNDZ0NEU3VHZIMXZaemN3cFRJbDNoNk1YMVk?oc=5",
+      "newsBrief": "智能网联汽车叠加蜂窝通信、音视频和定位等标准必要专利，许可谈判会影响单车成本及海外销售风险。中国汽车标准必要专利许可指引要求许可费以专利对产品的实际价值贡献为基础，并限制不合理累积费率；市场监管总局反垄断指引要求权利人给出专利清单、费率计算依据并遵循公平、合理、无歧视原则。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "有效专利族与销售地域",
+        "单车累积许可费率",
+        "诉讼与禁令案件进展"
+      ],
+      "editorialPriority": 6,
+      "editorialGrade": "A"
+    },
+    {
+      "title": "Lucid与Uber、Nuro的Robotaxi车队超过100辆，仍处测试验证阶段",
+      "summary": "Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs",
+      "source": "Lucid投资者关系 / Nuro / InsideEVs",
+      "category": "汽车产业",
+      "url": "https://ir.lucidmotors.com/news-releases/news-release-details/lucid-announces-third-quarter-2026-results-reduces-cash",
+      "publishedAt": "2026-11-26T09:03:34+00:00",
+      "publishedLabel": "昨日 17:03",
+      "isTop": false,
+      "whyItMatters": "车队从样车扩到百辆能提高极端场景覆盖，但商业化仍取决于无安全员许可、远程协助和每公里成本。至少3.5万辆是合作目标，不是已锁定交付；若测试强度上升而接管率和事故数据不透明，规模数字不能替代安全证明。",
+      "detailBody": "事实进展：据InsideEVs最新公开报道，Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：对决策最有用的信息，是“InsideEVs报道：Lucid Gravity Robotax…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Lucid Gravity Robotaxis Just Took A Major Step Toward Co…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据InsideEVs及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为InsideEVs，报道主题为“InsideEVs报道：Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch - InsideEVs”。",
+        "Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs",
+        "本条归入“汽车产业”栏目，发布时间为昨日 17:03。",
+        "对决策最有用的信息，是“InsideEVs报道：Lucid Gravity Robotax…”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Lucid Gravity Robotaxis Just Took A Major Step Toward Co…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "originalTitle": "Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch - InsideEVs",
+      "originalSummary": "The report says that Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
+      "sourceTranslatedSummary": "Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs",
+      "translatedSummary": "报道指出，Lucid Gravity Robotaxis Just Took A Major Step Toward Commercial Launch InsideEVs。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQX2NmdnV3UzVGajFUTDNmMmRUa3haaTJQUGpSTTRHZV9Fd0NsOWxNTERtZXdwc0h1bEotbS1YZTdaTUdFanVHSnFkMU1uM3o2Yi1hU3E5dzBWNmFXYmVyNXhCaW9qYVZBa3pNNzFwdE9uRjdFZGxRT2RPbmZUZEVqS2RUZw?oc=5",
+      "newsBrief": "Lucid三季度材料称，其与Uber、Nuro合作的Robotaxi项目已完成当季里程碑，8月起上路测试车辆超过100辆；生产验证版Gravity已在旧金山湾区和休斯敦测试。合作目标是在美国起步部署至少3.5万辆全自动驾驶车辆，但目前仍是测试验证和生产准备，不等于已取得公开商业收费许可。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "无安全员测试与运营许可",
+        "每万公里接管和事故",
+        "量产车交付与单公里成本"
+      ],
+      "editorialPriority": 7,
+      "editorialGrade": "A"
+    },
+    {
+      "title": "英飞凌首款RISC-V车规MCU平台瞄准2027年上半年送样",
+      "summary": "英飞凌发布RISC-V车规MCU 全行业推进量产落地 盖世汽车",
+      "source": "Infineon Technologies",
+      "category": "汽车产业",
+      "url": "https://www.infineon.com/press-release/2026/infpr202611-026",
+      "publishedAt": "2026-11-25T22:05:29+00:00",
+      "publishedLabel": "昨日 06:05",
+      "isTop": false,
+      "whyItMatters": "开放指令集的价值在软件复用和降低单一架构锁定，但车规市场最终看功能安全、工具链和量产验证。先别把“发布平台”写成“已经装车”；只有客户定点、ASIL验证和样片到量产的节奏兑现，RISC-V才会真正改变MCU供应格局。",
+      "detailBody": "事实进展：据盖世汽车最新公开报道，英飞凌发布RISC-V车规MCU 全行业推进量产落地 盖世汽车 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：对决策最有用的信息，是“英飞凌发布RISC-V车规MCU 全行业推进量产落地”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：英飞凌发布RISC-V车规MCU 全行业推进量产落地 盖世汽车。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据盖世汽车及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为盖世汽车，报道主题为“英飞凌发布RISC-V车规MCU 全行业推进量产落地 - 盖世汽车”。",
+        "英飞凌发布RISC-V车规MCU 全行业推进量产落地 盖世汽车",
+        "本条归入“汽车产业”栏目，发布时间为昨日 06:05。",
+        "对决策最有用的信息，是“英飞凌发布RISC-V车规MCU 全行业推进量产落地”背后的约束条件。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：英飞凌发布RISC-V车规MCU 全行业推进量产落地 盖世汽车。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPM0VZblZzMkhseEh3cTdPaTcxc0lFNkp0bHVucnl1M1FQcTBxU0hhVk9Dblpaelc5NzBVS1JSZ1M4cEY2Sklla1RLdUsydVZOaU9HbGNkSXlhVFNSM0wwS25pVXN4NjI1aHBJUE5IQTk4S01hVlpIM0JFRjhFc0dKdjgwMGstNlhCWTFMVWVHcXhoOW9ENm80VXNxY1lRaFdTOVZ0S1Z6NU5lUQ?oc=5",
+      "newsBrief": "英飞凌发布AURIX RC1，这是其首个采用RISC-V指令集的车规MCU平台，覆盖传统MCU至MCU/MPU混合器件，并面向域控和区域控制器复用同一架构。官方目标是2027年上半年提供首批样片；当前虚拟原型已开放，量产定点、认证和SOP时间尚未披露。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "2027年样片进度",
+        "客户定点与ASIL认证",
+        "首个量产项目SOP"
+      ],
+      "editorialPriority": 8,
+      "editorialGrade": "B"
+    },
+    {
+      "title": "Rivian商用厢式车收入增长，但客户集中度仍是核心风险",
+      "summary": "Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs",
+      "source": "Rivian SEC文件 / InsideEVs",
+      "category": "汽车产业",
+      "url": "https://www.sec.gov/Archives/edgar/data/1874178/000187417826000066/rivn-20260930.htm",
+      "publishedAt": "2026-11-26T05:21:04+00:00",
+      "publishedLabel": "昨日 13:21",
+      "isTop": false,
+      "whyItMatters": "商用车能提高工厂利用率，却把需求集中到少数大客户。Amazon收入增长是好信号，但若订单、交付和售后网络没有向更多车队扩散，业务仍容易受单一客户采购节奏影响；判断“第二增长曲线”要等非Amazon收入占比和单车毛利披露。",
+      "detailBody": "事实进展：据InsideEVs最新公开报道，Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：把“InsideEVs报道：Rivian’s ‘Boring’ Com…”放进经营里看，关键不在声量，而在结果能否兑现。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secre…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据InsideEVs及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为InsideEVs，报道主题为“InsideEVs报道：Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon - InsideEVs”。",
+        "Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs",
+        "本条归入“汽车产业”栏目，发布时间为昨日 13:21。",
+        "把“InsideEVs报道：Rivian’s ‘Boring’ Com…”放进经营里看，关键不在声量，而在结果能否兑现。汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secre…。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "originalTitle": "Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon - InsideEVs",
+      "originalSummary": "The report says that Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs. It presents the development as current reported information and does not treat market expectations as confirmed results. For companies and investors, the practical question is whether it changes demand, costs, supply chains, financing, compliance obligations, delivery schedules, or sustainable earnings. Readers should compare the report with later company announcements, regulatory filings, financial disclosures, independent industry statistics, customer responses, and operating data before reaching a firm conclusion about its lasting significance.",
+      "sourceTranslatedSummary": "Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs",
+      "translatedSummary": "报道指出，Rivian’s ‘Boring’ Commercial Van Is Turning Into A Secret Weapon InsideEVs。原文将其作为当前已报道的进展呈现，并未把市场预期视为已经确认的结果。对企业和投资者而言，实际问题在于它是否会改变需求、成本、供应链、融资、合规义务、交付进度或可持续盈利。在判断其长期意义并形成确定结论前，读者还应结合后续企业公告、监管文件、财务披露、独立行业统计、客户反馈和经营数据进行核验。",
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQbHlUQzg4cVlsQ2VrSmZNU0p2VE1veUxyajNFOTBDR0tYSjdqY2ZuMWJKNHFvTWpMb1lmVnlDQ2tKY3RoMWFLV1Q3LUpZbUR3ZzFVejR2Zl9UclVPMExkRlZrVjZEckZpTEdha3pQN3lNUGVLZHlacWcxalFoalZzYlFmU2tuX3dYWFlsTHFLaUxaQQ?oc=5",
+      "newsBrief": "Rivian法定文件显示，商用厢式车平台仍以Amazon为首个、也是最重要客户，并已向Amazon以外车队开放。公开报道估算公司年内来自Amazon相关收入约16亿美元，但Rivian没有按客户披露厢式车交付量，不能把收入直接折算为车辆数，也不能确认全部增量都来自新车销售。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "非Amazon客户与订单",
+        "商用车交付量",
+        "汽车业务毛利与产能利用率"
+      ],
+      "editorialPriority": 9,
+      "editorialGrade": "B"
+    },
+    {
+      "title": "智界三年累计第20万台整车下线，仍需用终端零售验证产能质量",
+      "summary": "智界第20万台整车下线 三年完成多品类布局 autodata.gasgoo.com",
+      "source": "智界汽车 / 盖世汽车",
+      "category": "汽车产业",
+      "url": "https://autodata.gasgoo.com/zh/information/articles/2125773237900148736",
+      "publishedAt": "2026-11-26T12:44:56+00:00",
+      "publishedLabel": "昨日 20:44",
+      "isTop": false,
+      "whyItMatters": "累计下线证明体系具备规模，但无法回答渠道库存和单车盈利。新品类增加会拉高覆盖面，也可能分散营销和产能；只有终端交付持续追上下线节奏、折扣没有明显扩大，20万辆才是经营质量而非生产里程碑。",
+      "detailBody": "事实进展：据盖世汽车最新公开报道，智界第20万台整车下线 三年完成多品类布局 autodata.gasgoo.com 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：这条新闻真正要看的不是标题，而是“智界第20万台整车下线 三年完成多品类布局”会不会改变业务结果。先核对报道中的20万台采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：智界第20万台整车下线 三年完成多品类布局 autodata.gasgoo.com。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据盖世汽车及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为盖世汽车，报道主题为“智界第20万台整车下线 三年完成多品类布局 - autodata.gasgoo.com”。",
+        "智界第20万台整车下线 三年完成多品类布局 autodata.gasgoo.com",
+        "本条归入“汽车产业”栏目，发布时间为昨日 20:44。",
+        "这条新闻真正要看的不是标题，而是“智界第20万台整车下线 三年完成多品类布局”会不会改变业务结果。先核对报道中的20万台采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：智界第20万台整车下线 三年完成多品类布局 autodata.gasgoo.com。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMie0FVX3lxTFBlRmxUREtGbUhoWkNrYmF5VXkzTDlXMFloTW41eTZpUGU2TzZ3SFI4UW9KdkVDbXlCNVRobm93WGYwZnB4RklhTjU2aTRxNEYwelJpVXF6bzhZZmh5amhTUlJyNlBoNzYwSHRpaUFST3NQU0doTGhYRnpRMA?oc=5",
+      "newsBrief": "智界披露品牌第20万台整车于11月26日下线，下线车型为智界RX。品牌由华为与奇瑞合作打造，三年内产品线从单一车型扩展至轿车、SUV和MPV。20万台是累计生产下线口径，不等于同期终端零售、交付或回款。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "下线与终端交付差",
+        "主力车型成交价",
+        "新增车型产能利用率"
+      ],
+      "editorialPriority": 10,
+      "editorialGrade": "B"
+    },
+    {
+      "title": "广州车展开幕：1106辆展车中新能源车707辆，首发新车115辆",
+      "summary": "广州车展11月27日举行，首发新车115台 https://www.mrjjxw.com/",
+      "source": "广州国际汽车展览会 / 每日经济新闻",
+      "category": "汽车产业",
+      "url": "https://www.mrjjxw.com/articles/2026-11-26/4659950.html",
+      "publishedAt": "2026-11-26T23:30:08+00:00",
+      "publishedLabel": "今日 07:30",
+      "isTop": false,
+      "whyItMatters": "新能源展车占比约64%，说明产品供给已高度电动化，但车展热度不能替代需求。更值得看的是首发车型的价格带是否继续拥挤、预售订单能否转成交付，以及合资品牌新能源新品是否带来持续零售，而不是现场发布数量。",
+      "detailBody": "事实进展：据国内汽车综合最新公开报道，广州车展11月27日举行，首发新车115台 https://www.mrjjxw.com/ 目前能够确认的信息以原报道、企业公告或监管披露为边界；报道未给出的合同条款、财务数字和执行时间表，不作补充推测。\n影响路径：这项变化可能通过汽车产业领域的产品需求、成本结构、订单兑现、资本开支或竞争关系传导。判断其重要性不能只看标题和短期价格反应，而要观察相关主体是否真正改变业务安排，以及客户和供应链是否出现可验证的响应。\n决策含义：别急着顺着“广州车展11月27日举行，首发新车115台 - https://w…”下结论，先看它通过哪条路径影响经营。先核对报道中的115台采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：广州车展11月27日举行，首发新车115台 https://www.mrjjxw.com/。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。 对企业经营者，应分别记录已经发生的事实、管理层目标和市场预期；对个人投资者，还需要结合估值、现金流与风险承受能力，避免由单条新闻直接推导长期趋势。\n待核验事项：后续应检查更完整的数字、实施范围、正式时间表、监管文件和财务披露，并观察影响是否进入交付、利润率、融资成本、现金流或资产价格。本文仅依据国内汽车综合及公开资料整理，不构成投资建议，最终以权威披露为准。",
+      "keyFacts": [
+        "信息来源为国内汽车综合，报道主题为“广州车展11月27日举行，首发新车115台 - https://www.mrjjxw.com/”。",
+        "广州车展11月27日举行，首发新车115台 https://www.mrjjxw.com/",
+        "本条归入“汽车产业”栏目，发布时间为今日 07:30。",
+        "别急着顺着“广州车展11月27日举行，首发新车115台 - https://w…”下结论，先看它通过哪条路径影响经营。先核对报道中的115台采用什么统计口径；汽车新闻要从产品声量回到订单、交付、成本和渠道；没有这些数据，发布动作还不能证明竞争力。报道给出的事实锚点是：广州车展11月27日举行，首发新车115台 https://www.mrjjxw.com/。继续跟踪真实订单、交付爬坡、成交价格和用户口碑。"
+      ],
+      "aggregatorUrl": "https://news.google.com/rss/articles/CBMiZkFVX3lxTFBSQ2pacmtzaTEtT1MwbnNsVkpISzRtRG9xLUExem9mLVBWWk1CcklwM2hkUkpqNUt0MVRiTndFTnotV2VyMGxfZVdvWDY5ZjRJNGJkZTdEX1Z5aHhscTZoN3E3WjZNUQ?oc=5",
+      "newsBrief": "第二十四届广州国际汽车展览会于11月27日至12月6日举行，展区总面积22万平方米，共展出1106辆车，其中首发新车115辆、新能源车707辆。展车和首发数量反映供给展示，不等于订单、交付或市场份额。",
+      "newsBriefSource": "权威披露与公开报道交叉核验",
+      "watchMetrics": [
+        "重点车型预售转化",
+        "新能源展车价格带分布",
+        "车展后30天终端零售"
+      ],
+      "editorialPriority": 11,
+      "editorialGrade": "C"
+    }
+  ],
+  "editorialReview": {
+    "status": "passed",
+    "reviewedAt": "2026-11-27T08:28:37.966113+08:00",
+    "method": "shortlist quality, source, freshness and duplicate review"
+  }
+}
